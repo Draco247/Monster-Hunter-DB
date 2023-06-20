@@ -583,7 +583,9 @@ class Scraper(object):
             print(item_id)
 
     def get_skills(self):
-        self.get_armour_skills()
+        # self.get_armour_skills()
+        # self.get_rampage_skills_and_decorations()
+        self.get_decorations()
 
     def get_armour_skills(self):
         armour_skills_url = f"{base_url}data/skills"
@@ -593,13 +595,13 @@ class Scraper(object):
         all_skills = soup.find_all("tr")
         
         for skill in all_skills:
-            skill_name = skill.find("p", attrs = {"text-sm font-medium text-sky-500 dark:text-sky-400 group-hover:text-sky-900 dark:group-hover:text-sky-300"})
+            skill_name = skill.find("a", attrs = {"text-sm font-medium text-sky-500 dark:text-sky-400 group-hover:text-sky-900 dark:group-hover:text-sky-300"}).text
             print(skill_name)
             skill_url = skill.find('a')['href']
             print(skill_url)
-            skill_id = skill_url.split("/skills")[1]
+            skill_id = skill_url.split("skills/")[1]
             print(skill_id)
-            skill_description = skill.find_all("p", attrs = {"truncate"})
+            skill_description = skill.find("p", attrs = {"truncate"}).text
             print(skill_description)
             find_skill_levels = skill.find_all("small")
             skill_levels = []
@@ -609,6 +611,64 @@ class Scraper(object):
                     skill_levels.append(level.text)
             print(skill_levels)
         # for item in all_room_items:
+    
+    def get_rampage_skills_and_decorations(self):
+        rampage_skills_url = f"{base_url}data/rampage-skills"
+        session = requests.Session()
+        r = session.get(rampage_skills_url, headers=headers)
+        soup = BeautifulSoup(r.content, "html.parser")
+        all_rampage_skills = soup.find_all("tr")
+
+        for rampage_skill in all_rampage_skills:
+            skill_name = rampage_skill.find("a").text
+            print(skill_name)
+            skill_url = rampage_skill.find('a')['href']
+            print(skill_url)
+            skill_id = skill_url.split("skills/")[1]
+            print(skill_id)
+            skill_description = rampage_skill.find_all("td")[-1].text
+            print(skill_description)
+    
+    def get_decorations(self):
+        print("gdgeg")
+        decorations_url = f"{base_url}data/decorations"
+        session = requests.Session()
+        r = session.get(decorations_url, headers=headers)
+        soup = BeautifulSoup(r.content, "html.parser")
+        all_decorations = soup.find_all("tr")
+
+        for decoration in all_decorations:
+            decoration_name = decoration.find_all("a")[0].text
+            print(decoration_name)
+            skill_name = decoration.find_all("a")[1].text
+            print(skill_name)
+            decoration_url = decoration.find_all('a')[0]['href']
+            print(decoration_url)
+            skill_url = decoration.find_all('a')[1]['href']
+            print(skill_url)
+            decoration_id = decoration_url.split("decorations/")[1]
+            print(decoration_id)
+            skill_id = skill_url.split("skills/")[1]
+            print(skill_id)
+            skill_level = decoration.find_all("td")[1].find("div").contents[-1].strip()
+            print(skill_level)
+            skill_description = decoration.find_all("td")[-1].text
+            print(skill_description)
+            crafting_materials = []
+
+            session = requests.Session()
+            r = session.get(decorations_url, headers=headers)
+            soup = BeautifulSoup(r.content, "html.parser")
+            find_crafting_materials = soup.find_all("table")[-1]
+
+            for material in find_crafting_materials:
+                item_name = material.find("a").text
+                item_id = material.find("a")["href"].split("items/")
+                quantity = material.find_all("td")[0].contents[-1]
+                print(item_name, item_id, quantity)
+
+
+
         
 # webscrape = Scraper(headers, base_url,mydb)
 webscrape = Scraper(headers, base_url)
