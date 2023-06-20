@@ -1,30 +1,34 @@
 import csv
 import urllib.request
-from PIL import Image
+# from PIL import Image
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
 from io import BytesIO
-import mysql.connector
+# import mysql.connector
 import json
 headers = ({'User-Agent':
                 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36',
             'Accept-Language': 'en-US, en;q=0.5'})
 base_url = "https://mhrise.kiranico.com/"
-mydb = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="ShadowSlash247",
-            database="monster_hunter"
-        )
+# mydb = mysql.connector.connect(
+#             host="localhost",
+#             user="root",
+#             password="ShadowSlash247",
+#             database="monster_hunter"
+#         )
 
 
 class Scraper(object):
 
-    def __init__(self, headers, base_url, mydb):
+    # def __init__(self, headers, base_url, mydb):
+    #     self.headers = headers
+    #     self.base_url = base_url
+    #     self.mydb = mydb
+    def __init__(self, headers, base_url):
         self.headers = headers
         self.base_url = base_url
-        self.mydb = mydb
+        # self.mydb = mydb
 
     def get_monster(self):
         url = f"{base_url}data/monsters?view=lg"
@@ -49,10 +53,10 @@ class Scraper(object):
             # print(monster_img)
             print(monster_id)
             sql = "INSERT INTO monsters (name, link, image_link, monster_id) VALUES (%s,%s,%s,%s)"
-            val = ([monster_name,link,monster_img, monster_id])
-            mycursor = mydb.cursor()
-            # print(mycursor)
-            mycursor.execute(sql,val)
+            # val = ([monster_name,link,monster_img, monster_id])
+            # mycursor = mydb.cursor()
+            # # print(mycursor)
+            # mycursor.execute(sql,val)
             # # print(mycursor)
             
             # response = requests.get(monster_img)
@@ -66,7 +70,7 @@ class Scraper(object):
             #     print(monster_name)
                 
                 # print(monster_name)
-        mydb.commit()
+        # mydb.commit()
 
     def get_monster_details(self, soup, monster_id):
         # hitzones = []
@@ -196,26 +200,26 @@ class Scraper(object):
                            "Mini Crown": mini_crown_chances, "King Crown": king_crown_chances, "Rewards": rewards})
             # sql = 
             # val = (quest_id,)
-            mycursor = mydb.cursor(buffered=True)
+            # mycursor = mydb.cursor(buffered=True)
             
-            mycursor.execute("SELECT COUNT(*) from quests WHERE quest_id = %s", [quest_id])
-            exists = mycursor.fetchall()
-            print(mycursor)
-            print(exists[0][0])
-            rewards = json.dumps(rewards)
-            print(rewards)
-            if exists[0][0] == 0:
-                print("fefeg")
-                sql = "INSERT INTO quests (quest_id, quest_name, quest_url, objective, HRP, MRP, failure_conditions, mini_crown, king_crown, rewards) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-                val = ([quest_id, quest_name, quest_link, quest_objective, hunter_rank_points, master_rank_points, failure_conditions,
-                        mini_crown_chances, king_crown_chances, rewards])
-                mycursor = mydb.cursor(buffered=True)
-                mycursor.execute(sql,val)
-                sql = "INSERT INTO quest_monsters (quest_id, monster_id) VALUES (%s,%s)"
-                val = ([quest_id, monster_id])
-                mycursor = mydb.cursor()
-                mycursor.execute(sql,val)
-                print(mycursor)
+            # mycursor.execute("SELECT COUNT(*) from quests WHERE quest_id = %s", [quest_id])
+            # exists = mycursor.fetchall()
+            # print(mycursor)
+            # print(exists[0][0])
+            # rewards = json.dumps(rewards)
+            # print(rewards)
+            # if exists[0][0] == 0:
+            #     print("fefeg")
+            #     sql = "INSERT INTO quests (quest_id, quest_name, quest_url, objective, HRP, MRP, failure_conditions, mini_crown, king_crown, rewards) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+            #     val = ([quest_id, quest_name, quest_link, quest_objective, hunter_rank_points, master_rank_points, failure_conditions,
+            #             mini_crown_chances, king_crown_chances, rewards])
+            #     # mycursor = mydb.cursor(buffered=True)
+            #     mycursor.execute(sql,val)
+            #     sql = "INSERT INTO quest_monsters (quest_id, monster_id) VALUES (%s,%s)"
+            #     val = ([quest_id, monster_id])
+            #     mycursor = mydb.cursor()
+            #     mycursor.execute(sql,val)
+            #     print(mycursor)
             # selected_monster_rows = sizes_table.select(f'a[href*="{monster_id}"]')#need to get mini and king crown sizes
             # print(selected_monster_rows)
         #     gold_crowns = row.find_all("td")[0].find_all("div")[-1]
@@ -422,7 +426,11 @@ class Scraper(object):
     
     def get_all_items(self):
         # self.get_consumables()
-        print(self.get_materials())
+        # print(self.get_materials())
+        # self.get_scraps()
+        # self.get_ammo()
+        # self.get_account_items()
+        self.get_room_items()
     
     def get_consumables(self):
         consumables_url = f"{base_url}data/items?view=consume"
@@ -479,18 +487,132 @@ class Scraper(object):
 
                             print(map, quest_level, quantity, chance)
 
-                    if section.find("h2").text.strip() == "Monsters":
-                        print("rdhhrshr")
-                        rows = section.find_all("tr")
-                        for row in rows:
-                            map = row.find_all("td")[0].text.strip()
-                            quest_level = row.find_all("td")[1].text.strip()
-                            quantity = row.find_all("td")[2].text.strip()
-                            chance = row.find_all("td")[3].text.strip()
+                    # if section.find("h2").text.strip() == "Monsters":
+                    #     print("rdhhrshr")
+                    #     rows = section.find_all("tr")
+                    #     for row in rows:
+                    #         map = row.find_all("td")[0].text.strip()
+                    #         quest_level = row.find_all("td")[1].text.strip()
+                    #         quantity = row.find_all("td")[2].text.strip()
+                    #         chance = row.find_all("td")[3].text.strip()
 
-                            print(map, quest_level, quantity, chance)
+                    #         print(map, quest_level, quantity, chance)
 
-webscrape = Scraper(headers, base_url,mydb)
+    def get_scraps(self):
+        scraps_url = f"{base_url}data/items?view=scrap"
+        print(scraps_url)
+        session = requests.Session()
+        r = session.get(scraps_url, headers=headers)
+        soup = BeautifulSoup(r.content, "html.parser")
+        all_scraps = soup.find_all("div", attrs={"class": "flex items-center border-r border-b border-gray-200 dark:border-gray-800 p-2 sm:p-1"})
+
+        for scrap in all_scraps:
+            item_name = scrap.find("p", attrs={"class": "text-sm font-medium text-sky-500 dark:text-sky-400 group-hover:text-sky-900 dark:group-hover:text-sky-300"}).text
+            item_img = scrap.find('img')["src"]
+            item_url = scrap.find('a')['href']
+            item_id = item_url.split("items/")[1]
+            session = requests.Session()
+            r = session.get(item_url, headers=headers)
+            item_page = BeautifulSoup(r.content, "html.parser")
+            item_description = item_page.find("header", attrs={"mb-9 space-y-1"}).find_all("p")[-1].text
+            print(item_name)
+            print(item_description)
+            print(item_id)
+    
+    def get_ammo(self):
+        ammo_url = f"{base_url}data/items?view=ammo"
+        print(ammo_url)
+        session = requests.Session()
+        r = session.get(ammo_url, headers=headers)
+        soup = BeautifulSoup(r.content, "html.parser")
+        all_ammo = soup.find_all("div", attrs={"class": "flex items-center border-r border-b border-gray-200 dark:border-gray-800 p-2 sm:p-1"})
+
+        for ammo in all_ammo:
+            item_name = ammo.find("p", attrs={"class": "text-sm font-medium text-sky-500 dark:text-sky-400 group-hover:text-sky-900 dark:group-hover:text-sky-300"}).text
+            item_img = ammo.find('img')["src"]
+            item_url = ammo.find('a')['href']
+            item_id = item_url.split("items/")[1]
+            session = requests.Session()
+            r = session.get(item_url, headers=headers)
+            item_page = BeautifulSoup(r.content, "html.parser")
+            item_description = item_page.find("header", attrs={"mb-9 space-y-1"}).find_all("p")[-1].text
+            print(item_name)
+            print(item_description)
+            print(item_id)
+    
+    def get_account_items(self):
+        account_item_url = f"{base_url}data/items?view=account"
+        print(account_item_url)
+        session = requests.Session()
+        r = session.get(account_item_url, headers=headers)
+        soup = BeautifulSoup(r.content, "html.parser")
+        all_account_items = soup.find_all("div", attrs={"class": "flex items-center border-r border-b border-gray-200 dark:border-gray-800 p-2 sm:p-1"})
+
+        for item in all_account_items:
+            item_name = item.find("p", attrs={"class": "text-sm font-medium text-sky-500 dark:text-sky-400 group-hover:text-sky-900 dark:group-hover:text-sky-300"}).text
+            item_img = item.find('img')["src"]
+            item_url = item.find('a')['href']
+            item_id = item_url.split("items/")[1]
+            session = requests.Session()
+            r = session.get(item_url, headers=headers)
+            item_page = BeautifulSoup(r.content, "html.parser")
+            item_description = item_page.find("header", attrs={"mb-9 space-y-1"}).find_all("p")[-1].text
+            print(item_name)
+            print(item_description)
+            print(item_id)
+    
+    def get_room_items(self):
+        room_items_url = f"{base_url}data/items?view=antique"
+        print(room_items_url)
+        session = requests.Session()
+        r = session.get(room_items_url, headers=headers)
+        soup = BeautifulSoup(r.content, "html.parser")
+        all_room_items = soup.find_all("div", attrs={"class": "flex items-center border-r border-b border-gray-200 dark:border-gray-800 p-2 sm:p-1"})
+
+        for item in all_room_items:
+            item_name = item.find("p", attrs={"class": "text-sm font-medium text-sky-500 dark:text-sky-400 group-hover:text-sky-900 dark:group-hover:text-sky-300"}).text
+            item_img = item.find('img')["src"]
+            item_url = item.find('a')['href']
+            item_id = item_url.split("items/")[1]
+            session = requests.Session()
+            r = session.get(item_url, headers=headers)
+            item_page = BeautifulSoup(r.content, "html.parser")
+            item_description = item_page.find("header", attrs={"mb-9 space-y-1"}).find_all("p")[-1].text
+            print(item_name)
+            print(item_description)
+            print(item_id)
+
+    def get_skills(self):
+        self.get_armour_skills()
+
+    def get_armour_skills(self):
+        armour_skills_url = f"{base_url}data/skills"
+        session = requests.Session()
+        r = session.get(armour_skills_url, headers=headers)
+        soup = BeautifulSoup(r.content, "html.parser")
+        all_skills = soup.find_all("tr")
+        
+        for skill in all_skills:
+            skill_name = skill.find("p", attrs = {"text-sm font-medium text-sky-500 dark:text-sky-400 group-hover:text-sky-900 dark:group-hover:text-sky-300"})
+            print(skill_name)
+            skill_url = skill.find('a')['href']
+            print(skill_url)
+            skill_id = skill_url.split("/skills")[1]
+            print(skill_id)
+            skill_description = skill.find_all("p", attrs = {"truncate"})
+            print(skill_description)
+            find_skill_levels = skill.find_all("small")
+            skill_levels = []
+            for level in find_skill_levels:
+                if level.text != "":
+                    # print(level.text)
+                    skill_levels.append(level.text)
+            print(skill_levels)
+        # for item in all_room_items:
+        
+# webscrape = Scraper(headers, base_url,mydb)
+webscrape = Scraper(headers, base_url)
 # webscrape.get_all_weapon()
-webscrape.get_monster()
+# webscrape.get_monster()
 # webscrape.get_all_items()
+webscrape.get_skills()
