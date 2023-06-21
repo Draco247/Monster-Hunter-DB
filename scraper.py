@@ -585,7 +585,9 @@ class Scraper(object):
     def get_skills(self):
         # self.get_armour_skills()
         # self.get_rampage_skills_and_decorations()
-        self.get_decorations()
+        # self.get_decorations()
+        # self.get_switch_skills()
+        self.get_dango_skills()
 
     def get_armour_skills(self):
         armour_skills_url = f"{base_url}data/skills"
@@ -666,15 +668,43 @@ class Scraper(object):
                 # print(item_name)
                 item_id = material.find("a")["href"].split("items/")[1]
                 quantity = material.find_all("td")[0].contents[-1].strip()
-                print(item_name, item_id, quantity)
+                # print(item_name, item_id, quantity)
+                crafting_materials.append({"Item_id" : item_id, "Item_name" : item_name, "Quantity" : quantity})
+            print(crafting_materials)
+    
+    def get_switch_skills(self):
+        switch_skill_url = f"{base_url}data/switch-actions"
+        session = requests.Session()
+        r = session.get(switch_skill_url, headers=headers)
+        soup = BeautifulSoup(r.content, "html.parser")
+        all_switch_skills = soup.find_all("tr")
 
-            # for material in find_crafting_materials:
-            #     # print(material)
-            #     item_name = material.find_all("a")
-            #     print(item_name)
-            #     item_id = material.find("a")["href"].split("items/")
-            #     quantity = material.find_all("td")[0].contents[-1]
-            #     print(item_name, item_id, quantity)
+        for switch_skill in all_switch_skills:
+            switch_skill_name = switch_skill.find_all("td")[0].text
+            print(switch_skill_name)
+            switch_skill_description = switch_skill.find_all("td")[1].text
+            print(switch_skill_description)
+
+    def get_dango_skills(self):
+        dango_skill_url = f"{base_url}data/kitchen-skills"
+        session = requests.Session()
+        r = session.get(dango_skill_url, headers=headers)
+        soup = BeautifulSoup(r.content, "html.parser")
+        all_dango_skills = soup.find_all("tr")
+
+        for dango_skill in all_dango_skills:
+            dango_skill_name = dango_skill.find_all("td")[0].text
+            print(dango_skill_name)
+            dango_skill_description = dango_skill.find_all("td")[1].find("p").text
+            print(dango_skill_description)
+            dango_skill_levels = []
+            level_descriptions = dango_skill.find_all("td")[1].find_all("small")
+            
+            for description in level_descriptions:
+                # print(description)
+                dango_skill_levels.append(description.text.strip())
+            print(dango_skill_levels)
+            
 
 
 
