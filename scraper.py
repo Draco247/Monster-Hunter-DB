@@ -657,15 +657,24 @@ class Scraper(object):
             crafting_materials = []
 
             session = requests.Session()
-            r = session.get(decorations_url, headers=headers)
+            r = session.get(decoration_url, headers=headers)
             soup = BeautifulSoup(r.content, "html.parser")
-            find_crafting_materials = soup.find_all("table")[-1]
+            find_crafting_materials = soup.find_all("table")[-1].find_all("tr")
 
             for material in find_crafting_materials:
                 item_name = material.find("a").text
-                item_id = material.find("a")["href"].split("items/")
-                quantity = material.find_all("td")[0].contents[-1]
+                # print(item_name)
+                item_id = material.find("a")["href"].split("items/")[1]
+                quantity = material.find_all("td")[0].contents[-1].strip()
                 print(item_name, item_id, quantity)
+
+            # for material in find_crafting_materials:
+            #     # print(material)
+            #     item_name = material.find_all("a")
+            #     print(item_name)
+            #     item_id = material.find("a")["href"].split("items/")
+            #     quantity = material.find_all("td")[0].contents[-1]
+            #     print(item_name, item_id, quantity)
 
 
 
