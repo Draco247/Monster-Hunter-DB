@@ -587,7 +587,9 @@ class Scraper(object):
         # self.get_rampage_skills_and_decorations()
         # self.get_decorations()
         # self.get_switch_skills()
-        self.get_dango_skills()
+        # self.get_dango_skills()
+        # self.get_canteen_dango()
+        self.get_crafting_list()
 
     def get_armour_skills(self):
         armour_skills_url = f"{base_url}data/skills"
@@ -704,6 +706,59 @@ class Scraper(object):
                 # print(description)
                 dango_skill_levels.append(description.text.strip())
             print(dango_skill_levels)
+
+    def get_canteen_dango(self):
+        dango_url = f"{base_url}data/dangos"
+        session = requests.Session()
+        r = session.get(dango_url, headers=headers)
+        soup = BeautifulSoup(r.content, "html.parser")
+        all_dango = soup.find_all("tr")
+
+        for dango in all_dango:
+            dango_name = dango.find_all("td")[0].text
+            print(dango_name)
+            find_dango_description = dango.find_all("td")[1].find_all("div")
+            dango_description = ""
+            dango_skills = []
+            for description in find_dango_description:
+                dango_description += description.text
+                if description.find("a") is not None:
+                    dango_skill = description.find("a").text
+                    dango_skill_id = description.find("a")["href"].split("skills/")[1]
+                    dango_skills.append({dango_skill_id:description.find("a").text})
+            print(dango_description)
+            print(dango_skills)
+            # print(dango_skill)
+            
+            # dango_skill_levels = []
+            # level_descriptions = dango_skill.find_all("td")[1].find_all("small")
+            
+            # for description in level_descriptions:
+            #     # print(description)
+            #     dango_skill_levels.append(description.text.strip())
+            # print(dango_skill_levels)
+    
+    def get_crafting_list(self):
+        crafting_list_url = f"{base_url}data/item-mix"
+        session = requests.Session()
+        r = session.get(crafting_list_url, headers=headers)
+        soup = BeautifulSoup(r.content, "html.parser")
+        all_crafting = soup.find_all("tr")
+
+        for craft in all_crafting:
+            craft_num = craft.find_all("td")[0].text
+            print(craft_num)
+            auto_craft_true = craft.find("path", attrs = {"d":"M5 13l4 4L19 7"})
+            auto_craft_false = craft.find("path", attrs = {"d":"M6 18L18 6M6 6l12 12"})
+            
+            if auto_craft_true is not None and auto_craft_false is None:
+                auto_craft = True
+
+            elif auto_craft_true is None and auto_craft_false is not None:
+                auto_craft = False
+            
+            print(auto_craft)
+
             
 
 
