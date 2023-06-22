@@ -30,15 +30,23 @@ class Scraper(object):
         self.base_url = base_url
         # self.mydb = mydb
 
-    def get_monster(self):
+    def get_large_monster(self):
         url = f"{base_url}data/monsters?view=lg"
         session = requests.Session()
         r = session.get(url, headers=headers)
         soup = BeautifulSoup(r.content, "html.parser")
         # print(soup)
-        self.get_monster_pages(soup)
+        self.get_monster_pages(soup, monster_type="large")
 
-    def get_monster_pages(self, soup):
+    def get_small_monster(self):
+        url = f"{base_url}data/monsters?view=sm"
+        session = requests.Session()
+        r = session.get(url, headers=headers)
+        soup = BeautifulSoup(r.content, "html.parser")
+        # print(soup)
+        self.get_monster_pages(soup,monster_type="small")
+
+    def get_monster_pages(self, soup, monster_type):
         all_monsters = soup.find_all("div", attrs={"class": "group relative p-4 border-r border-b border-gray-200 dark:border-gray-800 sm:p-6"})
         # print(all_monsters)
         for monster in all_monsters[1:2]:
@@ -65,16 +73,17 @@ class Scraper(object):
             session = requests.Session()
             r = session.get(link, headers=headers)
             soup = BeautifulSoup(r.content, "html.parser")
-            print(self.get_monster_details(soup, monster_id))
+            print(self.get_monster_details(soup, monster_id, monster_type))
             # if monster_name == "Gold Rathian":
             #     print(monster_name)
                 
                 # print(monster_name)
         # mydb.commit()
 
-    def get_monster_details(self, soup, monster_id):
-        # hitzones = []
-        # get_hitzones = self.get_monster_physiology(soup, hitzones)
+    def get_monster_details(self, soup, monster_id, monster_type):
+        if monster_type == "large":
+            hitzones = []
+            # get_hitzones = self.get_monster_physiology(soup, hitzones)
         # drops = []
         # get_drops = self.get_monster_drops(soup, drops)
         quests = []
@@ -759,6 +768,21 @@ class Scraper(object):
             
             print(auto_craft)
 
+            item_id = craft.find("img")["src"].split("items/")[1].split(".png")[0]
+            print(item_id)
+
+            craft_quantity = craft.find_all("td")[3].text
+            print(craft_quantity)
+
+            find_ingredients = craft.find_all("td")[4:6]
+            ingredients = []
+
+            for ingredient in find_ingredients:
+                if ingredient.find("img") is not None:
+                    ingredient_id = ingredient.find("img")["src"].split("items/")[1].split(".png")[0]
+                    ingredients.append(ingredient_id)
+            
+            print(ingredients)
             
 
 
