@@ -3,32 +3,39 @@ import urllib.request
 # from PIL import Image
 from bs4 import BeautifulSoup
 import requests
-import pandas as pd
+# import pandas as pd
 from io import BytesIO
-# import mysql.connector
+import mysql.connector
 import json
+import time
+from selenium import webdriver
+
 headers = ({'User-Agent':
                 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36',
             'Accept-Language': 'en-US, en;q=0.5'})
 base_url = "https://mhrise.kiranico.com/"
-# mydb = mysql.connector.connect(
-#             host="localhost",
-#             user="root",
-#             password="ShadowSlash247",
-#             database="monster_hunter"
-#         )
+mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="ShadowSlash247",
+            database="monster_hunter"
+        )
 
 
 class Scraper(object):
 
-    # def __init__(self, headers, base_url, mydb):
-    #     self.headers = headers
-    #     self.base_url = base_url
-    #     self.mydb = mydb
-    def __init__(self, headers, base_url):
+    def __init__(self, headers, base_url, mydb):
         self.headers = headers
         self.base_url = base_url
-        # self.mydb = mydb
+        self.mydb = mydb
+    # def __init__(self, headers, base_url):
+    #     self.headers = headers
+    #     self.base_url = base_url
+    #     # self.mydb = mydb
+
+    def get_monsters(self):
+        self.get_large_monster()
+        self.get_small_monster()
 
     def get_large_monster(self):
         url = f"{base_url}data/monsters?view=lg"
@@ -49,7 +56,7 @@ class Scraper(object):
     def get_monster_pages(self, soup, monster_type):
         all_monsters = soup.find_all("div", attrs={"class": "group relative p-4 border-r border-b border-gray-200 dark:border-gray-800 sm:p-6"})
         # print(all_monsters)
-        for monster in all_monsters[1:2]:
+        for monster in all_monsters:
             # print(monster)
             monster_name = monster.find('a') 
             monster_name = monster_name.text.strip()
@@ -61,11 +68,11 @@ class Scraper(object):
             # print(monster_img)
             print(monster_id)
             sql = "INSERT INTO monsters (name, link, image_link, monster_id) VALUES (%s,%s,%s,%s)"
-            # val = ([monster_name,link,monster_img, monster_id])
-            # mycursor = mydb.cursor()
-            # # print(mycursor)
-            # mycursor.execute(sql,val)
-            # # print(mycursor)
+            val = ([monster_name,link,monster_img, monster_id])
+            mycursor = mydb.cursor()
+            # print(mycursor)
+            mycursor.execute(sql,val)
+            # print(mycursor)
             
             # response = requests.get(monster_img)
             # image = Image.open(BytesIO(response.content))
@@ -78,7 +85,7 @@ class Scraper(object):
             #     print(monster_name)
                 
                 # print(monster_name)
-        # mydb.commit()
+        mydb.commit()
 
     def get_monster_details(self, soup, monster_id, monster_type):
         if monster_type == "large":
@@ -209,39 +216,28 @@ class Scraper(object):
                            "Mini Crown": mini_crown_chances, "King Crown": king_crown_chances, "Rewards": rewards})
             # sql = 
             # val = (quest_id,)
-            # mycursor = mydb.cursor(buffered=True)
+            mycursor = mydb.cursor(buffered=True)
             
-            # mycursor.execute("SELECT COUNT(*) from quests WHERE quest_id = %s", [quest_id])
-            # exists = mycursor.fetchall()
-            # print(mycursor)
-            # print(exists[0][0])
-            # rewards = json.dumps(rewards)
-            # print(rewards)
-            # if exists[0][0] == 0:
-            #     print("fefeg")
-            #     sql = "INSERT INTO quests (quest_id, quest_name, quest_url, objective, HRP, MRP, failure_conditions, mini_crown, king_crown, rewards) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-            #     val = ([quest_id, quest_name, quest_link, quest_objective, hunter_rank_points, master_rank_points, failure_conditions,
-            #             mini_crown_chances, king_crown_chances, rewards])
-            #     # mycursor = mydb.cursor(buffered=True)
-            #     mycursor.execute(sql,val)
-            #     sql = "INSERT INTO quest_monsters (quest_id, monster_id) VALUES (%s,%s)"
-            #     val = ([quest_id, monster_id])
-            #     mycursor = mydb.cursor()
-            #     mycursor.execute(sql,val)
-            #     print(mycursor)
-            # selected_monster_rows = sizes_table.select(f'a[href*="{monster_id}"]')#need to get mini and king crown sizes
-            # print(selected_monster_rows)
-        #     gold_crowns = row.find_all("td")[0].find_all("div")[-1]
-        #     # quest_areas = []
-        #     gold_crown_chances = gold_crowns.text.strip().replace(" ", "").split()
-        #     # num_players = row.find_all("td")[1].text
-        #     monster_HP_values = row.find_all("td")[2].find_all("div")
-        #     monster_HP = []
-        #     for value in monster_HP_values:
-        #         monster_HP.append(value.text)
-        #     # print(monster_HP)
-        #     monster_quests = {"Quest Name" : quest_name, "Gold Crown Chances": gold_crown_chances, "Monster HP" : monster_HP}
-        #     quests.append(monster_quests)
+            mycursor.execute("SELECT COUNT(*) from quests WHERE quest_id = %s", [quest_id])
+            exists = mycursor.fetchall()
+            print(mycursor)
+            print(exists[0][0])
+            rewards = json.dumps(rewards)
+            print(rewards)
+            if exists[0][0] == 0:
+                print("fefeg")
+                # sql = "INSERT INTO quests (quest_id, quest_name, quest_url, objective, HRP, MRP, failure_conditions, mini_crown, king_crown, rewards) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+                # val = ([quest_id, quest_name, quest_link, quest_objective, hunter_rank_points, master_rank_points, failure_conditions,
+                #         mini_crown_chances, king_crown_chances, rewards])
+                sql = "INSERT INTO quests (quest_id, quest_name, quest_url, objective, HRP, MRP, failure_conditions) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+                val = ([quest_id, quest_name, quest_link, quest_objective, hunter_rank_points, master_rank_points, failure_conditions])
+                # mycursor = mydb.cursor(buffered=True)
+                mycursor.execute(sql,val)
+                sql = "INSERT INTO quest_monsters (quest_id, monster_id) VALUES (%s,%s)"
+                val = ([quest_id, monster_id])
+                mycursor = mydb.cursor()
+                mycursor.execute(sql,val)
+                print(mycursor)
         return quests
 
 
@@ -250,12 +246,14 @@ class Scraper(object):
 
     def get_all_weapons(self):
         weapon_ids = list(range(0, 13))
-        url = f"{base_url}data/weapons?view={12}"
+        url = f"{base_url}data/weapons?view={13}"
+        print(url)
         session = requests.Session()
-        r = session.get(url, headers=headers)
+        r = session.get(url, headers=headers) #need to let page fully load
         soup = BeautifulSoup(r.content, "html.parser")
         # print(soup)
-        print(self.get_all_weapon_details(soup, 12))
+        print(self.get_all_weapon_details(soup, 13))
+        
         # for i in weapon_ids:
         #     url = f"{base_url}data/weapons?view={i}"
         #     session = requests.Session()
@@ -267,8 +265,10 @@ class Scraper(object):
 
 
     def get_all_weapon_details(self, soup, wpn_id):
-        find_weapons = soup.find("table", attrs={
-            "class": "min-w-full divide-y divide-slate-100 dark:divide-slate-400/10"}).find_all("tr")
+        find_weapons = soup.find("table").find_all("tr")
+        ggr = soup.find_all("td")[0].find_all("img")[0]["src"]
+        print(ggr)
+        # print(find_weapons)
 
         # table_body = table.find('tbody')
         # rows = table_body.find_all('tr')
@@ -286,32 +286,49 @@ class Scraper(object):
         }
 
         for weapon in find_weapons:
-
-            weapon_img = weapon.find_all("td")[0].find_all("img")[0]["src"]
+            # print(weapon)
+            try:
+                weapon_img = weapon.find_all("td")[0].find_all("img")[0]["src"]
+                weapon_name = weapon.find_all("td")[1].find("a").text
+                weapon_url = weapon.find_all("td")[1].find("a")["href"]
+                weapon_id = weapon_url.split("weapons/")[1]
+            except (IndexError, AttributeError) as e:
+                weapon_img = ""
+                weapon_name = ""
+                weapon_url = ""
+                weapon_id = 0
             # print(weapon_img)
-            weapon_name = weapon.find_all("td")[1].find("a").text
+            
             # print(weapon_name)
-            weapon_url = weapon.find_all("td")[1].find("a")["href"]
+            
             print(weapon_url)
-            weapon_id = weapon_url.split("weapons/")[1]
+            
             # print(weapon_id)
-            find_deco_slots = weapon.find_all("td")[2].find_all("div")[0].find_all("img")
-            deco_slots = []
-            for deco in find_deco_slots:
-                # print(deco)
-                deco_slots.append(deco["src"].split("ui/")[1].split(".")[0])
+            try:
+                find_deco_slots = weapon.find_all("td")[2].find_all("div")[0].find_all("img")
+                deco_slots = []
+                for deco in find_deco_slots:
+                    # print(deco)
+                    deco_slots.append(deco["src"].split("ui/")[1].split(".")[0])
+            except IndexError:
+                deco_slots = []
             # print(deco_slots)
 
-            find_rampage_slots = weapon.find_all("td")[2].find_all("div")[1].find_all("img")
-            # print(find_rampage_slots)
-            rampage_slots = []
 
-            for rampage in find_rampage_slots:
-                rampage_slots.append(rampage["src"].split("ui/")[1].split(".")[0])
-            # print(rampage_slots)
+            try:
+                find_rampage_slots = weapon.find_all("td")[2].find_all("div")[1].find_all("img")
+                # print(find_rampage_slots)
+                rampage_slots = []
 
-            attack_val = weapon.find_all("td")[3].find("div").text
-            # print(attack_val)
+                for rampage in find_rampage_slots:
+                    rampage_slots.append(rampage["src"].split("ui/")[1].split(".")[0])
+                # print(rampage_slots)
+            except IndexError:
+                rampage_slots = []
+
+            attack_val = weapon.find_all("td")[3]
+            print("fefefefe")
+            print(attack_val)
 
             additional_property = weapon.find_all("td")[4].find("div")
             # print(additional_property.text.strip())
@@ -400,7 +417,7 @@ class Scraper(object):
                 print(charge_shot_levels)
                 print(coatings)
 
-            if wpn_id == 12 or wpn_id == 13:
+            if wpn_id == 12 or wpn_id == 13: # bowgun scrapping isnt working for some reason
                 bowgun_stats = weapon.find_all("td")[5].find_all("div")
                 bowgun_stats = [ele.text.strip() for ele in bowgun_stats]
                 print(bowgun_stats)
@@ -931,9 +948,9 @@ class Scraper(object):
 
 
         
-# webscrape = Scraper(headers, base_url,mydb)
-webscrape = Scraper(headers, base_url)
-webscrape.get_all_weapons()
-# webscrape.get_monster()
+webscrape = Scraper(headers, base_url,mydb)
+# webscrape = Scraper(headers, base_url)
+# webscrape.get_all_weapons()
+webscrape.get_monsters()
 # webscrape.get_all_items()
 # webscrape.get_skills()

@@ -1,4 +1,4 @@
-package com.example.monster.hunter;
+package com.daniel.monster_hunter.monster_hunter;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
