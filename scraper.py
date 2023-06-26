@@ -248,14 +248,14 @@ class Scraper(object):
    
 
 
-    def get_all_weapon(self):
-        weapon_ids = list(range(0, 14))
+    def get_all_weapons(self):
+        weapon_ids = list(range(0, 13))
         url = f"{base_url}data/weapons?view={12}"
         session = requests.Session()
         r = session.get(url, headers=headers)
         soup = BeautifulSoup(r.content, "html.parser")
         # print(soup)
-        print(self.get_all_item_details(soup, 12))
+        print(self.get_all_weapon_details(soup, 12))
         # for i in weapon_ids:
         #     url = f"{base_url}data/weapons?view={i}"
         #     session = requests.Session()
@@ -264,174 +264,317 @@ class Scraper(object):
         #     # print(soup)
         #     print(self.get_all_item_details(soup, i))
 
-    def get_all_item_details(self, soup, wpn_id):
-        table = soup.find("table", attrs={
-            "class": "min-w-full divide-y divide-slate-100 dark:divide-slate-400/10"})
 
-        table_body = table.find('tbody')
-        rows = table_body.find_all('tr')
 
-        elementset = {"5": "Dragon", "2": "Water", "1": "Fire", "9": "Blast", "3": "Thunder", "4": "Ice", "7": "Sleep",
-                      "6": "Poison",
-                      "8": "Paralysis", }
+    def get_all_weapon_details(self, soup, wpn_id):
+        find_weapons = soup.find("table", attrs={
+            "class": "min-w-full divide-y divide-slate-100 dark:divide-slate-400/10"}).find_all("tr")
 
-        if wpn_id == 5:  # hunting horn section
-            print("ok")
-            # for row in rows:
-            #     wpn_name = row.find('a')
-            #     wpn_name = [ele.text.strip() for ele in wpn_name]
-            #
-            #     attack_val = row.find('div', attrs={"data-key": "attack"})
-            #     attack_val = [ele.text.strip() for ele in attack_val]
-            #
-            #     element = row.find_all('img')[-1]['src']
-            #     element_val = ""
-            #
-            #     if "Element" in element:
-            #         element = elementset.get(element.split("Type", 1)[1].split(".png")[0])
-            #         element_val = row.find('span', attrs={"data-key": "elementAttack"})
-            #         element_val = [ele.text.strip() for ele in element_val]
-            #     else:
-            #         element = ""
-            #
-            #     songs = row.find_all('div', attrs={"class": "columns-3"})
-            #     songs = [ele.text.strip() for ele in songs]
-            #
-            #     rarity = row.find_all('small')[-1]
-            #     rarity_val = [ele.text.strip() for ele in rarity]
-            #
-            #     print(wpn_name, attack_val, element, element_val, songs, rarity_val)
-            # print(data)
+        # table_body = table.find('tbody')
+        # rows = table_body.find_all('tr')
 
-        if wpn_id == 7 or wpn_id == 8 or wpn_id == 9:  # gunlance/switch axe/charge blade section needs to have phial type and level
-            print("ok")
-            # for row in rows:
-            #     wpn_name = row.find('a')
-            #     wpn_name = [ele.text.strip() for ele in wpn_name]
-            #
-            #     attack_val = row.find('div', attrs={"data-key": "attack"})
-            #     attack_val = [ele.text.strip() for ele in attack_val]
-            #
-            #     element = row.find_all('img')[-1]['src']
-            #     element_val = ""
-            #
-            #     if "Element" in element:
-            #         element = elementset.get(element.split("Type", 1)[1].split(".png")[0])
-            #         element_val = row.find('span', attrs={"data-key": "elementAttack"})
-            #         element_val = [ele.text.strip() for ele in element_val]
-            #     else:
-            #         element = ""
-            #
-            #     phial_type = row.find_all('div', attrs={"class": "columns-3"})
-            #     phial_type = [ele.text.strip() for ele in phial_type]
-            #
-            #     rarity = row.find_all('small')[-1]
-            #     rarity_val = [ele.text.strip() for ele in rarity]
-            #
-            #     print(wpn_name, attack_val, element, element_val, phial_type, rarity_val)
+        elementset = {
+            "1": "Fire",
+            "2": "Water",
+            "3": "Thunder",
+            "4": "Ice",
+            "5": "Dragon",
+            "6": "Poison",
+            "7": "Sleep",
+            "8": "Paralysis",
+            "9": "Blast"
+        }
 
-        if wpn_id == 10:  # insect glaive section needs to have kinsect level
-            print("ok")
-            # for row in rows:
-            #     wpn_name = row.find('a')
-            #     wpn_name = [ele.text.strip() for ele in wpn_name]
-            #
-            #     attack_val = row.find('div', attrs={"data-key": "attack"})
-            #     attack_val = [ele.text.strip() for ele in attack_val]
-            #
-            #     element = row.find_all('img')[-1]['src']
-            #     element_val = ""
-            #
-            #     if "Element" in element:
-            #         element = elementset.get(element.split("Type", 1)[1].split(".png")[0])
-            #         element_val = row.find('span', attrs={"data-key": "elementAttack"})
-            #         element_val = [ele.text.strip() for ele in element_val]
-            #     else:
-            #         element = ""
-            #
-            #     kinsect_lvl = row.find_all('div', attrs={"class": "columns-3"})
-            #     kinsect_lvl = [ele.text.strip() for ele in kinsect_lvl]
-            #
-            #     rarity = row.find_all('small')[-1]
-            #     rarity_val = [ele.text.strip() for ele in rarity]
-            #
-            #     print(wpn_name, attack_val, element, element_val, kinsect_lvl, rarity_val)
+        for weapon in find_weapons:
 
-        if wpn_id == 11:  # bow section
-            for row in rows:
-                wpn_name = row.find('a')
-                wpn_name = wpn_name.text.strip()
+            weapon_img = weapon.find_all("td")[0].find_all("img")[0]["src"]
+            # print(weapon_img)
+            weapon_name = weapon.find_all("td")[1].find("a").text
+            # print(weapon_name)
+            weapon_url = weapon.find_all("td")[1].find("a")["href"]
+            print(weapon_url)
+            weapon_id = weapon_url.split("weapons/")[1]
+            # print(weapon_id)
+            find_deco_slots = weapon.find_all("td")[2].find_all("div")[0].find_all("img")
+            deco_slots = []
+            for deco in find_deco_slots:
+                # print(deco)
+                deco_slots.append(deco["src"].split("ui/")[1].split(".")[0])
+            # print(deco_slots)
 
-                attack_val = row.find('div', attrs={"data-key": "attack"})
-                attack_val = attack_val.text.strip()
+            find_rampage_slots = weapon.find_all("td")[2].find_all("div")[1].find_all("img")
+            # print(find_rampage_slots)
+            rampage_slots = []
 
-                element = row.find_all('img')[-1]['src']
-                element_val = ""
+            for rampage in find_rampage_slots:
+                rampage_slots.append(rampage["src"].split("ui/")[1].split(".")[0])
+            # print(rampage_slots)
 
-                if "Element" in element:
-                    element = elementset.get(element.split("Type", 1)[1].split(".png")[0])
-                    element_val = row.find('span', attrs={"data-key": "elementAttack"})
-                    element_val = element_val.text.strip()
-                else:
-                    element = ""
+            attack_val = weapon.find_all("td")[3].find("div").text
+            # print(attack_val)
 
-                arc_shot = row.find_all('div', attrs={"class": "text-green-500"})[0]
-                arc_shot = arc_shot.text.strip()
+            additional_property = weapon.find_all("td")[4].find("div")
+            # print(additional_property.text.strip())
+            if additional_property is not None and "Defense" in additional_property.text.strip():
+                additional_property = additional_property.text.strip()
+                # print(defense_bonus.text.strip())
+                # defense_bonus = additional_property.text
+            
+            elif additional_property is not None and "Affinity" in additional_property.text.strip():
+                additional_property = additional_property.text.strip()
+            
+            print(additional_property)
 
-                arrow_lvl = row.find_all('small')[3]  # need to remove the arc shot part from the array
-                arrow_lvl = [ele.text.strip() for ele in arrow_lvl]
-                arrow_lvl = arrow_lvl[3:]
-                # arrow_lvl = arrow_lvl[arrow_lvl.index()]
+            elements = []
+            element_val = ""# need to find multiple for weapons with more than one element
+            if weapon.find_all("td")[4].find_all("img") != []:
+                find_element = weapon.find_all("td")[4].find_all("img")
+                ele_count = 0
+                for element in find_element:
+                    # elements.append(element["src"])
+                    print(elementset.get(element["src"].split("Type")[1].split(".png")[0]))
+                    element_val = weapon.find_all("span", attrs={"data-key": "elementAttack"})[ele_count].text
+                    ele_count += 1
+                    print(element_val)
+                # print("khk")
+            # print(element, element_val)
 
-                bow_coatings = row.find_all('div', attrs={"class": "columns-3"})
-                bow_coatings = [ele.text.strip() for ele in bow_coatings]
+            # sharpness_set = {"#BE3843": "Red", "#D3673D": "Orange","#C9B232": "Yellow","#81B034": "Green","#3A58D7": "Blue",
+            #                  "#E2E2E2": "White","#885AEC": "Purple"}
+            
+            sharpness = []
+            handicraft_sharpness = []
+            try:
+                find_base_sharpness = weapon.find_all("td")[5].find_all("svg")[0].find_all("rect")
+                # print(find_base_sharpness)
 
-                rarity = row.find_all('small')[-1]
-                rarity_val = rarity.text.strip()
+                for bar in find_base_sharpness:
+                    # print(bar["width"])
+                    sharpness.append(bar["width"])
+                print(sharpness)
 
-                print(wpn_name, attack_val, element, element_val, arc_shot, arrow_lvl, bow_coatings, rarity_val)
+                find_max_handicraft_sharpness = weapon.find_all("td")[5].find_all("svg")[1].find_all("rect")
+                for bar in find_max_handicraft_sharpness:
+                    # print(bar["width"])
+                    handicraft_sharpness.append(bar["width"])
+                print(handicraft_sharpness)
+            except IndexError:
+                sharpness = []
+                handicraft_sharpness = []
 
-        if wpn_id == 12 or wpn_id == 13:  # hbg and lbg section will come back to it latr since its the only part breaking
-            # print("ok")
-            for row in rows:
-                wpn_name = row.find('a')
-                if wpn_name is not None:
-                    wpn_name = [ele.text.strip() for ele in wpn_name]
-                    print(wpn_name)
+            rarity = weapon.find_all("td")[-1].find("small").text.strip()
+            print(rarity)
+            self.get_weapon_page_details(weapon_url)
+            
+            if wpn_id == 5:  # hunting horn section
+                print("ok")
+                
+                songs = weapon.find_all('div', attrs={"class": "columns-3"})
+                songs = [ele.text.strip().split("\n") for ele in songs]
+                print(songs)
 
-                attack_val = row.find('div', attrs={"data-key": "attack"})
-                if attack_val is not None:
-                    attack_val = [ele.text.strip() for ele in attack_val]
-                    print(attack_val)
-                print(attack_val)
+            if wpn_id == 7: #gunlance section
+                shelling_type = weapon.find('div', attrs={"class": "columns-3"}).text.strip()
+                print(shelling_type)
 
-            #     table = row.find('table')
-            #     ammo = []
-            #     if table is not None:
-            #         gun_info = table.findAll('td')
-            #         for g in gun_info:
-            #             gun_info_info = g.find_all('div')
-            #             if len(gun_info_info) > 0:
-            #                 drr = [gun_info_info[0].text.strip(), gun_info_info[1].text.strip(), gun_info_info[2].text.strip()]
-            #                 # print(deviation[0])
-            #                 print(drr)
-            #             ammo_info = g.find_all('table')
+            if wpn_id == 8 or wpn_id == 9: # switch axe and charge blade section
+                phial_type = weapon.find('div', attrs={"class": "columns-3"}).text.strip()
+                print(phial_type)
 
-            #             if len(ammo_info) > 0:
-            #                 # print([ammo_info[0].text.strip().replace("\n", "")])
-            #                 ammo += [ammo_info[0].text.strip().replace("\n", "")]
-            #                 print(ammo)
-            #     # deviation = gun_info.find_all('td')
-            #     # print(gun_info)
-            #     # print(deviation)
-            #     # if deviation is not None:
-            #     #     print([ele.text.strip() for ele in deviation])
+            if wpn_id == 10:
+                kinsect_level = weapon.find('div', attrs={"class": "columns-3"}).text.strip()
+                print(kinsect_level)
 
-            #     rarity_val = row.find_all('small')
-            #     # print(rarity_val.text)
-            #     if rarity_val is not None:
-            #         rarity_val = [ele.text.strip() for ele in rarity_val]
-            # print(wpn_name)
+            if wpn_id == 11:
+                arc_shot_type = weapon.find_all("td")[5].find_all("div")[0].text.strip()
+                charge_shot_levels = weapon.find_all("td")[5].find_all("div", attrs = {"class": None})
+                # print(charge_shot_levels)
+                levels = []
+                # for level in charge_shot_levels:
+                #     if "class" in level:
+                #         print(level)
+                charge_shot_levels = [ele.text.strip() for ele in charge_shot_levels]
+                coatings = weapon.find_all("td")[6].find_all("div", attrs = {"class": ""})
+                coatings = [ele.text.strip() for ele in coatings]
+                print(arc_shot_type)
+                print(charge_shot_levels)
+                print(coatings)
+
+            if wpn_id == 12 or wpn_id == 13:
+                bowgun_stats = weapon.find_all("td")[5].find_all("div")
+                bowgun_stats = [ele.text.strip() for ele in bowgun_stats]
+                print(bowgun_stats)
+
+               
+        # if wpn_id == 7 or wpn_id == 8 or wpn_id == 9:  # gunlance/switch axe/charge blade section needs to have phial type and level
+        #     print("ok")
+        #     # for row in rows:
+        #     #     wpn_name = row.find('a')
+        #     #     wpn_name = [ele.text.strip() for ele in wpn_name]
+        #     #
+        #     #     attack_val = row.find('div', attrs={"data-key": "attack"})
+        #     #     attack_val = [ele.text.strip() for ele in attack_val]
+        #     #
+        #     #     element = row.find_all('img')[-1]['src']
+        #     #     element_val = ""
+        #     #
+        #     #     if "Element" in element:
+        #     #         element = elementset.get(element.split("Type", 1)[1].split(".png")[0])
+        #     #         element_val = row.find('span', attrs={"data-key": "elementAttack"})
+        #     #         element_val = [ele.text.strip() for ele in element_val]
+        #     #     else:
+        #     #         element = ""
+        #     #
+        #     #     phial_type = row.find_all('div', attrs={"class": "columns-3"})
+        #     #     phial_type = [ele.text.strip() for ele in phial_type]
+        #     #
+        #     #     rarity = row.find_all('small')[-1]
+        #     #     rarity_val = [ele.text.strip() for ele in rarity]
+        #     #
+        #     #     print(wpn_name, attack_val, element, element_val, phial_type, rarity_val)
+
+        # if wpn_id == 10:  # insect glaive section needs to have kinsect level
+        #     print("ok")
+        #     # for row in rows:
+        #     #     wpn_name = row.find('a')
+        #     #     wpn_name = [ele.text.strip() for ele in wpn_name]
+        #     #
+        #     #     attack_val = row.find('div', attrs={"data-key": "attack"})
+        #     #     attack_val = [ele.text.strip() for ele in attack_val]
+        #     #
+        #     #     element = row.find_all('img')[-1]['src']
+        #     #     element_val = ""
+        #     #
+        #     #     if "Element" in element:
+        #     #         element = elementset.get(element.split("Type", 1)[1].split(".png")[0])
+        #     #         element_val = row.find('span', attrs={"data-key": "elementAttack"})
+        #     #         element_val = [ele.text.strip() for ele in element_val]
+        #     #     else:
+        #     #         element = ""
+        #     #
+        #     #     kinsect_lvl = row.find_all('div', attrs={"class": "columns-3"})
+        #     #     kinsect_lvl = [ele.text.strip() for ele in kinsect_lvl]
+        #     #
+        #     #     rarity = row.find_all('small')[-1]
+        #     #     rarity_val = [ele.text.strip() for ele in rarity]
+        #     #
+        #     #     print(wpn_name, attack_val, element, element_val, kinsect_lvl, rarity_val)
+
+        # if wpn_id == 11:  # bow section
+        #     for row in rows:
+        #         wpn_name = row.find('a')
+        #         wpn_name = wpn_name.text.strip()
+
+        #         attack_val = row.find('div', attrs={"data-key": "attack"})
+        #         attack_val = attack_val.text.strip()
+
+        #         element = row.find_all('img')[-1]['src']
+        #         element_val = ""
+
+        #         if "Element" in element:
+        #             element = elementset.get(element.split("Type", 1)[1].split(".png")[0])
+        #             element_val = row.find('span', attrs={"data-key": "elementAttack"})
+        #             element_val = element_val.text.strip()
+        #         else:
+        #             element = ""
+
+        #         arc_shot = row.find_all('div', attrs={"class": "text-green-500"})[0]
+        #         arc_shot = arc_shot.text.strip()
+
+        #         arrow_lvl = row.find_all('small')[3]  # need to remove the arc shot part from the array
+        #         arrow_lvl = [ele.text.strip() for ele in arrow_lvl]
+        #         arrow_lvl = arrow_lvl[3:]
+        #         # arrow_lvl = arrow_lvl[arrow_lvl.index()]
+
+        #         bow_coatings = row.find_all('div', attrs={"class": "columns-3"})
+        #         bow_coatings = [ele.text.strip() for ele in bow_coatings]
+
+        #         rarity = row.find_all('small')[-1]
+        #         rarity_val = rarity.text.strip()
+
+        #         print(wpn_name, attack_val, element, element_val, arc_shot, arrow_lvl, bow_coatings, rarity_val)
+
+        # if wpn_id == 12 or wpn_id == 13:  # hbg and lbg section will come back to it latr since its the only part breaking
+        #     # print("ok")
+        #     for row in rows:
+        #         wpn_name = row.find('a')
+        #         if wpn_name is not None:
+        #             wpn_name = [ele.text.strip() for ele in wpn_name]
+        #             print(wpn_name)
+
+        #         attack_val = row.find('div', attrs={"data-key": "attack"})
+        #         if attack_val is not None:
+        #             attack_val = [ele.text.strip() for ele in attack_val]
+        #             print(attack_val)
+        #         print(attack_val)
+
+        #     #     table = row.find('table')
+        #     #     ammo = []
+        #     #     if table is not None:
+        #     #         gun_info = table.findAll('td')
+        #     #         for g in gun_info:
+        #     #             gun_info_info = g.find_all('div')
+        #     #             if len(gun_info_info) > 0:
+        #     #                 drr = [gun_info_info[0].text.strip(), gun_info_info[1].text.strip(), gun_info_info[2].text.strip()]
+        #     #                 # print(deviation[0])
+        #     #                 print(drr)
+        #     #             ammo_info = g.find_all('table')
+
+        #     #             if len(ammo_info) > 0:
+        #     #                 # print([ammo_info[0].text.strip().replace("\n", "")])
+        #     #                 ammo += [ammo_info[0].text.strip().replace("\n", "")]
+        #     #                 print(ammo)
+        #     #     # deviation = gun_info.find_all('td')
+        #     #     # print(gun_info)
+        #     #     # print(deviation)
+        #     #     # if deviation is not None:
+        #     #     #     print([ele.text.strip() for ele in deviation])
+
+        #     #     rarity_val = row.find_all('small')
+        #     #     # print(rarity_val.text)
+        #     #     if rarity_val is not None:
+        #     #         rarity_val = [ele.text.strip() for ele in rarity_val]
+        #     # print(wpn_name)
+
+    def get_weapon_page_details(self, weapon_url):
+        session = requests.Session()
+        r = session.get(weapon_url, headers=headers)
+        soup = BeautifulSoup(r.content, "html.parser")
+        weapon_description = soup.find("header", attrs = {"class": "mb-9 space-y-1"}).find_all("p")[-1].text
+        print(weapon_description)
+        try:
+            detailed_weapon_img_url = soup.find("a", attrs = {"target": "_blank"})["href"]
+            print(detailed_weapon_img_url)
+        except TypeError:
+            detailed_weapon_img_url = None
+        find_rampage_augments = soup.find_all("tbody")[0].find_all("td")[-1].find_all("a")
+        # print(find_rampage_augments)
+        rampage_augments = []
+        for augment in find_rampage_augments:
+            rampage_augments.append(augment.text.strip())
+        print(rampage_augments)
+
+        find_forging_materials = soup.find_all("div", attrs = {"class": "basis-1/2"})[0].find_all("tr")
+        forging_materials = []
+
+        for material in find_forging_materials:
+            item_id = material.find_all("td")[0].find("a")["href"].split("items/")[1]
+            # print(item_id)
+            quantity = material.find_all("td")[1].text.strip()
+            # print(quantity)
+            forging_materials.append({"Item ID: ": item_id, "Quantity": quantity})
+        print(forging_materials)
+
+        find_upgrade_materials = soup.find_all("div", attrs = {"class": "basis-1/2"})[1].find_all("tr")
+        upgrade_materials = []
+
+        for material in find_upgrade_materials:
+            item_id = material.find_all("td")[0].find("a")["href"].split("items/")[1]
+            # print(item_id)
+            quantity = material.find_all("td")[1].text.strip()
+            # print(quantity)
+            upgrade_materials.append({"Item ID: ": item_id, "Quantity": quantity})
+        print(upgrade_materials)
     
     def get_all_items(self):
         # self.get_consumables()
@@ -790,7 +933,7 @@ class Scraper(object):
         
 # webscrape = Scraper(headers, base_url,mydb)
 webscrape = Scraper(headers, base_url)
-# webscrape.get_all_weapon()
+webscrape.get_all_weapons()
 # webscrape.get_monster()
 # webscrape.get_all_items()
-webscrape.get_skills()
+# webscrape.get_skills()
