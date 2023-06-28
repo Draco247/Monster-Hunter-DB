@@ -14,6 +14,8 @@ public class Monsters {
     private String link;
     private String image_link;
 
+    private String description;
+
     public Monsters() {
     }
 
@@ -48,4 +50,14 @@ public class Monsters {
     public void setImage_link(String image_link) {
         this.image_link = image_link;
     }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }
+
+

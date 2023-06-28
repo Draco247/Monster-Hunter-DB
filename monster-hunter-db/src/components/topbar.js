@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Sidebar } from './sidebar';
 import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -8,6 +9,9 @@ import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
+import {useState} from "react";
+import { Menu, MenuItem} from "@mui/material";
+import { Link } from 'react-router-dom';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -52,6 +56,18 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function SearchAppBar() {
+    const [sidebar, setSidebar] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
+
+    const toggleSidebar = (event) => {
+        setAnchorEl(event.currentTarget);
+        setSidebar(!sidebar);
+    };
+
+    const handleCloseSidebar = () => {
+        setSidebar(false);
+    };
+
     return (
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static">
@@ -62,6 +78,7 @@ export default function SearchAppBar() {
                         color="inherit"
                         aria-label="open drawer"
                         sx={{ mr: 2 }}
+                        onClick={toggleSidebar}
                     >
                         <MenuIcon />
                     </IconButton>
@@ -84,6 +101,24 @@ export default function SearchAppBar() {
                     </Search>
                 </Toolbar>
             </AppBar>
+            <Menu
+                anchorEl={anchorEl}
+                open={sidebar}
+                onClose={toggleSidebar}
+            >
+                {Sidebar.map((item, index) => (
+                    <MenuItem
+                        key={index}
+                        onClick={toggleSidebar}
+
+                    >
+                        <Link to={item.path} style={{ textDecoration: 'none', color: 'inherit' }}>
+                            {item.title}
+                        </Link>
+                    </MenuItem>
+                ))}
+            </Menu>
         </Box>
     );
+
 }

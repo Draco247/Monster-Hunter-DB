@@ -67,12 +67,7 @@ class Scraper(object):
             # print(link)
             # print(monster_img)
             print(monster_id)
-            sql = "INSERT INTO monsters (name, link, image_link, monster_id) VALUES (%s,%s,%s,%s)"
-            val = ([monster_name,link,monster_img, monster_id])
-            mycursor = mydb.cursor()
-            # print(mycursor)
-            mycursor.execute(sql,val)
-            # print(mycursor)
+
             
             # response = requests.get(monster_img)
             # image = Image.open(BytesIO(response.content))
@@ -80,7 +75,24 @@ class Scraper(object):
             session = requests.Session()
             r = session.get(link, headers=headers)
             soup = BeautifulSoup(r.content, "html.parser")
-            print(self.get_monster_details(soup, monster_id, monster_type))
+            monster_description = soup.find("header", attrs={"class": "mb-9 space-y-1"}).find_all("p")[1].text
+            mycursor = mydb.cursor()
+            mycursor.execute("SELECT COUNT(*) from monsters WHERE monster_id = %s", [monster_id])
+            exists = mycursor.fetchall()
+            if exists[0][0] == 0:
+                # print("fefeg")
+                sql = "INSERT INTO monsters (name, link, image_link, monster_id, description, monster_size) VALUES (%s,%s,%s,%s,%s,%s)"
+                val = ([monster_name,link,monster_img, monster_id, monster_description, monster_type])
+                mycursor = mydb.cursor()
+                # print(mycursor)
+                mycursor.execute(sql,val)
+                # print(mycursor)
+                print(self.get_monster_details(soup, monster_id, monster_type))
+
+            else:
+                self.get_monster_details(soup, monster_id, monster_type)
+
+
             # if monster_name == "Gold Rathian":
             #     print(monster_name)
                 
@@ -94,7 +106,7 @@ class Scraper(object):
         # drops = []
         # get_drops = self.get_monster_drops(soup, drops)
         quests = []
-        get_quests = self.get_monster_quests(soup,quests, monster_id)
+        self.get_monster_quests(soup,quests, monster_id)
         
         # print(hitzones)
         # print(drops)
@@ -151,6 +163,7 @@ class Scraper(object):
     def get_monster_quests(self, soup, quests, monster_id):
         quest_table = soup.find_all("table")[4]
         rows = quest_table.find_all("tr")
+        print(f"Num Quests = {len(rows)}")
         # count = 1
         for row in rows:
             quest_name = row.find("a").text
@@ -224,6 +237,7 @@ class Scraper(object):
             print(exists[0][0])
             rewards = json.dumps(rewards)
             print(rewards)
+            print(quest_link)
             if exists[0][0] == 0:
                 print("fefeg")
                 # sql = "INSERT INTO quests (quest_id, quest_name, quest_url, objective, HRP, MRP, failure_conditions, mini_crown, king_crown, rewards) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
@@ -238,6 +252,18 @@ class Scraper(object):
                 mycursor = mydb.cursor()
                 mycursor.execute(sql,val)
                 print(mycursor)
+            else:
+                mycursor = mydb.cursor(buffered=True)
+
+                mycursor.execute("SELECT COUNT(*) from quest_monsters WHERE quest_id = %s and monster_id = %s", [quest_id, monster_id])
+                exists = mycursor.fetchall()
+                if exists[0][0] == 0:
+                    sql = "INSERT INTO quest_monsters (quest_id, monster_id) VALUES (%s,%s)"
+                    val = ([quest_id, monster_id])
+                    mycursor = mydb.cursor()
+                    mycursor.execute(sql,val)
+                    print(mycursor)
+
         return quests
 
 
