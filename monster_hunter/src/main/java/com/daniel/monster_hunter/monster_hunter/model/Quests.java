@@ -1,14 +1,30 @@
 package com.daniel.monster_hunter.monster_hunter.model;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 @Entity
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "quests")
 public class Quests {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int quest_id;
+    @Column(name = "quest_id")
+    private Long id;
+
     private String quest_name;
     private String quest_url;
     private String objective;
@@ -16,62 +32,14 @@ public class Quests {
     private String MRP;
     private String failure_conditions;
 
-    public Quests() {
-    }
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            })
+    @JoinTable(name = "quest_monsters",
+            joinColumns = { @JoinColumn(name = "quest_id") },
+            inverseJoinColumns = { @JoinColumn(name = "monster_id") })
+    private Set<Monsters> monsters = new HashSet<>();
 
-    public int getQuest_id() {
-        return quest_id;
-    }
-
-    public void setQuest_id(int quest_id) {
-        this.quest_id = quest_id;
-    }
-
-    public String getQuest_name() {
-        return quest_name;
-    }
-
-    public void setQuest_name(String quest_name) {
-        this.quest_name = quest_name;
-    }
-
-    public String getQuest_url() {
-        return quest_url;
-    }
-
-    public void setQuest_url(String quest_url) {
-        this.quest_url = quest_url;
-    }
-
-    public String getObjective() {
-        return objective;
-    }
-
-    public void setObjective(String objective) {
-        this.objective = objective;
-    }
-
-    public String getHRP() {
-        return HRP;
-    }
-
-    public void setHRP(String HRP) {
-        this.HRP = HRP;
-    }
-
-    public String getMRP() {
-        return MRP;
-    }
-
-    public void setMRP(String MRP) {
-        this.MRP = MRP;
-    }
-
-    public String getFailure_conditions() {
-        return failure_conditions;
-    }
-
-    public void setFailure_conditions(String failure_conditions) {
-        this.failure_conditions = failure_conditions;
-    }
 }
