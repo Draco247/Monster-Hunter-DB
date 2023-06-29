@@ -18,38 +18,20 @@ import java.util.Set;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "monsters")
-public class Monsters {
+@Table(name = "items")
+public class Items {
     @Id
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "monster_id")
+    @Column(name = "item_id")
     private Long id;
-    private String name;
-    private String link;
-    private String image_link;
-
-    private String description;
 
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {
                     CascadeType.PERSIST,
                     CascadeType.MERGE
             },
-            mappedBy = "monsters")
+            mappedBy = "items")
     @JsonIgnore
-    private Set<Quests> quests = new HashSet<>();
-
-    @ManyToMany(fetch = FetchType.LAZY,
-            cascade = {
-                    CascadeType.PERSIST,
-                    CascadeType.MERGE
-            })
-    @JoinTable(name = "monster_items",
-            joinColumns = { @JoinColumn(name = "monster_id") },
-            inverseJoinColumns = { @JoinColumn(name = "item_id") })
-    private Set<Items> items = new HashSet<>();
-
+    private Set<Monsters> monsters = new HashSet<>();
 }
-
-

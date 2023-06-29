@@ -1,8 +1,10 @@
 package com.daniel.monster_hunter.monster_hunter.controller;
 
+import com.daniel.monster_hunter.monster_hunter.model.Items;
 import com.daniel.monster_hunter.monster_hunter.model.Monsters;
 import com.daniel.monster_hunter.monster_hunter.model.Quests;
 //import com.daniel.monster_hunter.monster_hunter.model.Quests_Monsters;
+import com.daniel.monster_hunter.monster_hunter.repository.ItemRepository;
 import com.daniel.monster_hunter.monster_hunter.repository.MonsterRepository;
 import com.daniel.monster_hunter.monster_hunter.repository.QuestRepository;
 import com.daniel.monster_hunter.monster_hunter.service.MonsterService;
@@ -26,6 +28,9 @@ public class MonsterController {
     private MonsterRepository monsterRepository;
 
     @Autowired
+    private ItemRepository itemRepository;
+
+    @Autowired
     private QuestRepository questRepository;
 
     @GetMapping("/getAll")
@@ -41,6 +46,16 @@ public class MonsterController {
 
         List<Quests> quests = questRepository.findQuestsByMonstersId(monsterId);
         return new ResponseEntity<>(quests, HttpStatus.OK);
+    }
+
+    @GetMapping("/{monsterId}/items")
+    public ResponseEntity<List<Items>> getAllItemsByMonsterId(@PathVariable(value = "monsterId") Long monsterId) {
+//        if (!questRepository.existsById(questId)) {
+//            throw new ResourceNotFoundException("Not found Tag  with id = " + questId);
+//        }
+
+        List<Items> items = itemRepository.findItemsByMonstersId(monsterId);
+        return new ResponseEntity<>(items, HttpStatus.OK);
     }
 //    public List<Monsters> getAllMonsters() {
 //        return monsterService.getMonsters();
