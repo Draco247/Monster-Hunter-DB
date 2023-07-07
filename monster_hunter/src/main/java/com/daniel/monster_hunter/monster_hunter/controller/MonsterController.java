@@ -15,14 +15,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/monsters")
 @CrossOrigin
 public class MonsterController {
-//    @Autowired
-//    private MonsterService monsterService;
+    @Autowired
+    private MonsterService monsterService;
 
     @Autowired
     private MonsterRepository monsterRepository;
@@ -56,6 +57,16 @@ public class MonsterController {
 
         List<Items> items = itemRepository.findItemsByMonstersId(monsterId);
         return new ResponseEntity<>(items, HttpStatus.OK);
+    }
+
+    @GetMapping("/{monsterId}/hitzones")
+    public List<Map<String, Object>> getMonsterHitzones(@PathVariable Long monsterId) {
+        return monsterService.getMonsterHitzones(monsterId);
+    }
+
+    @GetMapping("/{monsterId}/drops")
+    public List<Map<String, Object>> getMonsterDrops(@PathVariable Long monsterId) {
+        return monsterService.getMonsterDrops(monsterId);
     }
 //    public List<Monsters> getAllMonsters() {
 //        return monsterService.getMonsters();

@@ -25,6 +25,10 @@ public class Items {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "item_id")
     private Long id;
+    private String item_name;
+    private String item_description;
+    private String item_url;
+    private String item_img;
 
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {
@@ -34,4 +38,22 @@ public class Items {
             mappedBy = "items")
     @JsonIgnore
     private Set<Monsters> monsters = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            },
+            mappedBy = "forging")
+    @JsonIgnore
+    private Set<Weapons> forging = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            },
+            mappedBy = "upgrade")
+    @JsonIgnore
+    private Set<Weapons> upgrades = new HashSet<>();
 }

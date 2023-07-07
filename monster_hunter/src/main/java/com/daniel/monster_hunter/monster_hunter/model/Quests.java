@@ -31,6 +31,15 @@ public class Quests {
     private String HRP;
     private String MRP;
     private String failure_conditions;
+    @Column(name = "mini_crown" ,columnDefinition = "json")
+    private String mini_crown;
+
+    @Column(name = "king_crown" ,columnDefinition = "json")
+    private String king_crown;
+
+    @Column(name = "rewards" ,columnDefinition = "json")
+    private String rewards;
+
 
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {

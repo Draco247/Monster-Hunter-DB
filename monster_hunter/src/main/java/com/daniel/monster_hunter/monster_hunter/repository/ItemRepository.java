@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface ItemRepository extends JpaRepository<Items,Long> {
     List<Items> findItemsByMonstersId(Long monsterId);
+//    List<Items> findItemsByWeaponsId(Long weaponId);
 }

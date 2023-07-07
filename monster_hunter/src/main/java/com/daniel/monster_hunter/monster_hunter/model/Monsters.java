@@ -30,6 +30,12 @@ public class Monsters {
     private String image_link;
 
     private String description;
+    private String monster_size;
+    @Column(name = "hitzones" ,columnDefinition = "json")
+    private String hitzones;
+
+    @Column(name = "drops" ,columnDefinition = "json")
+    private String drops;
 
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {

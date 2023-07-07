@@ -5,19 +5,21 @@ import com.daniel.monster_hunter.monster_hunter.model.Quests;
 //import com.daniel.monster_hunter.monster_hunter.model.Quests_Monsters;
 import com.daniel.monster_hunter.monster_hunter.repository.MonsterRepository;
 import com.daniel.monster_hunter.monster_hunter.repository.QuestRepository;
+import com.daniel.monster_hunter.monster_hunter.service.QuestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/quests")
 @CrossOrigin
 public class QuestController {
-//    @Autowired
-//    private QuestService questService;
+    @Autowired
+    private QuestService questService;
 
     @Autowired
     private MonsterRepository monsterRepository;
@@ -42,23 +44,19 @@ public class QuestController {
         List<Monsters> monsters = monsterRepository.findMonstersByQuestsId(questId);
         return new ResponseEntity<>(monsters, HttpStatus.OK);
     }
-//    public List<Monsters> getMonstersForQuest(Long quest_id) {
-//        Quests quests = questRepository.findById(quest_id);
-//        if (quests != null) {
-//            List<Quests_Monsters> questMonsters = quests.getQuestMonsters();
-//            return questMonsters.stream()
-//                    .map(Quests_Monsters::getMonsters)
-//                    .collect(Collectors.toList());
-//        }
-//        return Collections.emptyList();
-//    }
 
-//    public List<Monsters> getAllMonstersByQuestId(@PathVariable(value = "quest_id") Long quest_id) {
-////        if (!questRepository.existsById(Math.toIntExact(quest_id))) {
-////            throw new ResourceNotFoundException("Not found Tag  with id = " + tagId);
-////        }
-//
-//        List<Monsters> monsters = MonsterRepository.findMonstersByQuestsId(quest_id);
-//        return monsters;
-//    }
+    @GetMapping("/{questId}/mini_crown")
+    public List<Map<String, Object>> getQuestMini_Crown(@PathVariable Long questId) {
+        return questService.getQuestMini_Crown(questId);
+    }
+
+    @GetMapping("/{questId}/king_crown")
+    public List<Map<String, Object>> getQuestKing_Crown(@PathVariable Long questId) {
+        return questService.getQuestKing_Crown(questId);
+    }
+
+    @GetMapping("/{questId}/rewards")
+    public List<Map<String, Object>> getQuestRewards(@PathVariable Long questId) {
+        return questService.getQuestRewards(questId);
+    }
 }
