@@ -13,10 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/monsters")
@@ -37,6 +36,11 @@ public class MonsterController {
     @GetMapping("/getAll")
     public List<Monsters> getAllMonsters() {
         return monsterRepository.findAll();
+    }
+
+    @GetMapping("/{monsterId}")
+    public Optional<Monsters> getMonsterById(@PathVariable(value = "monsterId") Long monsterId) {
+        return monsterRepository.findById(monsterId);
     }
 
     @GetMapping("/{monsterId}/quests")
@@ -68,6 +72,7 @@ public class MonsterController {
     public List<Map<String, Object>> getMonsterDrops(@PathVariable Long monsterId) {
         return monsterService.getMonsterDrops(monsterId);
     }
+
 //    public List<Monsters> getAllMonsters() {
 //        return monsterService.getMonsters();
 //    }

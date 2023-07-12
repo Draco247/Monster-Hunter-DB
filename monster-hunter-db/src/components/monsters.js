@@ -50,7 +50,7 @@ export default function Monsters() {
                 {monsters.map(monster => (
                     <Grid item xs={12} sm={6} md={4} key={monster.id}>
                         <Box height="100%">
-                            <Link to={`/monsters/${monster.id}`}>
+                            <Link to={`/monsters/${monster.id}`} >
                                 <Card sx={{ height: '100%', maxWidth: 345 }} style={{
                                     ...cardStyle,
                                     ...(hoveredCard === monster.id && hoverStyle),
