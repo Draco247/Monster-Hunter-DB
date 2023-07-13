@@ -9,9 +9,13 @@ import Typography from '@mui/material/Typography';
 import { Grid,Box } from '@mui/material';
 import { Link } from "react-router-dom";
 
-export default function Monsters() {
+export default function Monsters({ searchQuery }) {
     const [monsters, setMonsters] = useState([]);
     const [hoveredCard, setHoveredCard] = useState(null);
+    const filteredMonsters = monsters.filter((monster) =>
+        monster.name.toLowerCase().includes(searchQuery.toLowerCase().trim())
+    );
+    console.log(filteredMonsters);
 
     const handleCardMouseEnter = (id) => {
         setHoveredCard(id);
@@ -47,7 +51,7 @@ export default function Monsters() {
     return (
         <Box display="flex" justifyContent="center">
             <Grid container spacing={2} justifyContent="space-between">
-                {monsters.map(monster => (
+                {filteredMonsters.map(monster => (
                     <Grid item xs={12} sm={6} md={4} key={monster.id}>
                         <Box height="100%">
                             <Link to={`/monsters/${monster.id}`} >

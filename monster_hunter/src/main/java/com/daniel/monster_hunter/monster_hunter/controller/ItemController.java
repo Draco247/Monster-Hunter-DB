@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/items")
@@ -30,6 +31,11 @@ public class ItemController {
     @GetMapping("/getAll")
     public List<Items> getAllItems() {
         return itemRepository.findAll();
+    }
+
+    @GetMapping("/{itemId}")
+    public Optional<Items> getItemById(@PathVariable(value = "itemId") Long itemId) {
+        return itemRepository.findById(itemId);
     }
 
     @GetMapping("/{itemId}/monsters")

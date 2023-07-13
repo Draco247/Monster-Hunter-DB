@@ -22,6 +22,7 @@ export default function Monster() {
     const [monster, setMonster] = useState(null);
     const [monsterquests, setMonsterQuests] = useState(null);
     const [monsterhitzones, setMonsterHitzones] = useState(null);
+    const [monsterdrops, setMonsterDrops] = useState(null);
 
 
     useEffect(() => {
@@ -58,9 +59,21 @@ export default function Monster() {
             }
         };
 
+        const fetchMonsterDrops = async () => {
+            try {
+                const response = await fetch(`http://localhost:8080/api/v1/monsters/${id}/drops`);
+                const data = await response.json();
+                setMonsterDrops(data);
+                console.log(data);
+            } catch (error) {
+                console.error('Error fetching monster drops:', error);
+            }
+        };
+
         fetchMonster();
         fetchMonsterQuests();
         fetchMonsterHitzones()
+        fetchMonsterDrops()
     }, [id]);
 
     // useEffect(() => {
@@ -101,6 +114,10 @@ export default function Monster() {
     }
 
     if (!monsterhitzones) {
+        return <div>Loading...</div>;
+    }
+
+    if (!monsterdrops){
         return <div>Loading...</div>;
     }
 
@@ -184,6 +201,38 @@ export default function Monster() {
                                     <TableCell align="right">{hitzone["thunder hitzone"]}</TableCell>
                                     <TableCell align="right">{hitzone["dragon hitzone"]}</TableCell>
                                     {/*<TableCell align="right">{row.protein}</TableCell>*/}
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </div>
+            <div className="monster-drops">
+                <h2>Monster Drops</h2>
+                <TableContainer component={Paper}>
+                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell align="right">Item Name</TableCell>
+                                <TableCell align="right">Area</TableCell>
+                                <TableCell align="right">Method</TableCell>
+                                <TableCell align="right">Drop Rate</TableCell>
+                                <TableCell align="right">Item Rank</TableCell>
+                                <TableCell align="right">Quantity</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {monsterdrops.map(drop => (
+                                <TableRow
+                                    // key={hitzone.quest_id}
+                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+                                    <TableCell align="right" component="a" href={`/items/${drop["Item id"]}`}>{drop["Item"]}</TableCell>
+                                    <TableCell align="right">{drop["Drop Area"]}</TableCell>
+                                    <TableCell align="right">{drop["Drop Method"]}</TableCell>
+                                    <TableCell align="right">{drop["Drop Rate"]}</TableCell>
+                                    <TableCell align="right">{drop["Item Rank"]}</TableCell>
+                                    <TableCell align="right">{drop["Quantity"]}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

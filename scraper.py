@@ -3,13 +3,13 @@ import urllib.request
 # from PIL import Image
 from bs4 import BeautifulSoup
 import requests
-from requests_html import HTMLSession
+# from requests_html import HTMLSession
 # import pandas as pd
 from io import BytesIO
 import mysql.connector
 import json
 import time
-from selenium import webdriver
+# from selenium import webdriver
 
 headers = ({'User-Agent':
                 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36',
@@ -434,7 +434,7 @@ class Scraper(object):
             results = self.get_all_weapon_details(soup, i, weaponset.get(str(i)))
             all_results += (results,)
             # print(results)
-            # self.save_weapons(i, results)
+            self.save_weapons(i, results)
             mydb.commit()
 
         # need 2 tables 1 for forging materials and another for upgrade materials
@@ -1225,7 +1225,8 @@ class Scraper(object):
 
 webscrape = Scraper(headers, base_url, mydb)
 # webscrape = Scraper(headers, base_url)
-webscrape.get_all_weapons()
+
 # webscrape.get_monsters()
 # webscrape.get_all_items()
+webscrape.get_all_weapons()
 # webscrape.get_skills()

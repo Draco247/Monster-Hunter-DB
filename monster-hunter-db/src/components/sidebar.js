@@ -23,7 +23,7 @@ export const Sidebar = [
     },
     {
         title: "Items",
-        path: "/monsters",
+        path: "/items",
         cName: "nav-text"
     }
 ]

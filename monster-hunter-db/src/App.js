@@ -5,6 +5,8 @@ import MonstersPage from './pages/MonstersPage'
 import MonsterPage from './pages/MonsterPage'
 import SelectWeaponsPage from './pages/SelectWeaponsPage'
 import WeaponsPage from './pages/WeaponsPage'
+import ItemsPage from './pages/ItemsPage'
+import ItemPage from './pages/ItemPage'
 
 import QuestsPage from './pages/QuestsPage'
 // import QuestPage from './pages/QuestPage'
@@ -26,6 +28,8 @@ function App() {
                 {/*<Route path="/quests/:id" element={<QuestPage />}/>*/}
                 <Route path="/weapons" element={<SelectWeaponsPage/>}/>
                 <Route path="/weapons/:id" element={<WeaponsPage/>}/>
+                <Route path="/items" element={<ItemsPage/>}/>
+                <Route path="/items/:id" element={<ItemPage/>}/>
             </Routes>
             {/*<Box m={10}>*/}
             {/*    <Monsters/>*/}

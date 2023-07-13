@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
-import Monsters from "../components/monsters";
+import Items from "../components/items";
 import {Box, TextField} from "@mui/material";
 
-function MonstersPage() {
+function ItemsPage() {
     const [searchValue, setSearchValue] = useState('');
 
     const handleInputChange = (event) => {
@@ -15,8 +15,8 @@ function MonstersPage() {
     };
 
     return (
-        <div className="monsters">
-            <h1>Monsters</h1>
+        <div className="items">
+            <h1>Items</h1>
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                 <Box sx={{ width: 500, maxWidth: '100%' }}>
                     <TextField
@@ -34,10 +34,10 @@ function MonstersPage() {
                 </Box>
             </Box>
             <Box m={10}>
-                <Monsters searchQuery={searchValue} />
+                <Items searchQuery={searchValue}/>
             </Box>
         </div>
     )
 }
 
-export default MonstersPage;
+export default ItemsPage;
