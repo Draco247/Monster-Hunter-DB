@@ -18,7 +18,7 @@ RUN mvn clean package
 # It's important to use OpenJDK 8u191 or above that has container support enabled.
 # https://hub.docker.com/r/adoptopenjdk/openjdk8
 # https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds
-FROM ibm-semeru-runtimes:open-17-jre-centos7
+FROM openjdk:17-jdk-slim
 
 # Copy the jar to the production image from the builder stage.
 COPY --from=build /target/monster_hunter-0.0.1-SNAPSHOT.jar monster_hunter-0.0.1.jar
