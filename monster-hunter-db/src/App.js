@@ -9,11 +9,12 @@ import ItemsPage from './pages/ItemsPage'
 import ItemPage from './pages/ItemPage'
 
 import QuestsPage from './pages/QuestsPage'
-// import QuestPage from './pages/QuestPage'
+import QuestPage from './pages/QuestPage'
 
 import { Box } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route } from'react-router-dom';
 import Monster from "./components/monster";
+import WeaponPage from "./pages/WeaponPage";
 
 
 function App() {
@@ -25,9 +26,10 @@ function App() {
                 <Route path='/monsters' element={<MonstersPage/>}/>
                 <Route path='/quests' element={<QuestsPage/>}/>
                 <Route path="/monsters/:id" element={<MonsterPage />}/>
-                {/*<Route path="/quests/:id" element={<QuestPage />}/>*/}
+                <Route path="/quests/:id" element={<QuestPage />}/>
                 <Route path="/weapons" element={<SelectWeaponsPage/>}/>
                 <Route path="/weapons/:id" element={<WeaponsPage/>}/>
+                <Route path="/weapons/:id/weapons" element={<WeaponPage/>}/>
                 <Route path="/items" element={<ItemsPage/>}/>
                 <Route path="/items/:id" element={<ItemPage/>}/>
             </Routes>

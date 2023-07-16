@@ -41,6 +41,10 @@ public class Weapons {
 
     private String rarity;
 
+    @Column(name = "detailed_img_url")
+    private String detailed_img;
+
+    private String weapon_description;
 
 
     @ManyToMany(fetch = FetchType.LAZY,

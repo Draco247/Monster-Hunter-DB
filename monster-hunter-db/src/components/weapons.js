@@ -20,7 +20,7 @@ export default function Weapons(weaponType) {
     const [weapons, setWeapons] = useState([])
     console.log(weaponType)
     useEffect(() => {
-        fetch(`http://localhost:8080/api/v1/weapons/${weaponType.weaponType}/weapons`)
+        fetch(`${process.env.REACT_APP_react_url}/weapons/${weaponType.weaponType}/weapons`)
             .then(res => res.json())
             .then((result)=> {
                 setWeapons(result);
@@ -58,7 +58,7 @@ export default function Weapons(weaponType) {
                                     src={weapon.weapon_img_url}
                                 />
                             </TableCell>
-                            <TableCell component="a" href = "" scope="row" align="right">
+                            <TableCell component="a" href = {`/weapons/${weapon.id}/weapons`} scope="row" align="right">
                                 {weapon.weapon_name}
                             </TableCell>
                             <TableCell align="right">{weapon.attack}</TableCell>

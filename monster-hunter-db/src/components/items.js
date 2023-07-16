@@ -26,7 +26,7 @@ export default function BasicTable({ searchQuery }) {
     }));
 
     useEffect(() => {
-        fetch("http://localhost:8080/api/v1/items/getAll")
+        fetch(`${process.env.REACT_APP_react_url}/items/getAll`)
             .then(res => res.json())
             .then((result)=> {
                 setItems(result);
@@ -58,39 +58,5 @@ export default function BasicTable({ searchQuery }) {
                 </Grid>
             ))}
         </Grid>
-        // <TableContainer component={Paper}>
-        //     <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        //         <TableHead>
-        //             <TableRow>
-        //                 <TableCell>Item Name</TableCell>
-        //                 {/*<TableCell align="right">Quest</TableCell>*/}
-        //                 {/*<TableCell align="right">Objective</TableCell>*/}
-        //                 {/*<TableCell align="right">HRP</TableCell>*/}
-        //                 {/*<TableCell align="right">MRP</TableCell>*/}
-        //             </TableRow>
-        //         </TableHead>
-        //         <TableBody>
-        //             {items.map(item => (
-        //                 <TableRow
-        //                     key={item.item_id}
-        //                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-        //                 >
-        //                     <TableCell align="right">
-        //                         <Box
-        //                             component="img"
-        //                             sx={{
-        //                                 height: 50,
-        //                                 width: 50,
-        //                             }}
-        //                             alt=""
-        //                             src={item.item_img}
-        //                         />
-        //                         {item.item_name}
-        //                     </TableCell>
-        //                 </TableRow>
-        //             ))}
-        //         </TableBody>
-        //     </Table>
-        // </TableContainer>
     );
 }

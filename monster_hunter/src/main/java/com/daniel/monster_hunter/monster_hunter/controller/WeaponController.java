@@ -1,5 +1,6 @@
 package com.daniel.monster_hunter.monster_hunter.controller;
 
+import com.daniel.monster_hunter.monster_hunter.model.Quests;
 import com.daniel.monster_hunter.monster_hunter.model.Weapons;
 import com.daniel.monster_hunter.monster_hunter.repository.ItemRepository;
 import com.daniel.monster_hunter.monster_hunter.repository.WeaponRepository;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/weapons")
@@ -21,6 +23,11 @@ public class WeaponController {
     @GetMapping("/getAll")
     public List<Weapons> getAllWeapons() {
         return weaponRepository.findAll();
+    }
+
+    @GetMapping("/{weaponId}/weapon")
+    public Optional<Weapons> getWeaponById(@PathVariable(value = "weaponId") Long weaponId) {
+        return weaponRepository.findById(weaponId);
     }
 
     @GetMapping("/{typeId}/weapons")

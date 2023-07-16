@@ -11,7 +11,7 @@ import Paper from '@mui/material/Paper';
 export default function BasicTable() {
     const [quests, setQuests] = useState([]);
     useEffect(() => {
-        fetch("http://localhost:8080/api/v1/quests/getAll")
+        fetch(`${process.env.REACT_APP_react_url}/quests/getAll`)
             .then(res => res.json())
             .then((result)=> {
                 setQuests(result);
@@ -36,8 +36,8 @@ export default function BasicTable() {
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
                             <TableCell align="right">.....</TableCell>
-                            <TableCell component="a" href = "{quest.quest_url}" scope="row" align="right">
-                                {quest.quest_name}
+                            <TableCell component="a" href={`/quests/${quest.id}`} scope="row" align="right">
+                            {quest.quest_name}
                             </TableCell>
                             <TableCell align="right">{quest.objective}</TableCell>
                             <TableCell align="right">{quest.hrp}</TableCell>

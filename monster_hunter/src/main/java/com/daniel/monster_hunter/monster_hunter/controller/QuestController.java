@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/quests")
@@ -34,6 +35,11 @@ public class QuestController {
 //    public List<Quests> getAllQuests() {
 //        return questService.getQuests();
 //    }
+
+    @GetMapping("/{questId}")
+    public Optional<Quests> getQuestById(@PathVariable(value = "questId") Long questId) {
+        return questRepository.findById(questId);
+    }
 
     @GetMapping("/{questId}/monsters")
     public ResponseEntity<List<Monsters>> getAllMonstersByQuestId(@PathVariable(value = "questId") Long questId) {

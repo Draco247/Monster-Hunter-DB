@@ -42,7 +42,7 @@ export default function Monsters({ searchQuery }) {
     };
 
     useEffect(() => {
-        fetch("http://localhost:8080/api/v1/monsters/getAll")
+        fetch(`${process.env.REACT_APP_react_url}/monsters/getAll`)
             .then(res => res.json())
             .then((result)=> {
             setMonsters(result);

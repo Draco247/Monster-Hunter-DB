@@ -10,16 +10,20 @@ import mysql.connector
 import json
 import time
 # from selenium import webdriver
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 headers = ({'User-Agent':
                 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36',
             'Accept-Language': 'en-US, en;q=0.5'})
 base_url = "https://mhrise.kiranico.com/"
 mydb = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="ShadowSlash247",
-    database="monster_hunter"
+    host=os.getenv('MYSQL_HOST'),
+    user=os.getenv('MYSQL_USER'),
+    password=os.getenv('MYSQL_PW'),
+    database=os.getenv('MYSQL_DB')
 )
 
 
@@ -304,6 +308,7 @@ class Scraper(object):
                 # mycursor = mydb.cursor()
                 mycursor.execute(sql, val)
                 # print(mycursor)
+
     def save_weapons(self, i, results):
         print(results)
         # weaponset = {
@@ -447,7 +452,7 @@ class Scraper(object):
 
         ids = [[i[0] for i in item] for item in all_results]
         # # print(results[10])
-        print(ids)
+        # print(ids)
         forging_item_ids = []
         upgrade_item_ids = []
         forging_list = []
@@ -466,7 +471,7 @@ class Scraper(object):
                 # elif json.loads(i[18]) == []:
                 #     print("empty1")
                 #     forging_item_ids.append("")
-                if json.loads(i[19])!= []:
+                if json.loads(i[19]) != []:
                     for j in json.loads(i[19]):
                         print(j.get("Item ID"))
                         print("brger")
@@ -488,7 +493,8 @@ class Scraper(object):
         print(rows)
         for row in rows:
             mycursor = mydb.cursor()
-            mycursor.execute("SELECT COUNT(*) FROM weapon_forging_items WHERE weapon_id = %s AND item_id = %s", [row[0], row[1]])
+            mycursor.execute("SELECT COUNT(*) FROM weapon_forging_items WHERE weapon_id = %s AND item_id = %s",
+                             [row[0], row[1]])
             exists = mycursor.fetchall()[0][0]
             if exists == 0:
                 sql = "INSERT INTO weapon_forging_items (weapon_id, item_id) VALUES (%s, %s)"
@@ -505,7 +511,8 @@ class Scraper(object):
                     rows.append((weapon_id, item_id))
         for row in rows:
             mycursor = mydb.cursor()
-            mycursor.execute("SELECT COUNT(*) FROM weapon_upgrade_items WHERE weapon_id = %s AND item_id = %s", [row[0], row[1]])
+            mycursor.execute("SELECT COUNT(*) FROM weapon_upgrade_items WHERE weapon_id = %s AND item_id = %s",
+                             [row[0], row[1]])
             exists = mycursor.fetchall()[0][0]
             if exists == 0:
                 sql = "INSERT INTO weapon_upgrade_items (weapon_id, item_id) VALUES (%s, %s)"
@@ -514,40 +521,6 @@ class Scraper(object):
         # mycursor.executemany(sql, rows)
         mydb.commit()
 
-        # forging_item_ids = [[[[j.get("Item ID") for j in json.loads(i[18])]] for i in item] for item in all_results]
-        # upgrade_item_ids = [[[j.get("Item ID") for j in json.loads(i[19])] for i in item] for item in all_results]
-        # print(forging_item_ids)
-        # print("jhgjkgk")
-        # print(upgrade_item_ids)
-        # print("rfefw")
-        # #
-        # # mycursor = mydb.cursor(buffered=True)
-        # for i in range(len(ids)):
-        #     # print(ids[i])
-        #     for j in range(len(forging_item_ids)):
-        #         print(ids[i], forging_item_ids[j])
-        # data1 = [(ids[i], forging_item_ids[i]) for i in range(len(forging_item_ids))]
-        # transformed_data1 = [(weapon_id, item_id) for weapon_id, item_ids in data1 for item_id in item_ids]
-        # # Prepare the data for insertion
-        # data = [(weapon_id, item_id) for weapon_id, item_ids in transformed_data1 for item_id in item_ids]
-        # print(data)
-        #
-        # # Construct the SQL query
-        # sql = "INSERT INTO weapon_forging_items (weapon_id, item_id) VALUES (%s, %s)"
-        #
-        # # Execute the SQL query using executemany()
-        # mycursor.executemany(sql, data)
-        # data2 = [(ids[i], upgrade_item_ids[i]) for i in range(len(upgrade_item_ids))]
-        # # transformed_data2 = [(weapon_id, item_id) for weapon_id, item_ids in data2 for item_id in item_ids]
-        # # # Prepare the data for insertion
-        # # data = [(weapon_id, item_id) for weapon_id, item_ids in transformed_data2 for item_id in item_ids]
-        # #
-        # # # Construct the SQL query
-        # # sql = "INSERT INTO weapon_upgrading_items (weapon_id, item_id) VALUES (%s, %s)"
-        # #
-        # # # Execute the SQL query using executemany()
-        # # mycursor.executemany(sql, data)
-        # mydb.commit()
     def get_all_weapon_details(self, soup, wpn_id, wpn_type):
         weapons = []
         find_weapons = soup.select("tbody.divide-y > tr")  # used css selector here since html was breaking lbg and hbg
@@ -855,7 +828,7 @@ class Scraper(object):
                 mycursor.execute(sql, item)
             else:
                 sql = "UPDATE items SET item_name = %s, item_url = %s, item_img = %s, item_description = %s WHERE item_id = %s"
-                mycursor.execute(sql, [item[1],item[2],item[3],item[4],item[0]])
+                mycursor.execute(sql, [item[1], item[2], item[3], item[4], item[0]])
         mydb.commit()
         # sql = "INSERT INTO items (item_id, item_name,item_url,item_img,item_description) VALUES (%s, %s, %s, %s, %s)"
         # mycursor.executemany(sql, items)
@@ -911,20 +884,19 @@ class Scraper(object):
             print(item_id)
             materials.append((item_id, item_name, item_url, item_img, item_description))
         return materials
-            # print(item_page.find("div", attrs={"basis-1/2"}))
-            # if item_page.find("div", attrs={"basis-1/2"}) is not None:
-            #     for section in item_page.find_all("div", attrs={"basis-1/2"}):
-            #         if section.find("h2").text.strip() == "Locale":
-            #             print("rrhehr")
-            #             rows = section.find_all("tr")
-            #             for row in rows:
-            #                 map = row.find_all("td")[0].text.strip()
-            #                 quest_level = row.find_all("td")[1].text.strip()
-            #                 quantity = row.find_all("td")[2].text.strip()
-            #                 chance = row.find_all("td")[3].text.strip()
-            #
-            #                 print(map, quest_level, quantity, chance)
-
+        # print(item_page.find("div", attrs={"basis-1/2"}))
+        # if item_page.find("div", attrs={"basis-1/2"}) is not None:
+        #     for section in item_page.find_all("div", attrs={"basis-1/2"}):
+        #         if section.find("h2").text.strip() == "Locale":
+        #             print("rrhehr")
+        #             rows = section.find_all("tr")
+        #             for row in rows:
+        #                 map = row.find_all("td")[0].text.strip()
+        #                 quest_level = row.find_all("td")[1].text.strip()
+        #                 quantity = row.find_all("td")[2].text.strip()
+        #                 chance = row.find_all("td")[3].text.strip()
+        #
+        #                 print(map, quest_level, quantity, chance)
 
     def get_scraps(self):
         scraps_url = f"{base_url}data/items?view=scrap"
@@ -1222,11 +1194,161 @@ class Scraper(object):
 
             print(ingredients)
 
+    def get_all_armour(self):
+        armours = []
+        for i in range(0, 10):
+            url = f"{base_url}data/armors?view={i}"
+            session = requests.Session()
+            r = session.get(url, headers=headers)
+            soup = BeautifulSoup(r.content, "html.parser")
+            all_armour = soup.find_all("tr")
+            for armour in all_armour:
+                # print(armour)
+
+                rarity = str(i+1)
+                armour_id = armour.find("a")["href"].split("armors/")[1]
+                print(armour_id)
+                armour_name = armour.find("a").text
+                print(armour_name)
+                armour_url = armour.find("a")["href"]
+                print(armour_url)
+                m_armour_img_url = armour.find_all("img")[0]["src"]
+                f_armour_img_url = armour.find_all("img")[1]["src"]
+                # print(m_armour_img_url)
+                # print(f_armour_img_url)
+                find_deco_slots = armour.find_all("td")[3].find_all("img")
+                deco_slots = []
+                for deco in find_deco_slots:
+                    # print(deco)
+                    deco_slots.append(deco["src"].split("ui/")[1].split(".")[0])
+                deco_slots = json.dumps(deco_slots)
+                # print(deco_slots)
+
+                defense = armour.find_all("td")[4].find("div").text
+                # print(defense)
+                fire_res = armour.find_all("td")[4].find_all("div")[1].find("span",
+                                                                            attrs={"data-key": "elementAttack"}).text
+                # print(fire_res)
+                water_res = armour.find_all("td")[4].find_all("div")[2].find("span",
+                                                                             attrs={"data-key": "elementAttack"}).text
+                # print(water_res)
+                ice_res = armour.find_all("td")[5].find_all("div")[0].find("span",
+                                                                           attrs={"data-key": "elementAttack"}).text
+                # print(ice_res)
+                thunder_res = armour.find_all("td")[5].find_all("div")[1].find("span",
+                                                                               attrs={"data-key": "elementAttack"}).text
+                # print(thunder_res)
+                dragon_res = armour.find_all("td")[5].find_all("div")[2].find("span",
+                                                                              attrs={"data-key": "elementAttack"}).text
+                # print(dragon_res)
+
+                find_armour_skills = armour.find_all("td")[-1].find_all("div")
+                armour_skills = []
+                for skill in find_armour_skills:
+                    skill_id = skill.find("a")["href"].split("skills/")[1]
+                    skill_name = skill.find("a").text
+                    skill_lvl = skill.contents[1].strip()
+                    # print(skill_id)
+                    # print(skill_lvl)
+                    armour_skills.append({"skill_id": skill_id, "skill_name": skill_name, "lvl": skill_lvl})
+                armour_skills = json.dumps(armour_skills)
+                # print(armour_skills)
+
+                armour_description, forging_materials = self.get_armour_details(armour_url)
+                forging_materials = json.dumps(forging_materials)
+                # print(armour_description)
+                # print(forging_materials)
+                armours.append(
+                    (armour_id, armour_name, armour_url, m_armour_img_url, f_armour_img_url, deco_slots,
+                     defense, fire_res, water_res, ice_res, thunder_res, dragon_res, armour_skills,
+                     armour_description, forging_materials, rarity))
+        self.save_armour(armours)
+
+    def get_armour_details(self, armour_url):
+        session = requests.Session()
+        r = session.get(armour_url, headers=headers)
+        soup = BeautifulSoup(r.content, "html.parser")
+        try:
+            armour_description = soup.find("header", attrs={"class": "mb-9 space-y-1"}).find_all("p")[1].text
+        except IndexError:
+            armour_description = ""
+        # print(armour_description)
+        find_forging_materials = soup.find_all("div", attrs={"class": "basis-1/2"})[0].find_all("tr")
+        forging_materials = []
+
+        for material in find_forging_materials:
+            item_id = material.find_all("td")[0].find("a")["href"].split("items/")[1]
+            item_name = material.find_all("td")[0].find("a").text
+            # print(item_id)
+            quantity = material.find_all("td")[1].text.strip()
+            # print(quantity)
+            forging_materials.append({"Item ID": item_id, "Item Name": item_name, "Quantity": quantity})
+        # print(forging_materials)
+
+        return armour_description, forging_materials
+
+    def save_armour(self, armours):
+        print(armours)
+        mycursor = mydb.cursor(buffered=True)
+
+        for armour in armours:
+            mycursor.execute("SELECT COUNT(*) FROM armour WHERE armour_id = %s",
+                             [armour[0]])
+            exists = mycursor.fetchall()[0][0]
+            print(exists)
+            if exists == 0:
+                sql = "INSERT INTO armour (armour_id, armour_name, armour_url, m_armour_img_url, f_armour_img_url, deco_slots, defense," \
+                      " fire_res, water_res, ice_res, thunder_res, dragon_res, armour_skills, armour_description, forging_materials, rarity) VALUES " \
+                      "(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+
+                mycursor.execute(sql, armour)
+        mydb.commit()
+
+        forging_item_ids = []
+        forging_list = []
+        for item in armours:
+            print(item)
+            list3 = []
+            if item[14] != []:
+                for j in json.loads(item[14]):
+                    forging_item_ids.append(j.get("Item ID"))
+                    list3.append(j.get("Item ID"))
+            res1 = {item[0]: list3}
+            forging_list.append(res1)
+        rows = []
+        for dictionary in forging_list:
+            for armour_id, item_ids in dictionary.items():
+                for item_id in item_ids:
+                    rows.append((armour_id, item_id))
+        print(rows)
+        for row in rows:
+            mycursor = mydb.cursor()
+            mycursor.execute("SELECT COUNT(*) FROM armour_items WHERE armour_id = %s AND item_id = %s",
+                             [row[0], row[1]])
+            exists = mycursor.fetchall()[0][0]
+            if exists == 0:
+                sql = "INSERT INTO armour_items (armour_id, item_id) VALUES (%s, %s)"
+                mycursor.execute(sql, row)
+        # sql = "INSERT INTO weapon_forging_items (weapon_id, item_id) VALUES (%s, %s)"
+        #
+        # mycursor.executemany(sql, rows)
+        mydb.commit()
+
+        # if i == 5:
+        #     sql = "INSERT INTO weapons (weapon_id, weapon_type_id, weapon_type_name, weapon_name, weapon_url, weapon_img_url, " \
+        #           "deco_slots, rampage_deco_slots, attack, additional_property, " \
+        #           "element, element_val, base_sharpness, max_sharpness, " \
+        #           "rarity, weapon_description, detailed_img_url," \
+        #           "rampage_augs, forging_mats, upgrade_mats, songs) VALUES (%s,%s," \
+        #           "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s, %s, %s)"
+        #     mycursor.executemany(sql, results)
+
 
 webscrape = Scraper(headers, base_url, mydb)
 # webscrape = Scraper(headers, base_url)
 
 # webscrape.get_monsters()
 # webscrape.get_all_items()
-webscrape.get_all_weapons()
+# webscrape.get_all_weapons()
 # webscrape.get_skills()
+webscrape.get_all_armour()

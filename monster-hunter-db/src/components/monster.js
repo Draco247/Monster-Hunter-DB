@@ -28,7 +28,7 @@ export default function Monster() {
     useEffect(() => {
         const fetchMonster = async () => {
             try {
-                const response = await fetch(`http://localhost:8080/api/v1/monsters/${id}`);
+                const response = await fetch(`${process.env.REACT_APP_react_url}/monsters/${id}`);
                 const data = await response.json();
                 setMonster(data);
                 console.log(data);
@@ -39,7 +39,7 @@ export default function Monster() {
 
         const fetchMonsterQuests = async () => {
             try {
-                const response = await fetch(`http://localhost:8080/api/v1/monsters/${id}/quests`);
+                const response = await fetch(`${process.env.REACT_APP_react_url}/monsters/${id}/quests`);
                 const data = await response.json();
                 setMonsterQuests(data);
                 console.log(data);
@@ -50,7 +50,7 @@ export default function Monster() {
 
         const fetchMonsterHitzones = async () => {
             try {
-                const response = await fetch(`http://localhost:8080/api/v1/monsters/${id}/hitzones`);
+                const response = await fetch(`${process.env.REACT_APP_react_url}/monsters/${id}/hitzones`);
                 const data = await response.json();
                 setMonsterHitzones(data);
                 console.log(data);
@@ -61,7 +61,7 @@ export default function Monster() {
 
         const fetchMonsterDrops = async () => {
             try {
-                const response = await fetch(`http://localhost:8080/api/v1/monsters/${id}/drops`);
+                const response = await fetch(`${process.env.REACT_APP_react_url}/monsters/${id}/drops`);
                 const data = await response.json();
                 setMonsterDrops(data);
                 console.log(data);

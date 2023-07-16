@@ -56,4 +56,13 @@ public class Items {
             mappedBy = "upgrade")
     @JsonIgnore
     private Set<Weapons> upgrades = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            },
+            mappedBy = "forging")
+    @JsonIgnore
+    private Set<Armour> armour_forging = new HashSet<>();
 }
