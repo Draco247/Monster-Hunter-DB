@@ -1,10 +1,13 @@
 package com.daniel.monster_hunter.monster_hunter.controller;
 
+import com.daniel.monster_hunter.monster_hunter.model.Items;
 import com.daniel.monster_hunter.monster_hunter.model.Quests;
 import com.daniel.monster_hunter.monster_hunter.model.Weapons;
 import com.daniel.monster_hunter.monster_hunter.repository.ItemRepository;
 import com.daniel.monster_hunter.monster_hunter.repository.WeaponRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,5 +47,15 @@ public class WeaponController {
     public List<Weapons> getWeaponsByTypeAndElement(@PathVariable Long typeId,
                                                     @RequestParam(value = "element", required = false) String element) {
         return weaponRepository.findByWeapontypeidAndElement(typeId, element);
+    }
+
+    @GetMapping("/{weaponId}/items")
+    public ResponseEntity<List<Items>> getAllForgingItemsByWeaponId(@PathVariable(value = "weaponId") Long weaponId) {
+//        if (!questRepository.existsById(questId)) {
+//            throw new ResourceNotFoundException("Not found Tag  with id = " + questId);
+//        }
+
+        List<Items> items = itemRepository.findItemsByForgingId(weaponId);
+        return new ResponseEntity<>(items, HttpStatus.OK);
     }
 }

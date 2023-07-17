@@ -62,7 +62,7 @@ public class Items {
                     CascadeType.PERSIST,
                     CascadeType.MERGE
             },
-            mappedBy = "forging")
+            mappedBy = "armourforging")
     @JsonIgnore
-    private Set<Armour> armour_forging = new HashSet<>();
+    private Set<Armour> armourforging = new HashSet<>();
 }

@@ -20,10 +20,10 @@ headers = ({'User-Agent':
             'Accept-Language': 'en-US, en;q=0.5'})
 base_url = "https://mhrise.kiranico.com/"
 mydb = mysql.connector.connect(
-    host=os.getenv('MYSQL_HOST'),
-    user=os.getenv('MYSQL_USER'),
-    password=os.getenv('MYSQL_PW'),
-    database=os.getenv('MYSQL_DB')
+    host=os.getenv('DEV_MYSQL_HOST'),
+    user=os.getenv('DEV_MYSQL_USER'),
+    password=os.getenv('DEV_MYSQL_PW'),
+    database=os.getenv('DEV_MYSQL_DB')
 )
 
 
@@ -1001,13 +1001,29 @@ class Scraper(object):
         return room_items
 
     def get_skills(self):
+        # skills = self.get_armour_skills()
+        # print(skills)
         # self.get_armour_skills()
-        # self.get_rampage_skills_and_decorations()
-        # self.get_decorations()
+        # self.get_rampage_decorations()
+        # rampage_skills = self.get_rampage_skills()
+        # print(rampage_skills)
+        # decorations = self.get_decorations()
+        # print(decorations)
+        # switch_skills = self.get_switch_skills()
+        # print(switch_skills)
         # self.get_switch_skills()
+        # dango_skills = self.get_dango_skills()
+        # print(dango_skills)
+        # canteen_dango = self.get_canteen_dango()
+        # print(canteen_dango)
+        # crafting_list = self.get_crafting_list()
+        # print(crafting_list)
+        # self.get_crafting_list()
         # self.get_dango_skills()
         # self.get_canteen_dango()
-        self.get_crafting_list()
+        #   self.get_decorations()
+        #   self.get_rampage_decorations()
+          self.get_rampage_skills()
 
     def get_armour_skills(self):
         armour_skills_url = f"{base_url}data/skills"
@@ -1015,17 +1031,18 @@ class Scraper(object):
         r = session.get(armour_skills_url, headers=headers)
         soup = BeautifulSoup(r.content, "html.parser")
         all_skills = soup.find_all("tr")
-
+        skills = []
         for skill in all_skills:
-            skill_name = skill.find("a", attrs={
+            # print(skill)
+            skill_name = skill.find("p", attrs={
                 "text-sm font-medium text-sky-500 dark:text-sky-400 group-hover:text-sky-900 dark:group-hover:text-sky-300"}).text
-            print(skill_name)
+            # print(skill_name)
             skill_url = skill.find('a')['href']
-            print(skill_url)
+            # print(skill_url)
             skill_id = skill_url.split("skills/")[1]
-            print(skill_id)
+            # print(skill_id)
             skill_description = skill.find("p", attrs={"truncate"}).text
-            print(skill_description)
+            # print(skill_description)
             find_skill_levels = skill.find_all("small")
             skill_levels = []
             for level in find_skill_levels:
@@ -1033,15 +1050,62 @@ class Scraper(object):
                     # print(level.text)
                     skill_levels.append(level.text)
             print(skill_levels)
+            skill_levels = json.dumps(skill_levels)
+            skills.append((skill_id, skill_name, skill_description, skill_levels))
+        mycursor = mydb.cursor(buffered=True)
+
+        for skill in skills:
+            mycursor.execute("SELECT COUNT(*) FROM armour_skills WHERE skill_id = %s",
+                             [skill[0]])
+            exists = mycursor.fetchall()[0][0]
+            print(exists)
+            if exists == 0:
+                sql = "INSERT INTO armour_skills (skill_id, skill_name, skill_description, skill_levels ) VALUES " \
+                      "(%s, %s, %s, %s)"
+
+                mycursor.execute(sql, skill)
+        mydb.commit()
+
+        # forging_item_ids = []
+        # forging_list = []
+        # for item in armours:
+        #     print(item)
+        #     list3 = []
+        #     if item[14] != []:
+        #         for j in json.loads(item[14]):
+        #             forging_item_ids.append(j.get("Item ID"))
+        #             list3.append(j.get("Item ID"))
+        #     res1 = {item[0]: list3}
+        #     forging_list.append(res1)
+        # rows = []
+        # for dictionary in forging_list:
+        #     for armour_id, item_ids in dictionary.items():
+        #         for item_id in item_ids:
+        #             rows.append((armour_id, item_id))
+        # print(rows)
+        # for row in rows:
+        #     mycursor = mydb.cursor()
+        #     mycursor.execute("SELECT COUNT(*) FROM armour_items WHERE armour_id = %s AND item_id = %s",
+        #                      [row[0], row[1]])
+        #     exists = mycursor.fetchall()[0][0]
+        #     if exists == 0:
+        #         sql = "INSERT INTO armour_items (armour_id, item_id) VALUES (%s, %s)"
+        #         mycursor.execute(sql, row)
+        # # sql = "INSERT INTO weapon_forging_items (weapon_id, item_id) VALUES (%s, %s)"
+        # #
+        # # mycursor.executemany(sql, rows)
+        # mydb.commit()
+        # return skills
+
         # for item in all_room_items:
 
-    def get_rampage_skills_and_decorations(self):
+    def get_rampage_skills(self):
         rampage_skills_url = f"{base_url}data/rampage-skills"
         session = requests.Session()
         r = session.get(rampage_skills_url, headers=headers)
         soup = BeautifulSoup(r.content, "html.parser")
         all_rampage_skills = soup.find_all("tr")
-
+        rampage_skills = []
         for rampage_skill in all_rampage_skills:
             skill_name = rampage_skill.find("a").text
             print(skill_name)
@@ -1051,15 +1115,26 @@ class Scraper(object):
             print(skill_id)
             skill_description = rampage_skill.find_all("td")[-1].text
             print(skill_description)
+            rampage_skills.append((skill_id, skill_name, skill_description))
+        # return rampage_skills
+        mycursor = mydb.cursor(buffered=True)
+        for skill in rampage_skills:
+            mycursor.execute("SELECT COUNT(*) FROM rampage_skills WHERE rampage_skill_id = %s",
+                             [skill[0]])
+            exists = mycursor.fetchall()[0][0]
+            if exists == 0:
+                sql = "INSERT INTO rampage_skills (rampage_skill_id, rampage_skill_name, rampage_skill_description) VALUES (%s, %s, %s)"
+
+                mycursor.execute(sql, skill)
+        mydb.commit()
 
     def get_decorations(self):
-        print("gdgeg")
         decorations_url = f"{base_url}data/decorations"
         session = requests.Session()
         r = session.get(decorations_url, headers=headers)
         soup = BeautifulSoup(r.content, "html.parser")
         all_decorations = soup.find_all("tr")
-
+        decorations = []
         for decoration in all_decorations:
             decoration_name = decoration.find_all("a")[0].text
             print(decoration_name)
@@ -1092,6 +1167,53 @@ class Scraper(object):
                 # print(item_name, item_id, quantity)
                 crafting_materials.append({"Item_id": item_id, "Item_name": item_name, "Quantity": quantity})
             print(crafting_materials)
+            crafting_materials = json.dumps(crafting_materials)
+            decorations.append((decoration_id, decoration_name, skill_id, skill_name, skill_description, skill_level,
+                                crafting_materials))
+        # return decorations
+        mycursor = mydb.cursor(buffered=True)
+        for decoration in decorations:
+            mycursor.execute("SELECT COUNT(*) FROM skill_decorations WHERE decoration_id = %s",
+                             [decoration[0]])
+            exists = mycursor.fetchall()[0][0]
+            if exists == 0:
+                sql = "INSERT INTO skill_decorations (decoration_id, decoration_name, skill_id, skill_name, skill_description," \
+                      " skill_level,crafting_materials) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+
+                mycursor.execute(sql, decoration)
+        mydb.commit()
+
+    def get_rampage_decorations(self):
+        decorations_url = f"{base_url}data/rampage-decorations"
+        session = requests.Session()
+        r = session.get(decorations_url, headers=headers)
+        soup = BeautifulSoup(r.content, "html.parser")
+        all_decorations = soup.find_all("tr")
+        rampage_decorations = []
+        for decoration in all_decorations:
+            decoration_name = decoration.find_all("td")[0].text
+            print(decoration_name)
+            try:
+                skill_id = decoration.find("a")["href"].split("skills/")[1]
+                skill_name = decoration.find("a").text
+            except IndexError:
+                skill_id = 0
+                skill_name = ""
+            print(skill_name)
+            skill_description = decoration.find_all("td")[-1].text
+            print(skill_description)
+            rampage_decorations.append((decoration_name, skill_id, skill_name, skill_description))
+        # return rampage_decorations
+        mycursor = mydb.cursor(buffered=True)
+        for decoration in rampage_decorations:
+            mycursor.execute("SELECT COUNT(*) FROM rampage_decorations WHERE rampage_deco_name = %s",
+                             [decoration[0]])
+            exists = mycursor.fetchall()[0][0]
+            if exists == 0:
+                sql = "INSERT INTO rampage_decorations (rampage_deco_name, rampage_deco_skill_id, rampage_deco_skill_name, rampage_deco_skill_description) VALUES (%s, %s, %s, %s)"
+
+                mycursor.execute(sql, decoration)
+        mydb.commit()
 
     def get_switch_skills(self):
         switch_skill_url = f"{base_url}data/switch-actions"
@@ -1099,12 +1221,30 @@ class Scraper(object):
         r = session.get(switch_skill_url, headers=headers)
         soup = BeautifulSoup(r.content, "html.parser")
         all_switch_skills = soup.find_all("tr")
-
+        switch_skills = []
         for switch_skill in all_switch_skills:
             switch_skill_name = switch_skill.find_all("td")[0].text
             print(switch_skill_name)
             switch_skill_description = switch_skill.find_all("td")[1].text
             print(switch_skill_description)
+            switch_skills.append((switch_skill_name, switch_skill_description))
+        # return switch_skills
+        mycursor = mydb.cursor(buffered=True)
+        for skill in switch_skills:
+            mycursor.execute("SELECT COUNT(*) FROM switch_skills WHERE switch_skill_name = %s",
+                             [skill[0]])
+            exists = mycursor.fetchall()[0][0]
+            if exists == 0:
+                sql = "INSERT INTO switch_skills (switch_skill_name, switch_skill_description) VALUES " \
+                      "(%s, %s)"
+
+                mycursor.execute(sql, skill)
+            elif exists != 0 and skill[0] == "":
+                sql = "INSERT INTO switch_skills (switch_skill_name, switch_skill_description) VALUES " \
+                      "(%s, %s)"
+
+                mycursor.execute(sql, skill)
+        mydb.commit()
 
     def get_dango_skills(self):
         dango_skill_url = f"{base_url}data/kitchen-skills"
@@ -1112,7 +1252,7 @@ class Scraper(object):
         r = session.get(dango_skill_url, headers=headers)
         soup = BeautifulSoup(r.content, "html.parser")
         all_dango_skills = soup.find_all("tr")
-
+        dango_skills = []
         for dango_skill in all_dango_skills:
             dango_skill_name = dango_skill.find_all("td")[0].text
             print(dango_skill_name)
@@ -1124,7 +1264,22 @@ class Scraper(object):
             for description in level_descriptions:
                 # print(description)
                 dango_skill_levels.append(description.text.strip())
-            print(dango_skill_levels)
+            # print(dango_skill_levels)
+            dango_skill_levels = json.dumps(dango_skill_levels)
+            dango_skills.append((dango_skill_name, dango_skill_description, dango_skill_levels))
+        # return dango_skills
+        mycursor = mydb.cursor(buffered=True)
+        for skill in dango_skills:
+            # print(skill)
+            mycursor.execute("SELECT COUNT(*) FROM dango_skills WHERE dango_skill_name = %s",
+                             [skill[0]])
+            exists = mycursor.fetchall()[0][0]
+            if exists == 0:
+                sql = "INSERT INTO dango_skills (dango_skill_name, dango_skill_description, dango_skill_levels) VALUES " \
+                      "(%s, %s, %s)"
+
+                mycursor.execute(sql, skill)
+        mydb.commit()
 
     def get_canteen_dango(self):
         dango_url = f"{base_url}data/dangos"
@@ -1132,10 +1287,10 @@ class Scraper(object):
         r = session.get(dango_url, headers=headers)
         soup = BeautifulSoup(r.content, "html.parser")
         all_dango = soup.find_all("tr")
-
+        canteen_dango = []
         for dango in all_dango:
             dango_name = dango.find_all("td")[0].text
-            print(dango_name)
+            # print(dango_name)
             find_dango_description = dango.find_all("td")[1].find_all("div")
             dango_description = ""
             dango_skills = []
@@ -1145,17 +1300,22 @@ class Scraper(object):
                     dango_skill = description.find("a").text
                     dango_skill_id = description.find("a")["href"].split("skills/")[1]
                     dango_skills.append({dango_skill_id: description.find("a").text})
-            print(dango_description)
-            print(dango_skills)
-            # print(dango_skill)
+            # print(dango_skills)
+            dango_skills = json.dumps(dango_skills)
+            canteen_dango.append((dango_name, dango_description, dango_skills))
+        print(canteen_dango)
+        # return canteen_dango
+        mycursor = mydb.cursor(buffered=True)
+        for dango in canteen_dango:
+            mycursor.execute("SELECT COUNT(*) FROM canteen_dango WHERE dango_name = %s",
+                             [dango[0]])
+            exists = mycursor.fetchall()[0][0]
+            if exists == 0:
+                sql = "INSERT INTO canteen_dango (dango_name, dango_description, dango_skills) VALUES " \
+                      "(%s, %s, %s)"
 
-            # dango_skill_levels = []
-            # level_descriptions = dango_skill.find_all("td")[1].find_all("small")
-
-            # for description in level_descriptions:
-            #     # print(description)
-            #     dango_skill_levels.append(description.text.strip())
-            # print(dango_skill_levels)
+                mycursor.execute(sql, dango)
+        mydb.commit()
 
     def get_crafting_list(self):
         crafting_list_url = f"{base_url}data/item-mix"
@@ -1163,26 +1323,27 @@ class Scraper(object):
         r = session.get(crafting_list_url, headers=headers)
         soup = BeautifulSoup(r.content, "html.parser")
         all_crafting = soup.find_all("tr")
-
+        crafting_list = []
         for craft in all_crafting:
             craft_num = craft.find_all("td")[0].text
-            print(craft_num)
+            # print(craft_num)
+            auto_craft = False
             auto_craft_true = craft.find("path", attrs={"d": "M5 13l4 4L19 7"})
             auto_craft_false = craft.find("path", attrs={"d": "M6 18L18 6M6 6l12 12"})
 
             if auto_craft_true is not None and auto_craft_false is None:
                 auto_craft = True
 
-            elif auto_craft_true is None and auto_craft_false is not None:
-                auto_craft = False
+            # elif auto_craft_true is None and auto_craft_false is not None:
+            #     auto_craft = False
 
-            print(auto_craft)
+            # print(auto_craft)
 
             item_id = craft.find("img")["src"].split("items/")[1].split(".png")[0]
-            print(item_id)
+            # print(item_id)
 
             craft_quantity = craft.find_all("td")[3].text
-            print(craft_quantity)
+            # print(craft_quantity)
 
             find_ingredients = craft.find_all("td")[4:6]
             ingredients = []
@@ -1191,8 +1352,21 @@ class Scraper(object):
                 if ingredient.find("img") is not None:
                     ingredient_id = ingredient.find("img")["src"].split("items/")[1].split(".png")[0]
                     ingredients.append(ingredient_id)
+            ingredients = json.dumps(ingredients)
+            # print(ingredients)
+            crafting_list.append((craft_num, item_id, craft_quantity, ingredients, auto_craft))
+        # return crafting_list
+        mycursor = mydb.cursor(buffered=True)
+        for craft in crafting_list:
+            mycursor.execute("SELECT COUNT(*) FROM crafting_list WHERE craft_num = %s",
+                             [craft[0]])
+            exists = mycursor.fetchall()[0][0]
+            if exists == 0:
+                sql = "INSERT INTO crafting_list (craft_num, item_id, craft_quantity, ingredients, auto_craft) VALUES " \
+                      "(%s, %s, %s, %s, %s)"
 
-            print(ingredients)
+                mycursor.execute(sql, craft)
+        mydb.commit()
 
     def get_all_armour(self):
         armours = []
@@ -1205,7 +1379,7 @@ class Scraper(object):
             for armour in all_armour:
                 # print(armour)
 
-                rarity = str(i+1)
+                rarity = str(i + 1)
                 armour_id = armour.find("a")["href"].split("armors/")[1]
                 print(armour_id)
                 armour_name = armour.find("a").text
@@ -1329,19 +1503,34 @@ class Scraper(object):
             if exists == 0:
                 sql = "INSERT INTO armour_items (armour_id, item_id) VALUES (%s, %s)"
                 mycursor.execute(sql, row)
-        # sql = "INSERT INTO weapon_forging_items (weapon_id, item_id) VALUES (%s, %s)"
-        #
-        # mycursor.executemany(sql, rows)
         mydb.commit()
 
-        # if i == 5:
-        #     sql = "INSERT INTO weapons (weapon_id, weapon_type_id, weapon_type_name, weapon_name, weapon_url, weapon_img_url, " \
-        #           "deco_slots, rampage_deco_slots, attack, additional_property, " \
-        #           "element, element_val, base_sharpness, max_sharpness, " \
-        #           "rarity, weapon_description, detailed_img_url," \
-        #           "rampage_augs, forging_mats, upgrade_mats, songs) VALUES (%s,%s," \
-        #           "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s, %s, %s)"
-        #     mycursor.executemany(sql, results)
+        skill_ids = []
+        skill_list = []
+        for skill in armours:
+            list3 = []
+            if skill[12] != []:
+                for j in json.loads(skill[12]):
+                    skill_ids.append(j.get("skill_id"))
+                    list3.append(j.get("skill_id"))
+            res1 = {skill[0]: list3}
+            skill_list.append(res1)
+        rows = []
+        for dictionary in skill_list:
+            for armour_id, skill_ids in dictionary.items():
+                for skill_id in skill_ids:
+                    rows.append((armour_id, skill_id))
+        print(rows)
+        for row in rows:
+            mycursor = mydb.cursor()
+            mycursor.execute("SELECT COUNT(*) FROM armour_armour_skills WHERE armour_id = %s AND skill_id = %s",
+                             [row[0], row[1]])
+            exists = mycursor.fetchall()[0][0]
+            if exists == 0:
+                sql = "INSERT INTO armour_armour_skills (armour_id, skill_id) VALUES (%s, %s)"
+                mycursor.execute(sql, row)
+        mydb.commit()
+
 
 
 webscrape = Scraper(headers, base_url, mydb)
@@ -1350,5 +1539,5 @@ webscrape = Scraper(headers, base_url, mydb)
 # webscrape.get_monsters()
 # webscrape.get_all_items()
 # webscrape.get_all_weapons()
-# webscrape.get_skills()
-webscrape.get_all_armour()
+webscrape.get_skills()
+# webscrape.get_all_armour()

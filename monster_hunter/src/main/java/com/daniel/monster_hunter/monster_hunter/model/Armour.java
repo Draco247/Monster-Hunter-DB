@@ -44,6 +44,16 @@ public class Armour {
     @JoinTable(name = "armour_items",
             joinColumns = { @JoinColumn(name = "armour_id") },
             inverseJoinColumns = { @JoinColumn(name = "item_id") })
-    private Set<Items> forging = new HashSet<>();
+    private Set<Items> armourforging = new HashSet<>();
     private String armour_description;
+
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            })
+    @JoinTable(name = "armour_armour_skills",
+            joinColumns = { @JoinColumn(name = "armour_id") },
+            inverseJoinColumns = { @JoinColumn(name = "skill_id") })
+    private Set<Skills> skills = new HashSet<>();
 }
