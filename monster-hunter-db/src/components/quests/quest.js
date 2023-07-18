@@ -15,6 +15,8 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
+import MUIDataTable from "mui-datatables";
+
 
 export default function Quest() {
     const { id } = useParams();
@@ -25,8 +27,31 @@ export default function Quest() {
     // const [monsterhitzones, setMonsterHitzones] = useState(null);
     // const [monsterdrops, setMonsterDrops] = useState(null);
     const [hoveredCard, setHoveredCard] = useState(null);
+    const [searchBtn, setSearchBtn] = useState(true);
+    const [viewColumnBtn, setViewColumnBtn] = useState(true);
+    const [filterBtn, setFilterBtn] = useState(true);
+    const columns = ["Item Name","Chance","Quantity"];
 
+    const options = {
+        search: searchBtn,
+        viewColumns: viewColumnBtn,
+        print: false,
+        // filter: filterBtn,
+        // filterType: "dropdown",
+        // responsive,
+        // tableBodyHeight,
+        // tableBodyMaxHeight,
+        onTableChange: (event, state) => {
+            console.log(event);
+            console.dir(state);
+        }
+    };
 
+    const tableData = questrewards.map((reward) => [
+        <a href={`/items/${reward["Item id"]}`}>{reward["Item"]}</a>,
+        reward["Chance"],
+        reward["Quantity"]
+    ]);
 
     const handleCardMouseEnter = (id) => {
         setHoveredCard(id);
@@ -98,29 +123,30 @@ export default function Quest() {
             </div>
             <div className="quest-rewards">
                 <h2>Quest Rewards</h2>
-                <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell align="right">Item Name</TableCell>
-                                <TableCell align="right">Chance</TableCell>
-                                <TableCell align="right">Quantity</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {questrewards.map(reward => (
-                                <TableRow
-                                    // key={hitzone.quest_id}
-                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                >
-                                    <TableCell align="right" component="a" href={`/items/${reward["Item id"]}`}>{reward["Item"]}</TableCell>
-                                    <TableCell align="right">{reward["Chance"]}</TableCell>
-                                    <TableCell align="right">{reward["Quantity"]}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                <MUIDataTable title={"Quests"} data={tableData} columns={columns} options={options} />
+                {/*<TableContainer component={Paper}>*/}
+                {/*    <Table sx={{ minWidth: 650 }} aria-label="simple table">*/}
+                {/*        <TableHead>*/}
+                {/*            <TableRow>*/}
+                {/*                <TableCell align="right">Item Name</TableCell>*/}
+                {/*                <TableCell align="right">Chance</TableCell>*/}
+                {/*                <TableCell align="right">Quantity</TableCell>*/}
+                {/*            </TableRow>*/}
+                {/*        </TableHead>*/}
+                {/*        <TableBody>*/}
+                {/*            {questrewards.map(reward => (*/}
+                {/*                <TableRow*/}
+                {/*                    // key={hitzone.quest_id}*/}
+                {/*                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}*/}
+                {/*                >*/}
+                {/*                    <TableCell align="right" component="a" href={`/items/${reward["Item id"]}`}>{reward["Item"]}</TableCell>*/}
+                {/*                    <TableCell align="right">{reward["Chance"]}</TableCell>*/}
+                {/*                    <TableCell align="right">{reward["Quantity"]}</TableCell>*/}
+                {/*                </TableRow>*/}
+                {/*            ))}*/}
+                {/*        </TableBody>*/}
+                {/*    </Table>*/}
+                {/*</TableContainer>*/}
             </div>
             <div className="quest-monsters">
                 <h2>Monsters</h2>

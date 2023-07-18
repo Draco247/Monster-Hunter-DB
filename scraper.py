@@ -20,11 +20,17 @@ headers = ({'User-Agent':
             'Accept-Language': 'en-US, en;q=0.5'})
 base_url = "https://mhrise.kiranico.com/"
 mydb = mysql.connector.connect(
-    host=os.getenv('DEV_MYSQL_HOST'),
-    user=os.getenv('DEV_MYSQL_USER'),
-    password=os.getenv('DEV_MYSQL_PW'),
-    database=os.getenv('DEV_MYSQL_DB')
+    host=os.getenv('MYSQL_HOST'),
+    user=os.getenv('MYSQL_USER'),
+    password=os.getenv('MYSQL_PW'),
+    database=os.getenv('MYSQL_DB')
 )
+# mydb = mysql.connector.connect(
+#     host=os.getenv('DEV_MYSQL_HOST'),
+#     user=os.getenv('DEV_MYSQL_USER'),
+#     password=os.getenv('DEV_MYSQL_PW'),
+#     database=os.getenv('DEV_MYSQL_DB')
+# )
 
 
 class Scraper(object):
@@ -631,6 +637,7 @@ class Scraper(object):
             weapon_description, detailed_weapon_img_url, rampage_augments, forging_materials, upgrade_materials = (
                 self.get_weapon_page_details(weapon_url))
             print(weapon_description)
+            print(upgrade_materials)
             rampage_augments = json.dumps(rampage_augments)
             forging_materials = json.dumps(forging_materials)
             upgrade_materials = json.dumps(upgrade_materials)
@@ -785,9 +792,10 @@ class Scraper(object):
         for material in find_forging_materials:
             item_id = material.find_all("td")[0].find("a")["href"].split("items/")[1]
             # print(item_id)
+            item_name = material.find_all("td")[0].find("a").text
             quantity = material.find_all("td")[1].text.strip()
             # print(quantity)
-            forging_materials.append({"Item ID": item_id, "Quantity": quantity})
+            forging_materials.append({"Item ID": item_id, "Item Name": item_name, "Quantity": quantity})
         # print(forging_materials)
 
         find_upgrade_materials = soup.find_all("div", attrs={"class": "basis-1/2"})[1].find_all("tr")
@@ -796,9 +804,10 @@ class Scraper(object):
         for material in find_upgrade_materials:
             item_id = material.find_all("td")[0].find("a")["href"].split("items/")[1]
             # print(item_id)
+            item_name = material.find_all("td")[0].find("a").text
             quantity = material.find_all("td")[1].text.strip()
             # print(quantity)
-            upgrade_materials.append({"Item ID": item_id, "Quantity": quantity})
+            upgrade_materials.append({"Item ID": item_id, "Item Name": item_name, "Quantity": quantity})
         # print(upgrade_materials)
 
         return weapon_description, detailed_weapon_img_url, rampage_augments, forging_materials, upgrade_materials
@@ -1023,7 +1032,7 @@ class Scraper(object):
         # self.get_canteen_dango()
         #   self.get_decorations()
         #   self.get_rampage_decorations()
-          self.get_rampage_skills()
+        self.get_rampage_skills()
 
     def get_armour_skills(self):
         armour_skills_url = f"{base_url}data/skills"
@@ -1532,12 +1541,11 @@ class Scraper(object):
         mydb.commit()
 
 
-
 webscrape = Scraper(headers, base_url, mydb)
 # webscrape = Scraper(headers, base_url)
 
 # webscrape.get_monsters()
 # webscrape.get_all_items()
-# webscrape.get_all_weapons()
-webscrape.get_skills()
+webscrape.get_all_weapons()
+# webscrape.get_skills()
 # webscrape.get_all_armour()

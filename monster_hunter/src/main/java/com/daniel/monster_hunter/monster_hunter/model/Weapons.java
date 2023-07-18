@@ -46,6 +46,10 @@ public class Weapons {
 
     private String weapon_description;
 
+    private String forging_mats;
+
+    private String upgrade_mats;
+
 
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {

@@ -1,5 +1,5 @@
 import {Box} from "@mui/material";
-import Monster from "../../components/monster";
+import Monster from "../../components/monsters/monster";
 import React from "react";
 
 function MonsterPage() {

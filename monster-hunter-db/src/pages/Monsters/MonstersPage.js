@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import Monsters from "../../components/monsters";
+import Monsters from "../../components/monsters/monsters";
 import {Box, TextField} from "@mui/material";
 
 function MonstersPage() {

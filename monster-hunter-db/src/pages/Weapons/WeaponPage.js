@@ -1,5 +1,5 @@
 import React from "react";
-import Weapon from "../../components/weapon";
+import Weapon from "../../components/weapons/weapon";
 import { Box } from "@mui/material";
 
 function WeaponPage() {

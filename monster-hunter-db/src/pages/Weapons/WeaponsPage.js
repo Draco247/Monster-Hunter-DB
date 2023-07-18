@@ -1,8 +1,8 @@
 import {useLocation} from 'react-router-dom';
 import React, {useEffect, useState} from "react";
-import Weapons from "../../components/weapons";
+import Weapons from "../../components/weapons/weapons";
 import {Box} from "@mui/material";
-import Monsters from "../../components/monsters";
+import Monsters from "../../components/monsters/monsters";
 function WeaponsPage() {
     const weaponType = useLocation().state.weaponid;
     console.log(weaponType);

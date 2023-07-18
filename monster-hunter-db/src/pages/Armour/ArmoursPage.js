@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import Armours from "../../components/armours";
+import Armours from "../../components/armour/armours";
 import {Box, TextField} from "@mui/material";
 
 function ArmoursPage() {

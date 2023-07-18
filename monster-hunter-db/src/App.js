@@ -1,6 +1,6 @@
 import './App.css';
-import TopBar from './components/topbar'
-import Monsters from './components/monsters'
+import TopBar from './components/topbar/topbar'
+import Monsters from './components/monsters/monsters'
 import MonstersPage from './pages/Monsters/MonstersPage'
 import MonsterPage from './pages/Monsters/MonsterPage'
 import SelectWeaponsPage from './pages/Weapons/SelectWeaponsPage'
@@ -17,7 +17,7 @@ import QuestPage from './pages/Quests/QuestPage'
 
 import { Box } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route } from'react-router-dom';
-import Monster from "./components/monster";
+import Monster from "./components/monsters/monster";
 import WeaponPage from "./pages/Weapons/WeaponPage";
 
 

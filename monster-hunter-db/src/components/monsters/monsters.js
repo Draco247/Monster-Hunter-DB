@@ -52,18 +52,21 @@ export default function Monsters({ searchQuery }) {
             })}, []);
     console.log(monsters);
     return (
-        <Box display="flex" justifyContent="center">
+        <Box m={8} display="flex" justifyContent="center" alignItems="center">
             <Grid container spacing={2} style={{ justifyContent: filteredMonsters.length === 2 ? 'flex-start' : 'space-between', flexWrap: 'wrap' }}>
                 {filteredMonsters.map(monster => (
                     <Grid item xs={12} sm={6} md={4} key={monster.id}>
-                        <Box height="100%">
-                            <Link to={`/monsters/${monster.id}`} >
-                                <Card sx={{ height: '100%', maxWidth: 345 }} style={{
-                                    ...cardStyle,
-                                    ...(hoveredCard === monster.id && hoverStyle),
-                                }}
-                                      onMouseEnter={() => handleCardMouseEnter(monster.id)}
-                                      onMouseLeave={handleCardMouseLeave}>
+                        <Box height="100%" display="flex" alignItems="center" justifyContent="center">
+                            <Link to={`/monsters/${monster.id}`}>
+                                <Card
+                                    sx={{ height: '100%', maxWidth: 345 }}
+                                    style={{
+                                        ...cardStyle,
+                                        ...(hoveredCard === monster.id && hoverStyle),
+                                    }}
+                                    onMouseEnter={() => handleCardMouseEnter(monster.id)}
+                                    onMouseLeave={handleCardMouseLeave}
+                                >
                                     <Box m={4}>
                                         <CardMedia
                                             component="img"
@@ -72,22 +75,15 @@ export default function Monsters({ searchQuery }) {
                                             style={imageStyle}
                                         />
                                     </Box>
-
                                     <CardContent>
                                         <Typography gutterBottom variant="h5" component="div" textAlign="center">
                                             {monster.name}
                                         </Typography>
-                                        {/*<Typography variant="body2" color="text.secondary">*/}
-                                        {/*    {monster.description}*/}
-                                        {/*</Typography>*/}
                                     </CardContent>
-                                    {/*<CardActions>*/}
-                                    {/*    <Button size="small">Share</Button>*/}
-                                    {/*    <Button size="small">Learn More</Button>*/}
-                                    {/*</CardActions>*/}
                                 </Card>
                             </Link>
                         </Box>
+
                     </Grid>
                 ))}
             </Grid>

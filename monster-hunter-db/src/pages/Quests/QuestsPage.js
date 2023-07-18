@@ -1,5 +1,5 @@
 import React from 'react';
-import Quests from "../../components/quests";
+import Quests from "../../components/quests/quests";
 import {Box} from "@mui/material";
 
 function QuestsPage() {

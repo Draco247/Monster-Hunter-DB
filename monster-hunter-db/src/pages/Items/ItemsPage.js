@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import Items from "../../components/items";
+import Items from "../../components/items/items";
 import {Box, TextField} from "@mui/material";
 
 function ItemsPage() {

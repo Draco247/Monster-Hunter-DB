@@ -15,17 +15,67 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
+import MUIDataTable from "mui-datatables";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles({
+    centerCell: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100%",
+    },
+});
 
 export default function Weapon() {
     const { id } = useParams();
     console.log(id);
     const [weapon, setWeapon] = useState(null);
-    // const [questrewards, setQuestrewards] = useState([]);
-    // const [monsterquests, setMonsterQuests] = useState(null);
-    // const [monsterhitzones, setMonsterHitzones] = useState(null);
-    // const [monsterdrops, setMonsterDrops] = useState(null);
+    const [forgingitems, setForgingItems] = useState(null);
     const [hoveredCard, setHoveredCard] = useState(null);
+    const [searchBtn, setSearchBtn] = useState(true);
+    const [viewColumnBtn, setViewColumnBtn] = useState(true);
+    const [filterBtn, setFilterBtn] = useState(true);
+    const columns = [{
+        name: "Item Name",
+        options: {
+            customBodyRender: (value) => (
+                <div className={classes.centerCell}>{value}</div>
+            ),
+        },
+    },{
+        name: "Quantity",
+        options: {
+            customBodyRender: (value) => (
+                <div className={classes.centerCell}>{value}</div>
+            ),
+        },
+    }];
 
+    const deco_imgs = {
+        "deco1": "https://cdn.kiranico.net/file/kiranico/mhrise-web/images/ui/deco1.png",
+        "deco2": "https://cdn.kiranico.net/file/kiranico/mhrise-web/images/ui/deco2.png",
+        "deco3": "https://cdn.kiranico.net/file/kiranico/mhrise-web/images/ui/deco3.png",
+        "deco4": "https://cdn.kiranico.net/file/kiranico/mhrise-web/images/ui/deco4.png"
+    }
+
+    const classes = useStyles();
+
+    const options = {
+        search: searchBtn,
+        viewColumns: viewColumnBtn,
+        print: false,
+        selectableRows: false,
+        // filter: filterBtn,
+        // filterType: "dropdown",
+        // responsive,
+        // tableBodyHeight,
+        // tableBodyMaxHeight,
+        onTableChange: (event, state) => {
+            console.log(event);
+            console.dir(state);
+        }
+    };
 
 
     const handleCardMouseEnter = (id) => {
@@ -64,18 +114,18 @@ export default function Weapon() {
             }
         };
 
-        // const fetchQuestRewards = async () => {
-        //     try {
-        //         const response = await fetch(`${process.env.REACT_APP_react_url}/quests/${id}/rewards`);
-        //         const data = await response.json();
-        //         setQuestrewards(data);
-        //         console.log(data);
-        //     } catch (error) {
-        //         console.error('Error fetching quest rewards:', error);
-        //     }
-        // };
+        const fetchWeaponForging = async () => {
+            try {
+                const response = await fetch(`${process.env.REACT_APP_react_url}/weapons/${id}/items`);
+                const data = await response.json();
+                setForgingItems(data);
+                console.log(data);
+            } catch (error) {
+                console.error('Error fetching forging items:', error);
+            }
+        };
         fetchWeapon();
-        // fetchQuestRewards();
+        fetchWeaponForging();
     }, [id]);
 
 
@@ -86,6 +136,20 @@ export default function Weapon() {
     // if (!questrewards) {
     //     return <div>Loading...</div>;
     // }
+
+    const forge = JSON.parse(weapon.forging_mats);
+    console.log(forge);
+    const forgetableData = forge.map((item) => [
+        <a href = {`/items/${item["Item ID"]}`}>{item["Item Name"]}</a>,
+        item.Quantity
+    ]);
+
+    const upgrades = JSON.parse(weapon.upgrade_mats);
+    console.log(upgrades);
+    const upgradetableData = upgrades.map((item) => [
+        <a href = {`/items/${item["Item ID"]}`}>{item["Item Name"]}</a>,
+        item.Quantity
+    ]);
 
     return (
         <div>
@@ -104,6 +168,12 @@ export default function Weapon() {
                 {/*<p>Failure Conditions: {quest.failure_conditions}</p>*/}
                 {/*<p>Hunter Rank Points: {quest.hrp}</p>*/}
                 {/*<p>Master Rank Points: {quest.mrp}</p>*/}
+            </div>
+            <div>
+                <MUIDataTable title={"Forging Items"} data={forgetableData} columns={columns} options={options} />
+            </div>
+            <div>
+                <MUIDataTable title={"Upgrade Items"} data={upgradetableData} columns={columns} options={options} />
             </div>
             {/*<div className="quest-rewards">*/}
             {/*    <h2>Quest Rewards</h2>*/}

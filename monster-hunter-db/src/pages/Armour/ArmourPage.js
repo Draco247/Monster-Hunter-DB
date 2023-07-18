@@ -1,5 +1,5 @@
 import {Box} from "@mui/material";
-import Armour from "../../components/armour";
+import Armour from "../../components/armour/armour";
 import React from "react";
 
 function ArmourPage() {
