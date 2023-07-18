@@ -1,5 +1,5 @@
 import {Box} from "@mui/material";
-import Item from "../components/item";
+import Item from "../../components/item";
 import React from "react";
 
 function ItemPage() {

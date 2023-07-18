@@ -8,6 +8,7 @@ import com.daniel.monster_hunter.monster_hunter.repository.ItemRepository;
 import com.daniel.monster_hunter.monster_hunter.repository.MonsterRepository;
 import com.daniel.monster_hunter.monster_hunter.repository.QuestRepository;
 import com.daniel.monster_hunter.monster_hunter.service.MonsterService;
+import com.daniel.monster_hunter.monster_hunter.service.WeaponService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,9 @@ import java.util.Optional;
 public class MonsterController {
     @Autowired
     private MonsterService monsterService;
+
+    @Autowired
+    private WeaponService weaponService;
 
     @Autowired
     private MonsterRepository monsterRepository;
@@ -71,6 +75,16 @@ public class MonsterController {
     @GetMapping("/{monsterId}/drops")
     public List<Map<String, Object>> getMonsterDrops(@PathVariable Long monsterId) {
         return monsterService.getMonsterDrops(monsterId);
+    }
+
+    @GetMapping("/{monsterId}/forging-weapons")
+    public List<Map<String, Object>> getWeaponsForgingByMonsterId(@PathVariable Long monsterId) {
+        return weaponService.getWeaponsForgingByMonsterId(monsterId);
+    }
+
+    @GetMapping("/{monsterId}/upgrade-weapons")
+    public List<Map<String, Object>> getWeaponsUpgradeByMonsterId(@PathVariable Long monsterId) {
+        return weaponService.getWeaponsUpgradeByMonsterId(monsterId);
     }
 
 //    public List<Monsters> getAllMonsters() {

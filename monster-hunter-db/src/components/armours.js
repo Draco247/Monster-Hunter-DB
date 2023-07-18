@@ -9,13 +9,13 @@ import Typography from '@mui/material/Typography';
 import { Grid,Box } from '@mui/material';
 import { Link } from "react-router-dom";
 
-export default function Monsters({ searchQuery }) {
-    const [monsters, setMonsters] = useState([]);
+export default function Armours({ searchQuery }) {
+    const [armours, setArmours] = useState([]);
     const [hoveredCard, setHoveredCard] = useState(null);
-    const filteredMonsters = monsters.filter((monster) =>
-        monster.name.toLowerCase().includes(searchQuery.toLowerCase().trim())
+    const filteredArmours = armours.filter((armour) =>
+        armour.armour_name.toLowerCase().includes(searchQuery.toLowerCase().trim())
     );
-    console.log(filteredMonsters);
+    console.log(filteredArmours);
 
     const handleCardMouseEnter = (id) => {
         setHoveredCard(id);
@@ -38,44 +38,57 @@ export default function Monsters({ searchQuery }) {
     const imageStyle = {
         border: '2px solid black',
         borderRadius: '10%', // Make the border curved
-        backgroundColor: 'black'
+        backgroundColor: 'black',
+        maxWidth: '50%',
+        maxHeight: '50%',
+        height: 'auto',
+        display: 'block',
+        margin: '0 auto'
     };
 
     useEffect(() => {
         console.log(process.env.REACT_APP_react_url)
-        fetch(`${process.env.REACT_APP_react_url}/monsters/getAll`)
+        fetch(`${process.env.REACT_APP_react_url}/armour/getAll`)
             .then(res => res.json())
             .then((result)=> {
-            setMonsters(result);
+                setArmours(result);
 
 
             })}, []);
-    console.log(monsters);
+    console.log(armours);
     return (
         <Box display="flex" justifyContent="center">
-            <Grid container spacing={2} style={{ justifyContent: filteredMonsters.length === 2 ? 'flex-start' : 'space-between', flexWrap: 'wrap' }}>
-                {filteredMonsters.map(monster => (
-                    <Grid item xs={12} sm={6} md={4} key={monster.id}>
+            <Grid container spacing={2} style={{ justifyContent: armours.length === 2 ? 'flex-start' : 'space-between', flexWrap: 'wrap' }}>
+                {filteredArmours.map(armour => (
+                    <Grid item xs={12} sm={6} md={4} key={armour.id}>
                         <Box height="100%">
-                            <Link to={`/monsters/${monster.id}`} >
+                            <Link to={`/armour/${armour.id}`} >
                                 <Card sx={{ height: '100%', maxWidth: 345 }} style={{
                                     ...cardStyle,
-                                    ...(hoveredCard === monster.id && hoverStyle),
+                                    ...(hoveredCard === armour.id && hoverStyle),
                                 }}
-                                      onMouseEnter={() => handleCardMouseEnter(monster.id)}
+                                      onMouseEnter={() => handleCardMouseEnter(armour.id)}
                                       onMouseLeave={handleCardMouseLeave}>
                                     <Box m={4}>
                                         <CardMedia
                                             component="img"
-                                            image={monster.image_link}
-                                            title={monster.name}
+                                            image={armour.m_armour_img_url}
+                                            title={armour.armour_name}
+                                            style={imageStyle}
+                                        />
+                                    </Box>
+                                    <Box m={4}>
+                                        <CardMedia
+                                            component="img"
+                                            image={armour.f_armour_img_url}
+                                            title={armour.armour_name}
                                             style={imageStyle}
                                         />
                                     </Box>
 
                                     <CardContent>
                                         <Typography gutterBottom variant="h5" component="div" textAlign="center">
-                                            {monster.name}
+                                            {armour.armour_name}
                                         </Typography>
                                         {/*<Typography variant="body2" color="text.secondary">*/}
                                         {/*    {monster.description}*/}

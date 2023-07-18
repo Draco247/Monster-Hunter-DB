@@ -12,5 +12,6 @@ public interface MonsterService {
     public List<Monsters> getMonsters();
     public List<Map<String, Object>> getMonsterHitzones(Long monsterId);
     public List<Map<String, Object>> getMonsterDrops(Long monsterId);
+
 //    List<Quests> getAllQuestsForMonster(Long monsterId);
 }

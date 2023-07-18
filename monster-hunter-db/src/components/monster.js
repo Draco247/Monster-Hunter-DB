@@ -76,35 +76,6 @@ export default function Monster() {
         fetchMonsterDrops()
     }, [id]);
 
-    // useEffect(() => {
-    //     const fetchMonsterQuests = async () => {
-    //         try {
-    //             const response = await fetch("http://localhost:8080/api/v1/monsters/15778133/quests");
-    //             const data = await response.json();
-    //             setMonsterQuests(data);
-    //         } catch (error) {
-    //             console.error('Error fetching monster quests:', error);
-    //         }
-    //     };
-    //
-    //     fetchMonsterQuests();
-    // }, [id]);
-
-    // useEffect(() => {
-    //     const fetchMonsterHitzones = async () => {
-    //         try {
-    //             const response = await fetch("http://localhost:8080/api/v1/monsters/15778133/hitzones");
-    //             const data = await response.json();
-    //             setMonsterHitzones(data);
-    //             console.log(data);
-    //         } catch (error) {
-    //             console.error('Error fetching monster hitzones:', error);
-    //         }
-    //     };
-    //
-    //     fetchMonsterHitzones();
-    // }, [id]);
-
     if (!monster) {
         return <div>Loading...</div>;
     }
@@ -125,15 +96,30 @@ export default function Monster() {
         <div>
             <div className="monster-details">
                 <h1>{monster.name}</h1>
-                <p>{monster.description}</p>
-                <Box m={4}>
-                    <CardMedia
-                        component="img"
-                        image={monster.image_link}
-                        title={monster.name}
-                        // style={imageStyle}
-                    />
-                </Box>
+
+                <Grid container spacing={2} alignItems="center">
+                    <Grid item xs={12} sm={6}>
+                        <div style={{ border: '1px solid black', borderRadius:'5px', padding: '10px', marginRight: '10px' }}>
+                            <p style={{ fontSize: '32px' }}>{monster.description}</p>
+                        </div>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <div style={{ border: '1px solid black', borderRadius:'5px', padding: '10px' }}>
+                            <Box m={4}>
+                                <CardMedia
+                                    component="img"
+                                    image={monster.image_link}
+                                    title={monster.name}
+                                    style={{ maxWidth: '100%', maxHeight: '100%', height: 'auto' }}
+                                    // style={imageStyle}
+                                />
+                            </Box>
+                        </div>
+                    </Grid>
+                </Grid>
+
+
+
             </div>
             <div className="monster-quests">
                 <h2>Monster Quests</h2>

@@ -1,20 +1,24 @@
 import './App.css';
 import TopBar from './components/topbar'
 import Monsters from './components/monsters'
-import MonstersPage from './pages/MonstersPage'
-import MonsterPage from './pages/MonsterPage'
-import SelectWeaponsPage from './pages/SelectWeaponsPage'
-import WeaponsPage from './pages/WeaponsPage'
-import ItemsPage from './pages/ItemsPage'
-import ItemPage from './pages/ItemPage'
+import MonstersPage from './pages/Monsters/MonstersPage'
+import MonsterPage from './pages/Monsters/MonsterPage'
+import SelectWeaponsPage from './pages/Weapons/SelectWeaponsPage'
+import WeaponsPage from './pages/Weapons/WeaponsPage'
+import ItemsPage from './pages/Items/ItemsPage'
+import ItemPage from './pages/Items/ItemPage'
+import ArmoursPage from './pages/Armour/ArmoursPage'
+import ArmourPage from './pages/Armour/ArmourPage'
 
-import QuestsPage from './pages/QuestsPage'
-import QuestPage from './pages/QuestPage'
+// import ItemPage from './pages/Items/ItemPage'
+
+import QuestsPage from './pages/Quests/QuestsPage'
+import QuestPage from './pages/Quests/QuestPage'
 
 import { Box } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route } from'react-router-dom';
 import Monster from "./components/monster";
-import WeaponPage from "./pages/WeaponPage";
+import WeaponPage from "./pages/Weapons/WeaponPage";
 
 
 function App() {
@@ -32,6 +36,8 @@ function App() {
                 <Route path="/weapons/:id/weapons" element={<WeaponPage/>}/>
                 <Route path="/items" element={<ItemsPage/>}/>
                 <Route path="/items/:id" element={<ItemPage/>}/>
+                <Route path="/armour" element={<ArmoursPage/>}/>
+                <Route path="/armour/:id" element={<ArmourPage/>}/>
             </Routes>
             {/*<Box m={10}>*/}
             {/*    <Monsters/>*/}

@@ -1,5 +1,5 @@
 import {Box} from "@mui/material";
-import Weapons from "../components/weapons";
+import Weapons from "../../components/weapons";
 import React from "react";
 import {useState, useEffect} from "react";
 import { useNavigate } from 'react-router-dom';

@@ -1,5 +1,5 @@
 import React from "react";
-import Quest from "../components/quest";
+import Quest from "../../components/quest";
 import { Box } from "@mui/material";
 
 function QuestPage() {

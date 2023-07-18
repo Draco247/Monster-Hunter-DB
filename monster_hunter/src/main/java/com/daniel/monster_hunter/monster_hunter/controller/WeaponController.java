@@ -5,6 +5,8 @@ import com.daniel.monster_hunter.monster_hunter.model.Quests;
 import com.daniel.monster_hunter.monster_hunter.model.Weapons;
 import com.daniel.monster_hunter.monster_hunter.repository.ItemRepository;
 import com.daniel.monster_hunter.monster_hunter.repository.WeaponRepository;
+import com.daniel.monster_hunter.monster_hunter.service.MonsterService;
+import com.daniel.monster_hunter.monster_hunter.service.WeaponService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,9 @@ public class WeaponController {
 
     @Autowired
     private ItemRepository itemRepository;
+
+    @Autowired
+    private WeaponService weaponService;
 
     @GetMapping("/getAll")
     public List<Weapons> getAllWeapons() {
@@ -58,4 +63,6 @@ public class WeaponController {
         List<Items> items = itemRepository.findItemsByForgingId(weaponId);
         return new ResponseEntity<>(items, HttpStatus.OK);
     }
+
+
 }
