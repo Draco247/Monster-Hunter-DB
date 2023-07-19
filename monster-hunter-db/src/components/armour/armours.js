@@ -57,11 +57,11 @@ export default function Armours({ searchQuery }) {
             })}, []);
     console.log(armours);
     return (
-        <Box display="flex" justifyContent="center">
+        <Box m={8} display="flex" justifyContent="center" alignItems="center">
             <Grid container spacing={2} style={{ justifyContent: armours.length === 2 ? 'flex-start' : 'space-between', flexWrap: 'wrap' }}>
                 {filteredArmours.map(armour => (
                     <Grid item xs={12} sm={6} md={4} key={armour.id}>
-                        <Box height="100%">
+                        <Box height="100%" alignItems="center" justifyContent="center" style={{ border: '2px solid black' }}>
                             <Link to={`/armour/${armour.id}`} >
                                 <Card sx={{ height: '100%', maxWidth: 345 }} style={{
                                     ...cardStyle,
@@ -90,14 +90,7 @@ export default function Armours({ searchQuery }) {
                                         <Typography gutterBottom variant="h5" component="div" textAlign="center">
                                             {armour.armour_name}
                                         </Typography>
-                                        {/*<Typography variant="body2" color="text.secondary">*/}
-                                        {/*    {monster.description}*/}
-                                        {/*</Typography>*/}
                                     </CardContent>
-                                    {/*<CardActions>*/}
-                                    {/*    <Button size="small">Share</Button>*/}
-                                    {/*    <Button size="small">Learn More</Button>*/}
-                                    {/*</CardActions>*/}
                                 </Card>
                             </Link>
                         </Box>
