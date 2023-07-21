@@ -34,6 +34,8 @@ export default function Monster() {
     const [monsterquests, setMonsterQuests] = useState(null);
     const [monsterhitzones, setMonsterHitzones] = useState(null);
     const [monsterdrops, setMonsterDrops] = useState(null);
+    const [monsterforgingweapons, setMonsterForgingWeapons] = useState(null);
+    const [monsterupgradeweapons, setMonsterUpgradeWeapons] = useState(null);
     const [searchBtn, setSearchBtn] = useState(true);
     const [viewColumnBtn, setViewColumnBtn] = useState(true);
     const [filterBtn, setFilterBtn] = useState(true);
@@ -183,6 +185,71 @@ export default function Monster() {
         },
     }];
 
+    const weaponcolumns = [{
+        name: "Img",
+        options: {
+            customBodyRender: (value) => (
+                <div className={classes.centerCell}>{value}</div>
+            ),
+        },
+    },{
+        name: "Weapon Name",
+        options: {
+            customBodyRender: (value) => (
+                <div className={classes.centerCell}>{value}</div>
+            ),
+        },
+    },{
+        name: "Attack",
+        options: {
+            customBodyRender: (value) => (
+                <div className={classes.centerCell}>{value}</div>
+            ),
+        },
+    },{
+        name: "Element",
+        options: {
+            customBodyRender: (value) => (
+                <div className={classes.centerCell}>{value}</div>
+            ),
+        },
+    },{
+        name: "Element Val",
+        options: {
+            customBodyRender: (value) => (
+                <div className={classes.centerCell}>{value}</div>
+            ),
+        },
+    },{
+        name: "Deco Slots",
+        options: {
+            customBodyRender: (value) => (
+                <div className={classes.centerCell}>{value}</div>
+            ),
+        },
+    },{
+        name: "Rampage Deco Slots",
+        options: {
+            customBodyRender: (value) => (
+                <div className={classes.centerCell}>{value}</div>
+            ),
+        },
+    },{
+        name: "Rarity",
+        options: {
+            customBodyRender: (value) => (
+                <div className={classes.centerCell}>{value}</div>
+            ),
+        },
+    }];
+
+    const deco_imgs = {
+        "deco1": "https://cdn.kiranico.net/file/kiranico/mhrise-web/images/ui/deco1.png",
+        "deco2": "https://cdn.kiranico.net/file/kiranico/mhrise-web/images/ui/deco2.png",
+        "deco3": "https://cdn.kiranico.net/file/kiranico/mhrise-web/images/ui/deco3.png",
+        "deco4": "https://cdn.kiranico.net/file/kiranico/mhrise-web/images/ui/deco4.png"
+    }
+
     const classes = useStyles();
 
     const options = {
@@ -246,10 +313,34 @@ export default function Monster() {
             }
         };
 
-        fetchMonster();
-        fetchMonsterQuests();
+        const fetchMonsterForgingWeapons = async () => {
+            try {
+                const response = await fetch(`${process.env.REACT_APP_react_url}/monsters/${id}/forging-weapons`);
+                const data = await response.json();
+                setMonsterForgingWeapons(data);
+                console.log(data);
+            } catch (error) {
+                console.error('Error fetching monster forging weapons:', error);
+            }
+        };
+
+        const fetchMonsterUpgradeWeapons = async () => {
+            try {
+                const response = await fetch(`${process.env.REACT_APP_react_url}/monsters/${id}/upgrade-weapons`);
+                const data = await response.json();
+                setMonsterUpgradeWeapons(data);
+                console.log(data);
+            } catch (error) {
+                console.error('Error fetching monster upgrade weapons:', error);
+            }
+        };
+
+        fetchMonster()
+        fetchMonsterQuests()
         fetchMonsterHitzones()
         fetchMonsterDrops()
+        fetchMonsterForgingWeapons()
+        fetchMonsterUpgradeWeapons()
     }, [id]);
 
     if (!monster) {
@@ -265,6 +356,13 @@ export default function Monster() {
     }
 
     if (!monsterdrops){
+        return <div>Loading...</div>;
+    }
+
+    if (!monsterforgingweapons) {
+        return <div>Loading...</div>;
+    }
+    if (!monsterupgradeweapons) {
         return <div>Loading...</div>;
     }
 
@@ -289,13 +387,86 @@ export default function Monster() {
     ]);
 
     const dropstableData = monsterdrops.map((drop) => [
-        drop["Item"],
+        <a href={`/items/${drop["Item id"]}`}>{drop["Item"]}</a>,
         drop["Drop Area"],
         drop["Drop Method"],
         drop["Drop Rate"],
         drop["Item Rank"],
         drop["Quantity"]
     ]);
+
+    const weaponsforgingtableData = monsterforgingweapons.map((weapon) => [
+        <Box
+            component="img"
+            sx={{
+                height: 100,
+                width: 100,
+                border: '2px solid black',
+                // maxHeight: { xs: 233, md: 167 },
+                // maxWidth: { xs: 350, md: 250 },
+            }}
+            alt=""
+            src={weapon.weapon_img_url}
+        />,
+        <a href={`/weapons/${weapon.weapon_id}/weapons`}>{weapon.weapon_name}</a>,
+        weapon.attack,
+        weapon.element,
+        weapon.element_val,
+        <div>
+            {weapon.deco_slots &&
+                JSON.parse(weapon.deco_slots).map((decoration, index) => (
+                    <span key={index}>
+          <img src={deco_imgs[decoration]} alt={decoration} />
+        </span>
+                ))}
+        </div>,
+        <div>
+            {weapon.rampage_deco_slots &&
+                JSON.parse(weapon.rampage_deco_slots).map((decoration, index) => (
+                    <span key={index}>
+          <img src={deco_imgs[decoration]} alt={decoration} />
+        </span>
+                ))}
+        </div>,
+        weapon.rarity,
+    ]);
+
+    const weaponsupgradetableData = monsterupgradeweapons.map((weapon) => [
+        <Box
+            component="img"
+            sx={{
+                height: 100,
+                width: 100,
+                border: '2px solid black',
+                // maxHeight: { xs: 233, md: 167 },
+                // maxWidth: { xs: 350, md: 250 },
+            }}
+            alt=""
+            src={weapon.weapon_img_url}
+        />,
+        <a href={`/weapons/${weapon.weapon_id}/weapons`}>{weapon.weapon_name}</a>,
+        weapon.attack,
+        weapon.element,
+        weapon.element_val,
+        <div>
+            {weapon.deco_slots &&
+                JSON.parse(weapon.deco_slots).map((decoration, index) => (
+                    <span key={index}>
+          <img src={deco_imgs[decoration]} alt={decoration} />
+        </span>
+                ))}
+        </div>,
+        <div>
+            {weapon.rampage_deco_slots &&
+                JSON.parse(weapon.rampage_deco_slots).map((decoration, index) => (
+                    <span key={index}>
+          <img src={deco_imgs[decoration]} alt={decoration} />
+        </span>
+                ))}
+        </div>,
+        weapon.rarity,
+    ]);
+
 
 
     return (
@@ -338,6 +509,14 @@ export default function Monster() {
             <div className="monster-drops">
                 <h2>Monster Drops</h2>
                 <MUIDataTable title={"Monster Drops"} data={dropstableData} columns={dropscolumns} options={options}/>
+            </div>
+            <div className="monster-forging-weapons">
+                <h2>Monster Forging Weapons</h2>
+                <MUIDataTable title={"Monster Forging Weapons"} data={weaponsforgingtableData} columns={weaponcolumns} options={options}/>
+            </div>
+            <div className="monster-upgrade-weapons">
+                <h2>Monster Upgrade Weapons</h2>
+                <MUIDataTable title={"Monster Upgrade Weapons"} data={weaponsupgradetableData} columns={weaponcolumns} options={options}/>
             </div>
         </div>
 

@@ -25,5 +25,10 @@ export const Sidebar = [
         title: "Items",
         path: "/items",
         cName: "nav-text"
+    },
+    {
+        title: "Skills",
+        path: "/skills",
+        cName: "nav-text"
     }
 ]

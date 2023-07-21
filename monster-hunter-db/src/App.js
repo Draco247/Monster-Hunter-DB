@@ -9,6 +9,7 @@ import ItemsPage from './pages/Items/ItemsPage'
 import ItemPage from './pages/Items/ItemPage'
 import ArmoursPage from './pages/Armour/ArmoursPage'
 import ArmourPage from './pages/Armour/ArmourPage'
+import ArmourSetPage from './pages/Armour/ArmourSetPage'
 
 // import ItemPage from './pages/Items/ItemPage'
 
@@ -38,6 +39,7 @@ function App() {
                 <Route path="/items/:id" element={<ItemPage/>}/>
                 <Route path="/armour" element={<ArmoursPage/>}/>
                 <Route path="/armour/:id" element={<ArmourPage/>}/>
+                <Route path="/armour/armourSets/:id" element={<ArmourSetPage/>}/>
             </Routes>
             {/*<Box m={10}>*/}
             {/*    <Monsters/>*/}

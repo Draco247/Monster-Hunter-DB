@@ -1,13 +1,7 @@
 package com.daniel.monster_hunter.monster_hunter.controller;
 
-import com.daniel.monster_hunter.monster_hunter.model.Items;
-import com.daniel.monster_hunter.monster_hunter.model.Quests;
-import com.daniel.monster_hunter.monster_hunter.model.Armour;
-import com.daniel.monster_hunter.monster_hunter.model.Skills;
-import com.daniel.monster_hunter.monster_hunter.repository.ArmourRepository;
-import com.daniel.monster_hunter.monster_hunter.repository.ItemRepository;
-import com.daniel.monster_hunter.monster_hunter.repository.SkillRepository;
-import com.daniel.monster_hunter.monster_hunter.repository.WeaponRepository;
+import com.daniel.monster_hunter.monster_hunter.model.*;
+import com.daniel.monster_hunter.monster_hunter.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +18,9 @@ public class ArmourController {
     private ArmourRepository armourRepository;
 
     @Autowired
+    private ArmourSetRepository armourSetRepository;
+
+    @Autowired
     private ItemRepository itemRepository;
 
     @Autowired
@@ -34,9 +31,19 @@ public class ArmourController {
         return armourRepository.findAll();
     }
 
+    @GetMapping("/getAllSets")
+    public List<ArmourSets> getAllArmourSets() {
+        return armourSetRepository.findAll();
+    }
+
     @GetMapping("/{armourId}")
     public Optional<Armour> getArmourById(@PathVariable(value = "armourId") Long armourId) {
         return armourRepository.findById(armourId);
+    }
+
+    @GetMapping("/armourSets/{armourSetId}")
+    public Optional<ArmourSets> getArmourSetById(@PathVariable(value = "armourSetId") Long armourSetId) {
+        return armourSetRepository.findById(armourSetId);
     }
 
     @GetMapping("/{armourId}/items")

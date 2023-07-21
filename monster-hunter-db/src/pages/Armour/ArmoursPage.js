@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
-import Armours from "../../components/armour/armours";
+// import Armours from "../../components/armour/armours";
+import ArmourSets from "../../components/armour/armourSets";
 import {Box, TextField} from "@mui/material";
 
 function ArmoursPage() {
@@ -16,7 +17,7 @@ function ArmoursPage() {
 
     return (
         <div className="armours">
-            <h1>Armours</h1>
+            <h1>Armour Sets</h1>
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                 <Box sx={{ width: 500, maxWidth: '100%' }}>
                     <TextField
@@ -34,7 +35,7 @@ function ArmoursPage() {
                 </Box>
             </Box>
             <Box m={10}>
-                <Armours searchQuery={searchValue}/>
+                <ArmourSets searchQuery={searchValue}/>
             </Box>
         </div>
     )

@@ -14,6 +14,8 @@ import os
 from dotenv import load_dotenv
 import asyncio
 import aiohttp
+from functools import partial
+
 
 load_dotenv()
 
@@ -1390,7 +1392,7 @@ class Scraper(object):
 
     class Armour:
 
-        async def process_item(self, session, fx_url, headers, idx, item):
+        async def process_armour_sets(self, session, idx, item):
             if not item.text:
                 item_text = "Base Commander Set"
             else:
@@ -1398,15 +1400,38 @@ class Scraper(object):
 
             async with session.get(fx_url + item["href"], headers=headers) as r:
                 soup = BeautifulSoup(await r.text(), "html.parser")
-                find_pieces = soup.find_all("table")[1].find_all("a", attrs={"class": "wiki_link"})
+                set_img = soup.select("#infobox > div > table > tbody > tr:nth-child(2) > td > h4 > img")
+                if not set_img:
+                    set_img = soup.select(
+                        "#infobox > div.table-responsive > table > tbody > tr:nth-child(2) > td > img")
+                elif not set_img:
+                    set_img = soup.select(
+                        "wiki-content-block > div.row > div > div > table > tbody > tr:nth-child(1) > td:nth-child(1) > h4 > img")
+                # print(set_img)
+                try:
+                    set_img = fx_url + set_img[0]["src"]
+                except IndexError:
+                    set_img = ""
+                tables = soup.find_all("tbody")
+
+                if len(tables) > 1:
+                    table = tables[1]
+                    find_pieces = []
+                    rows = table.find_all("tr")
+                    for row in rows:
+                        first_td = row.find("td")
+                        if first_td is not None:
+                            find_pieces.append(first_td)
+                else:
+                    print("Table not found or index out of range.")
                 pieces = []
                 for p in find_pieces:
-                    # print("ffee")
-                    # print(p)
-                    if len(p) > 1:
-                        # print(p.text.strip())
-                        pieces.append(p.text)
-                return {'id': idx, 'item': item_text, 'pieces': pieces}
+                    if p.find("img") is not None:
+                        piece_img = fx_url + p.find("img")["src"]
+                    else:
+                        piece_img = ""
+                    pieces.append({p.text.strip(): piece_img})
+                return {'id': idx, 'item': item_text, 'img': set_img, 'pieces': pieces}
 
         async def get_armour_sets(self):
 
@@ -1416,13 +1441,11 @@ class Scraper(object):
                 async with session.get(url, headers=headers) as r:
                     soup = BeautifulSoup(await r.text(), "html.parser")
                     # print(soup)
-                    find_all_armour_sets = soup.find("div", attrs={"class": "col-sm-3"}).find_all("a",
-                                                                                                  attrs={
-                                                                                                      "class": "wiki_link"})
-
+                    div_elements = soup.select("div.col-xs-4") + soup.select("div.col-sm-4")
+                    find_all_armour_sets = [element.find("a", attrs={"class": "wiki_link"}) for element in div_elements if element.find("a", attrs={"class": "wiki_link"}) is not None]
                     tasks = []
                     for idx, item in enumerate(find_all_armour_sets, start=1):
-                        task = asyncio.create_task(self.process_item(session, fx_url, headers, idx, item))
+                        task = asyncio.create_task(self.process_armour_sets(session, idx, item))
                         tasks.append(task)
 
                     all_armour_sets = await asyncio.gather(*tasks)
@@ -1432,18 +1455,127 @@ class Scraper(object):
                     for armour in all_armour_sets:
                         set_id = armour["id"]
                         set_name = armour["item"]
+                        set_img = armour["img"]
+                        armour_pieces = json.dumps(armour["pieces"])
 
                         mycursor.execute("SELECT COUNT(*) FROM armour_sets WHERE set_id = %s",
                                          [set_id])
                         exists = mycursor.fetchall()[0][0]
                         print(exists)
                         if exists == 0:
-                            sql = "INSERT INTO armour_sets (set_id, set_name) VALUES (%s, %s)"
+                            sql = "INSERT INTO armour_sets (set_id, set_name, set_img, armour_pieces) VALUES (%s, %s, %s, %s)"
 
-                            mycursor.execute(sql, (set_id, set_name))
+                            mycursor.execute(sql, (set_id, set_name, set_img, armour_pieces))
                     mydb.commit()
                     return all_armour_sets
 
+        # async def process_armour(self, session, url):
+        #     async with session.get(url) as response:
+        #         return await response.text()
+        #
+        # async def get_all_armour(self):
+        #     armours = []
+        #     armour_sets = await self.get_armour_sets()
+        #
+        #     async with aiohttp.ClientSession() as session:
+        #         tasks = [self.process_armour(session, f"{base_url}data/armors?view={i}") for i in range(10)]
+        #         pages = await asyncio.gather(*tasks)
+        #
+        #     num_pieces = 0
+        #     for i, page in enumerate(pages):
+        #         soup = BeautifulSoup(page, "html.parser")
+        #         all_armour = soup.find_all("tr")
+        #         for armour in all_armour:
+        #             # print(armour)
+        #             num_pieces += 1
+        #             print("Pieces:" + str(num_pieces))
+        #             rarity = str(i + 1)
+        #             armour_id = armour.find("a")["href"].split("armors/")[1]
+        #             # print(armour_id)
+        #             armour_name = armour.find("a").text
+        #             print(armour_name)
+        #             armour_name_split = armour_name.split(" ")
+        #             print(armour_name_split)
+        #             print("**************")
+        #             result = [armour_name_split[0]]
+        #             if len(armour_name_split) >= 3 and armour_name_split[2] in ["S", "X"]:
+        #                 result.append(armour_name_split[2])
+        #             print(result)
+        #
+        #             # print(armour_name.split(" ")[:2])
+        #             armour_url = armour.find("a")["href"]
+        #             # print(armour_url)
+        #             m_armour_img_url = armour.find_all("img")[0]["src"]
+        #             f_armour_img_url = armour.find_all("img")[1]["src"]
+        #             # print(m_armour_img_url)
+        #             # print(f_armour_img_url)
+        #             find_deco_slots = armour.find_all("td")[3].find_all("img")
+        #             deco_slots = []
+        #             for deco in find_deco_slots:
+        #                 # print(deco)
+        #                 deco_slots.append(deco["src"].split("ui/")[1].split(".")[0])
+        #             deco_slots = json.dumps(deco_slots)
+        #             # print(deco_slots)
+        #
+        #             defense = armour.find_all("td")[4].find("div").text
+        #             # print(defense)
+        #             fire_res = armour.find_all("td")[4].find_all("div")[1].find("span",
+        #                                                                         attrs={
+        #                                                                             "data-key": "elementAttack"}).text
+        #             # print(fire_res)
+        #             water_res = armour.find_all("td")[4].find_all("div")[2].find("span",
+        #                                                                          attrs={
+        #                                                                              "data-key": "elementAttack"}).text
+        #             # print(water_res)
+        #             ice_res = armour.find_all("td")[5].find_all("div")[0].find("span",
+        #                                                                        attrs={"data-key": "elementAttack"}).text
+        #             # print(ice_res)
+        #             thunder_res = armour.find_all("td")[5].find_all("div")[1].find("span",
+        #                                                                            attrs={
+        #                                                                                "data-key": "elementAttack"}).text
+        #             # print(thunder_res)
+        #             dragon_res = armour.find_all("td")[5].find_all("div")[2].find("span",
+        #                                                                           attrs={
+        #                                                                               "data-key": "elementAttack"}).text
+        #             # print(dragon_res)
+        #
+        #             find_armour_skills = armour.find_all("td")[-1].find_all("div")
+        #             armour_skills = []
+        #             for skill in find_armour_skills:
+        #                 skill_id = skill.find("a")["href"].split("skills/")[1]
+        #                 skill_name = skill.find("a").text
+        #                 skill_lvl = skill.contents[1].strip()
+        #                 # print(skill_id)
+        #                 # print(skill_lvl)
+        #                 armour_skills.append({"skill_id": skill_id, "skill_name": skill_name, "lvl": skill_lvl})
+        #             armour_skills = json.dumps(armour_skills)
+        #             # print(armour_skills)
+        #
+        #             armour_description, forging_materials = self.get_armour_details(armour_url)
+        #             forging_materials = json.dumps(forging_materials)
+        #             # print(armour_description)
+        #             # print(forging_materials)
+        #             set_id = 0
+        #             set_name = ""
+        #             for armour_set in armour_sets:
+        #                 # print(type(armour_set["pieces"]))
+        #                 for piece in armour_set["pieces"]:
+        #                     # print(piece)
+        #                     # print(type(piece))
+        #                     if armour_name in piece:
+        #                         # print(armour_set["item"])
+        #                         set_name = armour_set["item"]
+        #                         set_id = armour_set["id"]
+        #                         # matched +=1
+        #                         # print("Matched:"+str(matched))
+        #                         break
+        #             print(armour_id, armour_name, set_id, set_name)
+        #             armours.append(
+        #                 (armour_id, armour_name, armour_url, m_armour_img_url, f_armour_img_url, deco_slots,
+        #                  defense, fire_res, water_res, ice_res, thunder_res, dragon_res, armour_skills,
+        #                  armour_description, forging_materials, rarity, set_id, set_name))
+        #
+        #     self.save_armour(armours)
         def get_all_armour(self):
             armours = []
             armour_sets = asyncio.run(self.get_armour_sets())
@@ -1527,17 +1659,21 @@ class Scraper(object):
                     forging_materials = json.dumps(forging_materials)
                     # print(armour_description)
                     # print(forging_materials)
-                    set_id = 0
-                    set_name = ""
+                    set_id = None
+                    set_name = None
                     for armour_set in armour_sets:
-                        if armour_name in armour_set["pieces"]:
-                            # print(armour_set["item"])
-                            set_name = armour_set["item"]
-                            set_id = armour_set["id"]
-                            # matched +=1
-                            # print("Matched:"+str(matched))
-                            break
-                    print(armour_id, armour_name, set_id, set_name)
+                        # print(type(armour_set["pieces"]))
+                        for piece in armour_set["pieces"]:
+                            # print(piece)
+                            # print(type(piece))
+                            if armour_name in piece:
+                                # print(armour_set["item"])
+                                set_name = armour_set["item"]
+                                set_id = armour_set["id"]
+                                # matched +=1
+                                # print("Matched:"+str(matched))
+                                break
+                    # print(armour_id, armour_name, set_id, set_name)
                     armours.append(
                         (armour_id, armour_name, armour_url, m_armour_img_url, f_armour_img_url, deco_slots,
                          defense, fire_res, water_res, ice_res, thunder_res, dragon_res, armour_skills,
@@ -1647,6 +1783,7 @@ webscrape = Scraper(headers, base_url, mydb)
 # webscrape.Weapons().get_all_weapons()
 # webscrape.Skills().get_skills()
 webscrape.Armour().get_all_armour()
+
 
 # webscrape = Scraper(headers, base_url)
 

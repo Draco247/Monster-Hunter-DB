@@ -1,5 +1,7 @@
 package com.daniel.monster_hunter.monster_hunter.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -45,6 +47,13 @@ public class Armour {
             joinColumns = { @JoinColumn(name = "armour_id") },
             inverseJoinColumns = { @JoinColumn(name = "item_id") })
     private Set<Items> armourforging = new HashSet<>();
+
+    @Column(name = "forging_materials", columnDefinition = "json")
+    private String forgingmats;
+
+    @Column(name = "armour_skills", columnDefinition = "json")
+    private String armourskills;
+
     private String armour_description;
 
     @ManyToMany(fetch = FetchType.LAZY,
@@ -56,4 +65,9 @@ public class Armour {
             joinColumns = { @JoinColumn(name = "armour_id") },
             inverseJoinColumns = { @JoinColumn(name = "skill_id") })
     private Set<Skills> skills = new HashSet<>();
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "set_id")
+    @JsonIgnore
+    private ArmourSets armourSet;
 }
