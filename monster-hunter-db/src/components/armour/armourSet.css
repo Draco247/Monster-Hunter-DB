@@ -1,0 +1,7 @@
+.custom-table-header {
+    border: 1px solid #ccc; /* Add your desired border style for header cells */
+}
+
+.custom-table-cell {
+    border: 1px solid #ccc; /* Add your desired border style for body cells */
+}

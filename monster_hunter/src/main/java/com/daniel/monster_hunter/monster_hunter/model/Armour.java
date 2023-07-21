@@ -60,10 +60,9 @@ public class Armour {
             cascade = {
                     CascadeType.PERSIST,
                     CascadeType.MERGE
-            })
-    @JoinTable(name = "armour_armour_skills",
-            joinColumns = { @JoinColumn(name = "armour_id") },
-            inverseJoinColumns = { @JoinColumn(name = "skill_id") })
+            },
+            mappedBy = "armour")
+    @JsonIgnore
     private Set<Skills> skills = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

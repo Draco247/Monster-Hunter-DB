@@ -30,8 +30,12 @@ public class Skills {
             cascade = {
                     CascadeType.PERSIST,
                     CascadeType.MERGE
-            },
-            mappedBy = "skills")
-    @JsonIgnore
+            })
+    @JoinTable(name = "armour_armour_skills",
+            joinColumns = { @JoinColumn(name = "skill_id") },
+            inverseJoinColumns = { @JoinColumn(name = "armour_id") })
     private Set<Armour> armour = new HashSet<>();
+
+    @OneToMany(mappedBy = "skills", cascade = CascadeType.ALL)
+    private Set<SkillDecorations> skillDecorations = new HashSet<>();
 }
