@@ -105,11 +105,6 @@ export default function Weapons(weaponType) {
         viewColumns: viewColumnBtn,
         print: false,
         selectableRows: false,
-        // filter: filterBtn,
-        // filterType: "dropdown",
-        // responsive,
-        // tableBodyHeight,
-        // tableBodyMaxHeight,
         onTableChange: (event, state) => {
             console.log(event);
             console.dir(state);

@@ -1,20 +1,9 @@
 import * as React from 'react';
+import './monster.css'
 import {useState, useEffect} from "react";
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import { Grid,Box } from '@mui/material';
 import {Link, useParams} from "react-router-dom";
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import TableCell from "@mui/material/TableCell";
-import TableBody from "@mui/material/TableBody";
-import TableContainer from "@mui/material/TableContainer";
 import MUIDataTable from "mui-datatables";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -257,11 +246,6 @@ export default function Monster() {
         viewColumns: viewColumnBtn,
         print: false,
         selectableRows: false,
-        // filter: filterBtn,
-        // filterType: "dropdown",
-        // responsive,
-        // tableBodyHeight,
-        // tableBodyMaxHeight,
         onTableChange: (event, state) => {
             console.log(event);
             console.dir(state);
@@ -343,28 +327,28 @@ export default function Monster() {
         fetchMonsterUpgradeWeapons()
     }, [id]);
 
-    if (!monster) {
+    if (!monster || !monsterquests || !monsterhitzones || !monsterdrops || !monsterupgradeweapons || !monsterforgingweapons) {
         return <div>Loading...</div>;
     }
 
-    if (!monsterquests) {
-        return <div>Loading...</div>;
-    }
-
-    if (!monsterhitzones) {
-        return <div>Loading...</div>;
-    }
-
-    if (!monsterdrops){
-        return <div>Loading...</div>;
-    }
-
-    if (!monsterforgingweapons) {
-        return <div>Loading...</div>;
-    }
-    if (!monsterupgradeweapons) {
-        return <div>Loading...</div>;
-    }
+    // if (!monsterquests) {
+    //     return <div>Loading...</div>;
+    // }
+    //
+    // if (!monsterhitzones) {
+    //     return <div>Loading...</div>;
+    // }
+    //
+    // if (!monsterdrops){
+    //     return <div>Loading...</div>;
+    // }
+    //
+    // if (!monsterforgingweapons) {
+    //     return <div>Loading...</div>;
+    // }
+    // if (!monsterupgradeweapons) {
+    //     return <div>Loading...</div>;
+    // }
 
     const questtableData = monsterquests.map((quest) => [
         "......",
@@ -473,16 +457,15 @@ export default function Monster() {
         <div>
             <div className="monster-details">
                 <h1>{monster.name}</h1>
-
-                <Grid container spacing={2} alignItems="center">
-                    <Grid item xs={12} sm={6}>
-                        <div style={{ border: '1px solid black', borderRadius:'5px', padding: '10px'}}>
-                            <p style={{ fontSize: '32px' }}>{monster.description}</p>
+                <Grid container spacing={2} alignItems="stretch">
+                    <Grid item xs={12} sm={9}>
+                        <div style={{ border: '1px solid black', borderRadius: '5px', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <p style={{ fontSize: '32px', textAlign: 'center' }}>{monster.description}</p>
                         </div>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <div style={{ border: '1px solid black', borderRadius:'5px', padding: '10px' }}>
-                            <Box m={4}>
+                    <Grid item xs={12} sm={3}>
+                        <div style={{ border: '1px solid black', borderRadius:'5px', height: '100%'}}>
+                            <Box style={{ border: '1px solid red', borderRadius:'5px', padding: '10px' }}>
                                 <CardMedia
                                     component="img"
                                     image={monster.image_link}

@@ -1,6 +1,6 @@
 package com.daniel.monster_hunter.monster_hunter.repository;
 
-import com.daniel.monster_hunter.monster_hunter.dto.ArmourDTO;
+//import com.daniel.monster_hunter.monster_hunter.dto.ArmourDTO;
 import com.daniel.monster_hunter.monster_hunter.model.Armour;
 import com.daniel.monster_hunter.monster_hunter.model.Monsters;
 import com.daniel.monster_hunter.monster_hunter.model.Weapons;
