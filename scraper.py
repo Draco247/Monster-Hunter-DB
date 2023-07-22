@@ -16,7 +16,6 @@ import asyncio
 import aiohttp
 from functools import partial
 
-
 load_dotenv()
 
 headers = ({'User-Agent':
@@ -99,48 +98,82 @@ class Scraper(object):
                     # print(mycursor)
                     mycursor.execute(sql, val)
                     # print(mycursor)
-                    print(self.get_monster_details(soup, monster_id, monster_type))
+                    print(self.get_monster_details(soup, monster_id, monster_type, monster_name))
 
                 else:
-                    self.get_monster_details(soup, monster_id, monster_type)
+                    self.get_monster_details(soup, monster_id, monster_type, monster_name)
             mydb.commit()
 
-        def get_monster_details(self, soup, monster_id, monster_type):
+        def get_monster_details(self, soup, monster_id, monster_type, monster_name):
             # hitzones = []
-            self.get_monster_physiology(soup, monster_id)
-
+            # self.get_monster_physiology(soup, monster_id)
+            self.get_monster_physiology(monster_name)
             # drops = []
-            self.get_monster_drops(soup, monster_id)
+            # self.get_monster_drops(soup, monster_id)
 
             # quests = []
-            self.get_monster_quests(soup, monster_id)
+            # self.get_monster_quests(soup, monster_id)
 
-        def get_monster_physiology(self, soup, monster_id):
+        # def get_monster_physiology(self, soup, monster_id):
+        #     hitzones = []
+        #     monster_hitzones = soup.find_all('table')[0]  # find monster phys table on page
+        #     rows = monster_hitzones.find_all('tr')
+        #     for row in rows:  # extract all important details from the table such as hitzone values for the different weapon types
+        #         hitzone = row.find_all('td')[0].text
+        #         hitzone_state = row.find_all('td')[1].text
+        #         blade_hitzone_value = row.find_all('td')[2].text
+        #         blunt_hitzone_value = row.find_all('td')[3].text
+        #         gunner_hitzone_value = row.find_all('td')[4].text
+        #         fire_hitzone_value = row.find_all('td')[5].text
+        #         water_hitzone_value = row.find_all('td')[6].text
+        #         ice_hitzone_value = row.find_all('td')[7].text
+        #         thunder_hitzone_value = row.find_all('td')[8].text
+        #         dragon_hitzone_value = row.find_all('td')[9].text
+        #         stun_hitzone_value = row.find_all('td')[10].text
+        #         hitzones.append({'hitzone': hitzone, 'state': hitzone_state, 'blade hitzone': blade_hitzone_value,
+        #                          'blunt hitzone': blunt_hitzone_value,
+        #                          'gunner hitzone': gunner_hitzone_value, 'fire hitzone': fire_hitzone_value,
+        #                          'water hitzone': water_hitzone_value,
+        #                          'ice hitzone': ice_hitzone_value, 'thunder hitzone': thunder_hitzone_value,
+        #                          'dragon hitzone': dragon_hitzone_value,
+        #                          'stun': stun_hitzone_value})
+        #     hitzones = json.dumps(hitzones)
+        #     mycursor = mydb.cursor()
+        #     mycursor.execute("UPDATE monsters SET hitzones = %s WHERE monster_id = %s", [hitzones, monster_id])
+        #     # return hitzones
+        #     # return monster_hitzones
+        def get_monster_physiology(self, monster_name):
             hitzones = []
-            monster_hitzones = soup.find_all('table')[0]  # find monster phys table on page
-            rows = monster_hitzones.find_all('tr')
-            for row in rows:  # extract all important details from the table such as hitzone values for the different weapon types
-                hitzone = row.find_all('td')[0].text
-                hitzone_state = row.find_all('td')[1].text
-                blade_hitzone_value = row.find_all('td')[2].text
-                blunt_hitzone_value = row.find_all('td')[3].text
-                gunner_hitzone_value = row.find_all('td')[4].text
-                fire_hitzone_value = row.find_all('td')[5].text
-                water_hitzone_value = row.find_all('td')[6].text
-                ice_hitzone_value = row.find_all('td')[7].text
-                thunder_hitzone_value = row.find_all('td')[8].text
-                dragon_hitzone_value = row.find_all('td')[9].text
-                stun_hitzone_value = row.find_all('td')[10].text
-                hitzones.append({'hitzone': hitzone, 'state': hitzone_state, 'blade hitzone': blade_hitzone_value,
-                                 'blunt hitzone': blunt_hitzone_value,
-                                 'gunner hitzone': gunner_hitzone_value, 'fire hitzone': fire_hitzone_value,
-                                 'water hitzone': water_hitzone_value,
-                                 'ice hitzone': ice_hitzone_value, 'thunder hitzone': thunder_hitzone_value,
-                                 'dragon hitzone': dragon_hitzone_value,
-                                 'stun': stun_hitzone_value})
-            hitzones = json.dumps(hitzones)
-            mycursor = mydb.cursor()
-            mycursor.execute("UPDATE monsters SET hitzones = %s WHERE monster_id = %s", [hitzones, monster_id])
+            url = f"{fx_url}/"
+            # words = monster_name.split(" ")
+            url += "+".join(monster_name.split(" "))
+            session = requests.Session()
+            r = session.get(url, headers=headers)
+            soup = BeautifulSoup(r.content, "html.parser")
+            # monster_hitzones = soup.find_all('table')[0]  # find monster phys table on page
+            # rows = monster_hitzones.find_all('tr')
+            # for row in rows:  # extract all important details from the table such as hitzone values for the different weapon types
+            #     hitzone = row.find_all('td')[0].text
+            #     hitzone_state = row.find_all('td')[1].text
+            #     blade_hitzone_value = row.find_all('td')[2].text
+            #     blunt_hitzone_value = row.find_all('td')[3].text
+            #     gunner_hitzone_value = row.find_all('td')[4].text
+            #     fire_hitzone_value = row.find_all('td')[5].text
+            #     water_hitzone_value = row.find_all('td')[6].text
+            #     ice_hitzone_value = row.find_all('td')[7].text
+            #     thunder_hitzone_value = row.find_all('td')[8].text
+            #     dragon_hitzone_value = row.find_all('td')[9].text
+            #     stun_hitzone_value = row.find_all('td')[10].text
+            #     hitzones.append({'hitzone': hitzone, 'state': hitzone_state, 'blade hitzone': blade_hitzone_value,
+            #                      'blunt hitzone': blunt_hitzone_value,
+            #                      'gunner hitzone': gunner_hitzone_value, 'fire hitzone': fire_hitzone_value,
+            #                      'water hitzone': water_hitzone_value,
+            #                      'ice hitzone': ice_hitzone_value, 'thunder hitzone': thunder_hitzone_value,
+            #                      'dragon hitzone': dragon_hitzone_value,
+            #                      'stun': stun_hitzone_value})
+            # hitzones = json.dumps(hitzones)
+            # mycursor = mydb.cursor()
+            # mycursor.execute("UPDATE monsters SET hitzones = %s WHERE monster_id = %s", [hitzones, monster_id])
             # return hitzones
             # return monster_hitzones
 
@@ -1442,7 +1475,8 @@ class Scraper(object):
                     soup = BeautifulSoup(await r.text(), "html.parser")
                     # print(soup)
                     div_elements = soup.select("div.col-xs-4") + soup.select("div.col-sm-4")
-                    find_all_armour_sets = [element.find("a", attrs={"class": "wiki_link"}) for element in div_elements if element.find("a", attrs={"class": "wiki_link"}) is not None]
+                    find_all_armour_sets = [element.find("a", attrs={"class": "wiki_link"}) for element in div_elements
+                                            if element.find("a", attrs={"class": "wiki_link"}) is not None]
                     tasks = []
                     for idx, item in enumerate(find_all_armour_sets, start=1):
                         task = asyncio.create_task(self.process_armour_sets(session, idx, item))
@@ -1778,12 +1812,11 @@ class Scraper(object):
 
 
 webscrape = Scraper(headers, base_url, mydb)
-# webscrape.Monsters().get_monsters()
+webscrape.Monsters().get_monsters()
 # webscrape.Items().get_all_items()
 # webscrape.Weapons().get_all_weapons()
 # webscrape.Skills().get_skills()
-webscrape.Armour().get_all_armour()
-
+# webscrape.Armour().get_all_armour()
 
 # webscrape = Scraper(headers, base_url)
 
