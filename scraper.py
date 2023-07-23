@@ -107,7 +107,7 @@ class Scraper(object):
         def get_monster_details(self, soup, monster_id, monster_type, monster_name):
             # hitzones = []
             # self.get_monster_physiology(soup, monster_id)
-            print(self.get_monster_physiology(monster_name))
+            print(self.get_monster_physiology(monster_name, monster_id))
             # drops = []
             # self.get_monster_drops(soup, monster_id)
 
@@ -142,7 +142,7 @@ class Scraper(object):
         #     mycursor.execute("UPDATE monsters SET hitzones = %s WHERE monster_id = %s", [hitzones, monster_id])
         #     # return hitzones
         #     # return monster_hitzones
-        def get_monster_physiology(self, monster_name):
+        def get_monster_physiology_and_render(self, monster_name, monster_id):
             hitzones = []
             url = f"{fx_url}/"
             # words = monster_name.split(" ")
@@ -151,36 +151,79 @@ class Scraper(object):
             r = session.get(url, headers=headers)
             soup = BeautifulSoup(r.content, "html.parser")
             # print(soup.find_all("table", attrs={"class":"wiki_table"})[0])
-            monster_info_table = soup.find_all("table", attrs={"class":"wiki_table"})[0]
-            # print(monster_info_table.find_all("tr")[3])
-            try:
-                monster_species_type = monster_info_table.find_all("tr")[3].find("a").text
-                monster_threat_level = monster_info_table.find_all("tr")[4].find_all("td")[1].text
-            except AttributeError:
-                monster_species_type = monster_info_table.find_all("tr")[3].find_all("td")[1].text
-                monster_threat_level = monster_info_table.find_all("tr")[7].find_all("td")[1].text
+            monster_info_table = soup.find_all("table", attrs={"class":"wiki_table"})[0].find_all("tr")
+            # print(monster_info_table)
+            monster_render = fx_url + monster_info_table[1].find("img")["src"]
+            print(monster_render)
+            monster_species_type = ""
+            monster_threat_level = ""
+            monster_locations = []
+            for row in monster_info_table:
+                # print(row)
+                tds = row.find_all("td")
+                # print(tds)
 
-            if monster_threat_level == "__element__" or monster_threat_level is None:
-                monster_threat_level = monster_info_table.find_all("tr")[7].find_all("td")[1].text
-            # print(monster_species_type)
-            # print(monster_threat_level)
-            star = [i for i in monster_threat_level]
-            num = [i for i in monster_threat_level if i.isdigit()]
-            # print(star)
-            # print(num)
-            if num:
-                monster_threat_level = "".join(num)
-            elif not num:
-                monster_threat_level = len(star)
-            else:
-                monster_threat_level = monster_threat_level.find_all("tr")[7].find_all("td")[1].text
-            # print(monster_threat_level)
-            # monster_locations = monster_info_table.find_all("tr")[9].find_all("a")
-            monster_locations = [i.text for i in monster_info_table.find_all("tr")[9].find_all("a")]
-            if monster_locations == []:
-                monster_locations = [i.text for i in monster_info_table.find_all("tr")[9].find_all("td")[1]]
+                if len(tds) > 0 and ("Species" in tds[0] or "Class" in tds[0]):
+                    monster_species_type = tds[1].text
+                    # print(monster_species_type)
+                if len(tds) > 0 and "Threat Level" in tds[0]:
+                    star = [i for i in tds[1].text]
+                    num = [i for i in tds[1].text if i.isdigit()]
+                    if num:
+                        monster_threat_level = "".join(num)
+                    else:
+                        monster_threat_level = len(star)
+                    # print(monster_threat_level)
+                if len(tds) > 0 and ("Location(s)" in tds[0] or "Locations" in tds[0]):
+                    monster_locations = [location.text for location in tds[1] if len(location) != 0 and "\xa0" not in location]
+                    # for location in tds[1]:
+                    #     print(location.text)
+                        #print
+                    # print(monster_locations)
 
-            return monster_name, monster_species_type, monster_threat_level, monster_locations
+            monster_phys_hitzones_table = soup.find_all("table", attrs={"class":"wiki_table"})[1].find_all("tr")
+            phys_hitzones = []
+            for row in monster_phys_hitzones_table[1:]:
+                hitzone = row.find("th").text
+                # print(hitzone)
+                blade_hitzone = row.find_all("td")[0].text
+                # print(blade_hitzone)
+                blunt_hitzone = row.find_all("td")[1].text
+                # print(blunt_hitzone)
+                gunner_hitzone = row.find_all("td")[2].text
+                # print(gunner_hitzone)
+                phys_hitzones.append({'hitzone': hitzone, 'blade_hitzone': blade_hitzone,
+                                      'blunt_hitzone': blunt_hitzone,'gunner_hitzone': gunner_hitzone})
+
+            monster_ele_hitzones_table = soup.find_all("table", attrs={"class":"wiki_table"})[2].find_all("tr")
+            ele_hitzones = []
+            for row in monster_ele_hitzones_table[1:]:
+                hitzone = row.find("th").text
+                # print(hitzone)
+                fire_hitzone = row.find_all("td")[0].text
+                # print(fire_hitzone)
+                water_hitzone = row.find_all("td")[1].text
+                # print(water_hitzone)
+                thunder_hitzone = row.find_all("td")[2].text
+                # print(thunder_hitzone)
+                ice_hitzone = row.find_all("td")[3].text
+                # print(ice_hitzone)
+                dragon_hitzone = row.find_all("td")[4].text
+                # print(dragon_hitzone)
+                ele_hitzones.append({'hitzone': hitzone, 'fire_hitzone': fire_hitzone,'water_hitzone': water_hitzone,
+                                     'ice_hitzone': ice_hitzone, 'thunder_hitzone': thunder_hitzone,'dragon_hitzone': dragon_hitzone,})
+            # print(monster_phys_hitzones_table)
+            # print(phys_hitzones)
+            # print(ele_hitzones)
+
+            hitzones = [phys_hitzones[i] | ele_hitzones[i] for i in range(0,len(phys_hitzones))]
+            hitzones = json.dumps(hitzones)
+            mycursor = mydb.cursor()
+            mycursor.execute("UPDATE monsters SET hitzones = %s WHERE monster_id = %s", [hitzones, monster_id])
+            print(mycursor)
+            mydb.commit()
+
+            # return monster_name, monster_species_type, monster_threat_level, monster_locations
             # print(monster_locations)
             # monster_species_type = monster_info_table.find_all("tr")[3].find("a").text
             # print(monster_species_type)
