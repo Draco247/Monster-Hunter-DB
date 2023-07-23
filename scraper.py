@@ -49,7 +49,7 @@ class Scraper(object):
     class Monsters:
         def get_monsters(self):
             self.get_large_monster()
-            self.get_small_monster()
+            # self.get_small_monster()
 
         def get_large_monster(self):
             url = f"{base_url}data/monsters?view=lg"
@@ -101,13 +101,13 @@ class Scraper(object):
                     print(self.get_monster_details(soup, monster_id, monster_type, monster_name))
 
                 else:
-                    self.get_monster_details(soup, monster_id, monster_type, monster_name)
+                    print(self.get_monster_details(soup, monster_id, monster_type, monster_name))
             mydb.commit()
 
         def get_monster_details(self, soup, monster_id, monster_type, monster_name):
             # hitzones = []
             # self.get_monster_physiology(soup, monster_id)
-            self.get_monster_physiology(monster_name)
+            print(self.get_monster_physiology(monster_name))
             # drops = []
             # self.get_monster_drops(soup, monster_id)
 
@@ -150,6 +150,43 @@ class Scraper(object):
             session = requests.Session()
             r = session.get(url, headers=headers)
             soup = BeautifulSoup(r.content, "html.parser")
+            # print(soup.find_all("table", attrs={"class":"wiki_table"})[0])
+            monster_info_table = soup.find_all("table", attrs={"class":"wiki_table"})[0]
+            # print(monster_info_table.find_all("tr")[3])
+            try:
+                monster_species_type = monster_info_table.find_all("tr")[3].find("a").text
+                monster_threat_level = monster_info_table.find_all("tr")[4].find_all("td")[1].text
+            except AttributeError:
+                monster_species_type = monster_info_table.find_all("tr")[3].find_all("td")[1].text
+                monster_threat_level = monster_info_table.find_all("tr")[7].find_all("td")[1].text
+
+            if monster_threat_level == "__element__" or monster_threat_level is None:
+                monster_threat_level = monster_info_table.find_all("tr")[7].find_all("td")[1].text
+            # print(monster_species_type)
+            # print(monster_threat_level)
+            star = [i for i in monster_threat_level]
+            num = [i for i in monster_threat_level if i.isdigit()]
+            # print(star)
+            # print(num)
+            if num:
+                monster_threat_level = "".join(num)
+            elif not num:
+                monster_threat_level = len(star)
+            else:
+                monster_threat_level = monster_threat_level.find_all("tr")[7].find_all("td")[1].text
+            # print(monster_threat_level)
+            # monster_locations = monster_info_table.find_all("tr")[9].find_all("a")
+            monster_locations = [i.text for i in monster_info_table.find_all("tr")[9].find_all("a")]
+            if monster_locations == []:
+                monster_locations = [i.text for i in monster_info_table.find_all("tr")[9].find_all("td")[1]]
+
+            return monster_name, monster_species_type, monster_threat_level, monster_locations
+            # print(monster_locations)
+            # monster_species_type = monster_info_table.find_all("tr")[3].find("a").text
+            # print(monster_species_type)
+            # monster_threat_level = monster_info_table.find_all("tr")[4].find_all("td")[1].text
+            # print(monster_threat_level)
+
             # monster_hitzones = soup.find_all('table')[0]  # find monster phys table on page
             # rows = monster_hitzones.find_all('tr')
             # for row in rows:  # extract all important details from the table such as hitzone values for the different weapon types
