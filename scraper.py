@@ -151,7 +151,7 @@ class Scraper(object):
             r = session.get(url, headers=headers)
             soup = BeautifulSoup(r.content, "html.parser")
             # print(soup.find_all("table", attrs={"class":"wiki_table"})[0])
-            monster_info_table = soup.find_all("table", attrs={"class":"wiki_table"})[0].find_all("tr")
+            monster_info_table = soup.find_all("table", attrs={"class": "wiki_table"})[0].find_all("tr")
             # print(monster_info_table)
             monster_render = fx_url + monster_info_table[1].find("img")["src"]
             print(monster_render)
@@ -175,13 +175,14 @@ class Scraper(object):
                         monster_threat_level = len(star)
                     # print(monster_threat_level)
                 if len(tds) > 0 and ("Location(s)" in tds[0] or "Locations" in tds[0]):
-                    monster_locations = [location.text for location in tds[1] if len(location) != 0 and "\xa0" not in location]
+                    monster_locations = [location.text for location in tds[1] if
+                                         len(location) != 0 and "\xa0" not in location]
                     # for location in tds[1]:
                     #     print(location.text)
-                        #print
+                    # print
                     # print(monster_locations)
 
-            monster_phys_hitzones_table = soup.find_all("table", attrs={"class":"wiki_table"})[1].find_all("tr")
+            monster_phys_hitzones_table = soup.find_all("table", attrs={"class": "wiki_table"})[1].find_all("tr")
             phys_hitzones = []
             for row in monster_phys_hitzones_table[1:]:
                 hitzone = row.find("th").text
@@ -193,9 +194,9 @@ class Scraper(object):
                 gunner_hitzone = row.find_all("td")[2].text
                 # print(gunner_hitzone)
                 phys_hitzones.append({'hitzone': hitzone, 'blade_hitzone': blade_hitzone,
-                                      'blunt_hitzone': blunt_hitzone,'gunner_hitzone': gunner_hitzone})
+                                      'blunt_hitzone': blunt_hitzone, 'gunner_hitzone': gunner_hitzone})
 
-            monster_ele_hitzones_table = soup.find_all("table", attrs={"class":"wiki_table"})[2].find_all("tr")
+            monster_ele_hitzones_table = soup.find_all("table", attrs={"class": "wiki_table"})[2].find_all("tr")
             ele_hitzones = []
             for row in monster_ele_hitzones_table[1:]:
                 hitzone = row.find("th").text
@@ -210,18 +211,20 @@ class Scraper(object):
                 # print(ice_hitzone)
                 dragon_hitzone = row.find_all("td")[4].text
                 # print(dragon_hitzone)
-                ele_hitzones.append({'hitzone': hitzone, 'fire_hitzone': fire_hitzone,'water_hitzone': water_hitzone,
-                                     'ice_hitzone': ice_hitzone, 'thunder_hitzone': thunder_hitzone,'dragon_hitzone': dragon_hitzone,})
+                ele_hitzones.append({'hitzone': hitzone, 'fire_hitzone': fire_hitzone, 'water_hitzone': water_hitzone,
+                                     'ice_hitzone': ice_hitzone, 'thunder_hitzone': thunder_hitzone,
+                                     'dragon_hitzone': dragon_hitzone, })
             # print(monster_phys_hitzones_table)
             # print(phys_hitzones)
             # print(ele_hitzones)
 
-            hitzones = [phys_hitzones[i] | ele_hitzones[i] for i in range(0,len(phys_hitzones))]
+            hitzones = [phys_hitzones[i] | ele_hitzones[i] for i in range(0, len(phys_hitzones))]
             hitzones = json.dumps(hitzones)
-            mycursor = mydb.cursor()
-            mycursor.execute("UPDATE monsters SET hitzones = %s WHERE monster_id = %s", [hitzones, monster_id])
-            print(mycursor)
+            # mycursor = mydb.cursor()
+            # mycursor.execute("UPDATE monsters SET hitzones = %s WHERE monster_id = %s", [hitzones, monster_id])
+            # print(mycursor)
             mydb.commit()
+            return monster_render, hitzones
 
             # return monster_name, monster_species_type, monster_threat_level, monster_locations
             # print(monster_locations)
@@ -1583,113 +1586,6 @@ class Scraper(object):
                     mydb.commit()
                     return all_armour_sets
 
-        # async def process_armour(self, session, url):
-        #     async with session.get(url) as response:
-        #         return await response.text()
-        #
-        # async def get_all_armour(self):
-        #     armours = []
-        #     armour_sets = await self.get_armour_sets()
-        #
-        #     async with aiohttp.ClientSession() as session:
-        #         tasks = [self.process_armour(session, f"{base_url}data/armors?view={i}") for i in range(10)]
-        #         pages = await asyncio.gather(*tasks)
-        #
-        #     num_pieces = 0
-        #     for i, page in enumerate(pages):
-        #         soup = BeautifulSoup(page, "html.parser")
-        #         all_armour = soup.find_all("tr")
-        #         for armour in all_armour:
-        #             # print(armour)
-        #             num_pieces += 1
-        #             print("Pieces:" + str(num_pieces))
-        #             rarity = str(i + 1)
-        #             armour_id = armour.find("a")["href"].split("armors/")[1]
-        #             # print(armour_id)
-        #             armour_name = armour.find("a").text
-        #             print(armour_name)
-        #             armour_name_split = armour_name.split(" ")
-        #             print(armour_name_split)
-        #             print("**************")
-        #             result = [armour_name_split[0]]
-        #             if len(armour_name_split) >= 3 and armour_name_split[2] in ["S", "X"]:
-        #                 result.append(armour_name_split[2])
-        #             print(result)
-        #
-        #             # print(armour_name.split(" ")[:2])
-        #             armour_url = armour.find("a")["href"]
-        #             # print(armour_url)
-        #             m_armour_img_url = armour.find_all("img")[0]["src"]
-        #             f_armour_img_url = armour.find_all("img")[1]["src"]
-        #             # print(m_armour_img_url)
-        #             # print(f_armour_img_url)
-        #             find_deco_slots = armour.find_all("td")[3].find_all("img")
-        #             deco_slots = []
-        #             for deco in find_deco_slots:
-        #                 # print(deco)
-        #                 deco_slots.append(deco["src"].split("ui/")[1].split(".")[0])
-        #             deco_slots = json.dumps(deco_slots)
-        #             # print(deco_slots)
-        #
-        #             defense = armour.find_all("td")[4].find("div").text
-        #             # print(defense)
-        #             fire_res = armour.find_all("td")[4].find_all("div")[1].find("span",
-        #                                                                         attrs={
-        #                                                                             "data-key": "elementAttack"}).text
-        #             # print(fire_res)
-        #             water_res = armour.find_all("td")[4].find_all("div")[2].find("span",
-        #                                                                          attrs={
-        #                                                                              "data-key": "elementAttack"}).text
-        #             # print(water_res)
-        #             ice_res = armour.find_all("td")[5].find_all("div")[0].find("span",
-        #                                                                        attrs={"data-key": "elementAttack"}).text
-        #             # print(ice_res)
-        #             thunder_res = armour.find_all("td")[5].find_all("div")[1].find("span",
-        #                                                                            attrs={
-        #                                                                                "data-key": "elementAttack"}).text
-        #             # print(thunder_res)
-        #             dragon_res = armour.find_all("td")[5].find_all("div")[2].find("span",
-        #                                                                           attrs={
-        #                                                                               "data-key": "elementAttack"}).text
-        #             # print(dragon_res)
-        #
-        #             find_armour_skills = armour.find_all("td")[-1].find_all("div")
-        #             armour_skills = []
-        #             for skill in find_armour_skills:
-        #                 skill_id = skill.find("a")["href"].split("skills/")[1]
-        #                 skill_name = skill.find("a").text
-        #                 skill_lvl = skill.contents[1].strip()
-        #                 # print(skill_id)
-        #                 # print(skill_lvl)
-        #                 armour_skills.append({"skill_id": skill_id, "skill_name": skill_name, "lvl": skill_lvl})
-        #             armour_skills = json.dumps(armour_skills)
-        #             # print(armour_skills)
-        #
-        #             armour_description, forging_materials = self.get_armour_details(armour_url)
-        #             forging_materials = json.dumps(forging_materials)
-        #             # print(armour_description)
-        #             # print(forging_materials)
-        #             set_id = 0
-        #             set_name = ""
-        #             for armour_set in armour_sets:
-        #                 # print(type(armour_set["pieces"]))
-        #                 for piece in armour_set["pieces"]:
-        #                     # print(piece)
-        #                     # print(type(piece))
-        #                     if armour_name in piece:
-        #                         # print(armour_set["item"])
-        #                         set_name = armour_set["item"]
-        #                         set_id = armour_set["id"]
-        #                         # matched +=1
-        #                         # print("Matched:"+str(matched))
-        #                         break
-        #             print(armour_id, armour_name, set_id, set_name)
-        #             armours.append(
-        #                 (armour_id, armour_name, armour_url, m_armour_img_url, f_armour_img_url, deco_slots,
-        #                  defense, fire_res, water_res, ice_res, thunder_res, dragon_res, armour_skills,
-        #                  armour_description, forging_materials, rarity, set_id, set_name))
-        #
-        #     self.save_armour(armours)
         def get_all_armour(self):
             armours = []
             armour_sets = asyncio.run(self.get_armour_sets())
@@ -1890,9 +1786,96 @@ class Scraper(object):
                     mycursor.execute(sql, row)
             mydb.commit()
 
+    class Quests:
+        def get_all_quests(self):
+            # self.get_village_quests()
+            self.get_hub_quests()
+
+        def extract_quest_info(self, soup):
+            try:
+                quest_name = soup.find("table", attrs={"class": "wiki_table"}).find_all("tr")[0].find("h2").text
+                print(quest_name)
+                # print(soup.find("table", attrs={"class": "wiki_table"}).find_all("tr")[1])
+                quest_level = len([i for i in
+                                   soup.find("table", attrs={"class": "wiki_table"}).find_all("tr")[3].find_all("td")[
+                                       1].text])
+                print(quest_level)
+                quest_type = soup.find("table", attrs={"class": "wiki_table"}).find_all("tr")[4].find_all("td")[1].text
+                print(quest_type)
+                quest_objective = soup.find("table", attrs={"class": "wiki_table"}).find_all("tr")[5].find_all("td")[
+                    1].text
+                print(quest_objective)
+                quest_monsters = soup.find("table", attrs={"class": "wiki_table"}).find_all("tr")[5].find_all("a")
+                quest_monsters = [i["href"].replace("/", "").replace("+", " ") for i in quest_monsters]
+                print(quest_monsters)
+                quest_location = soup.find("table", attrs={"class": "wiki_table"}).find_all("tr")[7].find_all("td")[1].text
+                print(quest_location)
+                failure_conditions = ""
+                for i in soup.find("div", attrs={"id":"sub-main"}).find_all("li"):
+                    print(i.text)
+                    if "Failure Conditions" in i.text:
+                        failure_conditions = i.text
+                print(failure_conditions)
+                print("----------------------------")
+            except AttributeError:
+                quest_name = ""
+                quest_level = 0
+                quest_type = ""
+                quest_objective = ""
+                quest_monsters = []
+                quest_location = ""
+                failure_conditions = ""
+            return quest_name, quest_level, quest_type, quest_objective,quest_monsters,quest_location,failure_conditions
+
+        def get_village_quests(self):
+            url = fx_url + "/Village+Quests"
+            session = requests.Session()
+            r = session.get(url, headers=headers)
+            soup = BeautifulSoup(r.content, "html.parser")
+            find_quests = soup.select("div.col-sm-4 a")
+            find_quests = [fx_url + i["href"] for i in find_quests]
+            print(find_quests)
+            for quest in find_quests:
+                session = requests.Session()
+                r = session.get(quest, headers=headers)
+                soup = BeautifulSoup(r.content, "html.parser")
+                self.extract_quest_info(soup)
+
+        def get_hub_quests(self):
+            url = fx_url + "/Hub+Quests"
+            session = requests.Session()
+            r = session.get(url, headers=headers)
+            soup = BeautifulSoup(r.content, "html.parser")
+            find_quests = soup.select("div.col-sm-4 a")
+            find_quests = [fx_url + i["href"] for i in find_quests]
+            print(find_quests)
+            for quest in find_quests:
+                print(quest)
+                session = requests.Session()
+                r = session.get(quest, headers=headers)
+                soup = BeautifulSoup(r.content, "html.parser")
+                self.extract_quest_info(soup)
+
+        def get_follower_quests(self):
+            url = fx_url + "/Follower+Collab+Quests"
+            session = requests.Session()
+            r = session.get(url, headers=headers)
+            soup = BeautifulSoup(r.content, "html.parser")
+            find_quests = soup.select("div.col-sm-4 a")
+            find_quests = [fx_url + i["href"] for i in find_quests]
+            print(find_quests)
+            for quest in find_quests:
+                print(quest)
+                session = requests.Session()
+                r = session.get(quest, headers=headers)
+                soup = BeautifulSoup(r.content, "html.parser")
+                self.extract_quest_info(soup)
+
+
 
 webscrape = Scraper(headers, base_url, mydb)
-webscrape.Monsters().get_monsters()
+webscrape.Quests().get_all_quests()
+# webscrape.Monsters().get_monsters()
 # webscrape.Items().get_all_items()
 # webscrape.Weapons().get_all_weapons()
 # webscrape.Skills().get_skills()

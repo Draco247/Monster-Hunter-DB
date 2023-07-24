@@ -452,7 +452,6 @@ export default function Monster() {
     ]);
 
 
-
     return (
         <div>
             <div className="monster-details">
@@ -481,14 +480,30 @@ export default function Monster() {
 
 
             </div>
-            <div className="monster-quests">
-                <h2>Monster Quests</h2>
-                <MUIDataTable title={"Monster Quests"} data={questtableData} columns={questcolumns} options={options} />
-            </div>
-            <div className="monster-hitzones">
-                <h2>Monster Hitzones</h2>
-                <MUIDataTable title={"Monster Hitzones"} data={hitzonetableData} columns={hitzonecolumns} options={options} />
-            </div>
+            <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                    <div className="monster-quests">
+                        <h2>Monster Quests</h2>
+                        <MUIDataTable
+                            title={"Monster Quests"}
+                            data={questtableData}
+                            columns={questcolumns}
+                            options={options}
+                        />
+                    </div>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <div className="monster-hitzones">
+                        <h2>Monster Hitzones</h2>
+                        <MUIDataTable
+                            title={"Monster Hitzones"}
+                            data={hitzonetableData}
+                            columns={hitzonecolumns}
+                            options={options}
+                        />
+                    </div>
+                </Grid>
+            </Grid>
             <div className="monster-drops">
                 <h2>Monster Drops</h2>
                 <MUIDataTable title={"Monster Drops"} data={dropstableData} columns={dropscolumns} options={options}/>
