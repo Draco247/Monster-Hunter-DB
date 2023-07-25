@@ -7,6 +7,15 @@
   pointer-events: none;
 }
 
+a {
+  color: #1976d2; /* Default color for links in light mode */
+}
+
+/*!* Dark mode specific styles for links *!*/
+/*.MuiPaper-root a {*/
+/*  color: #61dafb; !* Replace this color with the desired link color in dark mode *!*/
+/*}*/
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;

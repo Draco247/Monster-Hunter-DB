@@ -6,6 +6,10 @@ import { Grid,Box } from '@mui/material';
 import {Link, useParams} from "react-router-dom";
 import MUIDataTable from "mui-datatables";
 import { makeStyles } from "@material-ui/core/styles";
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import {DataGrid,GridToolbar} from "@mui/x-data-grid";
+import { v4 as uuidv4 } from 'uuid';
+import Button from "@mui/material/Button";
 
 const useStyles = makeStyles({
     centerCell: {
@@ -25,212 +29,100 @@ export default function Monster() {
     const [monsterdrops, setMonsterDrops] = useState(null);
     const [monsterforgingweapons, setMonsterForgingWeapons] = useState(null);
     const [monsterupgradeweapons, setMonsterUpgradeWeapons] = useState(null);
-    const [searchBtn, setSearchBtn] = useState(true);
-    const [viewColumnBtn, setViewColumnBtn] = useState(true);
-    const [filterBtn, setFilterBtn] = useState(true);
-    const questcolumns = [{
-        name: "Locale",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
-        },
-    },{
-        name: "Quest",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
-        },
-    },{
-        name: "Objective",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
-        },
-    },{
-        name: "HRP",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
-        },
-    },{
-        name: "MRP",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
-        },
-    }];
+    const [visible, setVisible] = useState(null);
+    // const [visiblesection, setVisibleSection] = useState(null);
 
-    const hitzonecolumns = [{
-        name: "Hitzone",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
-        },
-    },{
-        name: "Blade",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
-        },
-    },{
-        name: "Blunt",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
-        },
-    },{
-        name: "Gunner",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
-        },
-    },{
-        name: "Fire",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
-        },
-    },{
-        name: "Water",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
-        },
-    },{
-        name: "Ice",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
-        },
-    },{
-        name: "Thunder",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
-        },
-    },{
-        name: "Dragon",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
-        },
-    }];
+    const questcolumns = [
+        { field: 'quest_name', headerName: 'Quest', width: 400, sortable: true, renderCell: (params) => <a href={`/quests/${params.row.id}`}>{params.row.quest_name}</a>},
+        { field: 'objective', headerName: 'Objective', width: 150, flex: 1},
+        { field: 'hrp', headerName: 'HRP', width: 100, sortable: true},
+        { field: 'mrp', headerName: 'MRP', width: 100, sortable: true}
+    ];
 
-    const dropscolumns = [{
-        name: "Item Name",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
-        },
-    },{
-        name: "Area",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
-        },
-    },{
-        name: "Method",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
-        },
-    },{
-        name: "Drop Rate",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
-        },
-    },{
-        name: "Item Rank",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
-        },
-    },{
-        name: "Quantity",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
-        },
-    }];
+    const hitzonecolumns = [
+        { field: 'hitzone', headerName: 'Hitzone', width: 150, sortable: true},
+        { field: 'blade_hitzone', headerName: 'Blade', width: 150, sortable: true},
+        { field: 'blunt_hitzone', headerName: 'Blunt', width: 150, sortable: true},
+        { field: 'gunner_hitzone', headerName: 'Gunner', width: 150, sortable: true},
+        { field: 'fire_hitzone', headerName: 'Fire', width: 150, sortable: true},
+        { field: 'water_hitzone', headerName: 'Water', width: 150, sortable: true},
+        { field: 'ice_hitzone', headerName: 'Ice', width: 150, sortable: true},
+        { field: 'thunder_hitzone', headerName: 'Thunder', width: 150, sortable: true},
+        { field: 'dragon_hitzone', headerName: 'Dragon', width: 150, sortable: true}
+    ];
 
-    const weaponcolumns = [{
-        name: "Img",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
+    const dropscolumns = [
+        { field: 'Item', headerName: 'Item', width: 150, sortable: true, valueGetter: (params) => params.row['Item'], // Use 'Item' directly as the cell value
+            renderCell: (params) => (
+                <a href={`/items/${params.row['Item id']}`}>{params.row['Item']}</a>
+            )},
+        { field: 'Drop Area', headerName: 'Area', width: 150, sortable: true},
+        { field: 'Drop Method', headerName: 'Method', width: 150, sortable: true},
+        { field: 'Drop Rate', headerName: 'Rate', width: 150, sortable: true},
+        { field: 'Item Rank', headerName: 'Rank', width: 150, sortable: true},
+        { field: 'Quantity', headerName: 'Quantity', width: 150, sortable: true}
+    ];
+
+    const weaponcolumns = [
+        { field: 'weapon_name', headerName: 'Name', width: 300, sortable: true, valueGetter: (params) => params.row['weapon_name'], // Use 'weapon_name' directly as the cell value
+            renderCell: (params) => (
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: '5px',
+                    }}
+                >
+                    <Box
+                        component="img"
+                        sx={{
+                            height: 100,
+                            width: 100,
+                            border: '2px solid black',
+                        }}
+                        alt=""
+                        src={params.row['weapon_img_url']}
+                    />
+                    <a href={`/weapons/${params.row.weapon_id}/weapons`}>{params.row.weapon_name}</a>
+                </Box>
             ),
         },
-    },{
-        name: "Weapon Name",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
+        { field: 'attack', headerName: 'Attack', width: 150, sortable: true},
+        { field: 'element', headerName: 'Element', width: 150, sortable: true},
+        { field: 'element_val', headerName: 'Ele Val', width: 150, sortable: true},
+        { field: 'deco_slots', headerName: 'Deco Slots', width: 150, sortable: true, renderCell: (params) => {
+        const decoSlots = JSON.parse(params.value);
+
+        return (
+            <div>
+                {decoSlots &&
+                    decoSlots.map((decoration, index) => (
+                        <span key={index}>
+                          <img src={deco_imgs[decoration]} alt={decoration} />
+                        </span>
+                                    ))}
+            </div>
+                );
+            },
         },
-    },{
-        name: "Attack",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
+        { field: 'rampage_deco_slots', headerName: 'Rampage Deco Slots', width: 150, sortable: true, renderCell: (params) => {
+                const rampagedecoSlots = JSON.parse(params.value);
+
+                return (
+                    <div>
+                        {rampagedecoSlots &&
+                            rampagedecoSlots.map((decoration, index) => (
+                                <span key={index}>
+                                  <img src={deco_imgs[decoration]} alt={decoration} />
+                                </span>
+                                    ))}
+                    </div>
+                );
+            },
         },
-    },{
-        name: "Element",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
-        },
-    },{
-        name: "Element Val",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
-        },
-    },{
-        name: "Deco Slots",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
-        },
-    },{
-        name: "Rampage Deco Slots",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
-        },
-    },{
-        name: "Rarity",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
-        },
-    }];
+        { field: 'rarity', headerName: 'Rarity', width: 150, sortable: true},
+    ];
 
     const deco_imgs = {
         "deco1": "https://cdn.kiranico.net/file/kiranico/mhrise-web/images/ui/deco1.png",
@@ -239,18 +131,6 @@ export default function Monster() {
         "deco4": "https://cdn.kiranico.net/file/kiranico/mhrise-web/images/ui/deco4.png"
     }
 
-    const classes = useStyles();
-
-    const options = {
-        search: searchBtn,
-        viewColumns: viewColumnBtn,
-        print: false,
-        selectableRows: false,
-        onTableChange: (event, state) => {
-            console.log(event);
-            console.dir(state);
-        }
-    };
 
     useEffect(() => {
         const fetchMonster = async () => {
@@ -331,126 +211,22 @@ export default function Monster() {
         return <div>Loading...</div>;
     }
 
-    // if (!monsterquests) {
-    //     return <div>Loading...</div>;
-    // }
-    //
-    // if (!monsterhitzones) {
-    //     return <div>Loading...</div>;
-    // }
-    //
-    // if (!monsterdrops){
-    //     return <div>Loading...</div>;
-    // }
-    //
-    // if (!monsterforgingweapons) {
-    //     return <div>Loading...</div>;
-    // }
-    // if (!monsterupgradeweapons) {
-    //     return <div>Loading...</div>;
-    // }
+    const generateUniqueID = () => {
+        return uuidv4(); // Generates a random UUID (unique identifier)
+    };
 
-    const questtableData = monsterquests.map((quest) => [
-        "......",
-        <a href={`/quests/${quest.id}`}>{quest.quest_name}</a>,
-        quest.objective,
-        quest.hrp,
-        quest.mrp
-    ]);
+    const handleVisibleChange = (table) => {
+        if (visible === table) {
+            // Toggle visibility off if the same section is clicked again
+            setVisible(null);
+        } else {
+            setVisible(table);
+        }
 
-    const hitzonetableData = monsterhitzones.map((hitzone) => [
-        hitzone.hitzone,
-        hitzone["blade hitzone"],
-        hitzone["blunt hitzone"],
-        hitzone["gunner hitzone"],
-        hitzone["fire hitzone"],
-        hitzone["water hitzone"],
-        hitzone["ice hitzone"],
-        hitzone["thunder hitzone"],
-        hitzone["dragon hitzone"]
-    ]);
 
-    const dropstableData = monsterdrops.map((drop) => [
-        <a href={`/items/${drop["Item id"]}`}>{drop["Item"]}</a>,
-        drop["Drop Area"],
-        drop["Drop Method"],
-        drop["Drop Rate"],
-        drop["Item Rank"],
-        drop["Quantity"]
-    ]);
-
-    const weaponsforgingtableData = monsterforgingweapons.map((weapon) => [
-        <Box
-            component="img"
-            sx={{
-                height: 100,
-                width: 100,
-                border: '2px solid black',
-                // maxHeight: { xs: 233, md: 167 },
-                // maxWidth: { xs: 350, md: 250 },
-            }}
-            alt=""
-            src={weapon.weapon_img_url}
-        />,
-        <a href={`/weapons/${weapon.weapon_id}/weapons`}>{weapon.weapon_name}</a>,
-        weapon.attack,
-        weapon.element,
-        weapon.element_val,
-        <div>
-            {weapon.deco_slots &&
-                JSON.parse(weapon.deco_slots).map((decoration, index) => (
-                    <span key={index}>
-          <img src={deco_imgs[decoration]} alt={decoration} />
-        </span>
-                ))}
-        </div>,
-        <div>
-            {weapon.rampage_deco_slots &&
-                JSON.parse(weapon.rampage_deco_slots).map((decoration, index) => (
-                    <span key={index}>
-          <img src={deco_imgs[decoration]} alt={decoration} />
-        </span>
-                ))}
-        </div>,
-        weapon.rarity,
-    ]);
-
-    const weaponsupgradetableData = monsterupgradeweapons.map((weapon) => [
-        <Box
-            component="img"
-            sx={{
-                height: 100,
-                width: 100,
-                border: '2px solid black',
-                // maxHeight: { xs: 233, md: 167 },
-                // maxWidth: { xs: 350, md: 250 },
-            }}
-            alt=""
-            src={weapon.weapon_img_url}
-        />,
-        <a href={`/weapons/${weapon.weapon_id}/weapons`}>{weapon.weapon_name}</a>,
-        weapon.attack,
-        weapon.element,
-        weapon.element_val,
-        <div>
-            {weapon.deco_slots &&
-                JSON.parse(weapon.deco_slots).map((decoration, index) => (
-                    <span key={index}>
-          <img src={deco_imgs[decoration]} alt={decoration} />
-        </span>
-                ))}
-        </div>,
-        <div>
-            {weapon.rampage_deco_slots &&
-                JSON.parse(weapon.rampage_deco_slots).map((decoration, index) => (
-                    <span key={index}>
-          <img src={deco_imgs[decoration]} alt={decoration} />
-        </span>
-                ))}
-        </div>,
-        weapon.rarity,
-    ]);
-
+        console.log(visible)
+        // console.log(visiblesection)
+    };
 
     return (
         <div>
@@ -459,62 +235,227 @@ export default function Monster() {
                 <Grid container spacing={2} alignItems="stretch">
                     <Grid item xs={12} sm={9}>
                         <div style={{ border: '1px solid black', borderRadius: '5px', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <p style={{ fontSize: '32px', textAlign: 'center' }}>{monster.description}</p>
+                            <p style={{ fontSize: '32px', textAlign: 'center', padding: '10px' }}>{monster.description}</p>
                         </div>
                     </Grid>
                     <Grid item xs={12} sm={3}>
-                        <div style={{ border: '1px solid black', borderRadius:'5px', height: '100%'}}>
-                            <Box style={{ border: '1px solid red', borderRadius:'5px', padding: '10px' }}>
+                        <div style={{ border: '1px solid black', borderRadius: '5px', height: '100%', display: 'flex' }}>
+                            <Box style={{ border: '1px solid red', borderRadius: '5px', padding: '10px', width: '100%' }}>
                                 <CardMedia
                                     component="img"
                                     image={monster.image_link}
                                     title={monster.name}
                                     style={{ maxWidth: '100%', maxHeight: '100%', height: 'auto' }}
-                                    // style={imageStyle}
                                 />
                             </Box>
                         </div>
                     </Grid>
                 </Grid>
 
-
-
             </div>
-            <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                    <div className="monster-quests">
-                        <h2>Monster Quests</h2>
-                        <MUIDataTable
-                            title={"Monster Quests"}
-                            data={questtableData}
-                            columns={questcolumns}
-                            options={options}
-                        />
+            <div className="monster-quests">
+                <Button onClick={() => handleVisibleChange("quests")}>
+                    <h2>Monster Quests</h2>
+                </Button>
+                {visible === "quests" && (
+                    <div className="monster-section monster-quests">
+                        <Box sx={{ height: 400, width: '100%'}}>
+                            <DataGrid
+                                rows={monsterquests}
+                                columns={questcolumns}
+                                getRowId={(row) => row.id}
+                                autoHeight
+                                slots={{ toolbar: GridToolbar }}
+                                // disableColumnMenu
+                                pageSize={5}
+                                // checkboxSelection
+                                disableRowSelectionOnClick
+                                initialState={{
+                                    sorting: {
+                                        sortModel: [{ field: 'quest_name', sort: 'asc' }],
+                                    },
+                                }}
+                                // getRowHeight={(params) => {
+                                //     const defaultRowHeight = 100; // Set a default row height (adjust as needed)
+                                //     const questNames = JSON.parse(params.model.quest_name);
+                                //
+                                //     // Calculate the height required for the list items in the cell
+                                //     const listItemHeight = 30; // Assuming each list item has a height of 30px
+                                //
+                                //     // Calculate the total height needed for all list items
+                                //     const totalHeight = questNames.length * listItemHeight;
+                                //
+                                //     // Return the greater of the total height or the default row height
+                                //     return Math.max(defaultRowHeight, totalHeight);
+
+                                // }}
+                            />
+                        </Box>
                     </div>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    <div className="monster-hitzones">
-                        <h2>Monster Hitzones</h2>
-                        <MUIDataTable
-                            title={"Monster Hitzones"}
-                            data={hitzonetableData}
-                            columns={hitzonecolumns}
-                            options={options}
-                        />
+                )}
+            </div>
+            <div className="monster-hitzones" >
+                <Button onClick={() => handleVisibleChange("hitzones")}>
+                    <h2>Monster Hitzones</h2>
+                </Button>
+                {visible === "hitzones" && (
+                    <div className="monster-section monster-hitzones">
+                        <Box sx={{ height: 400, width: '100%'}}>
+                            <DataGrid
+                                rows={monsterhitzones}
+                                columns={hitzonecolumns}
+                                getRowId={(row) => row.hitzone}
+                                autoHeight
+                                // disableColumnMenu
+                                pageSize={5}
+                                // checkboxSelection
+                                disableRowSelectionOnClick
+                                initialState={{
+                                    sorting: {
+                                        sortModel: [{ field: 'hitzone', sort: 'asc' }],
+                                    },
+                                }}
+                                // getRowHeight={(params) => {
+                                //     const defaultRowHeight = 100; // Set a default row height (adjust as needed)
+                                //     const questNames = JSON.parse(params.model.quest_name);
+                                //
+                                //     // Calculate the height required for the list items in the cell
+                                //     const listItemHeight = 30; // Assuming each list item has a height of 30px
+                                //
+                                //     // Calculate the total height needed for all list items
+                                //     const totalHeight = questNames.length * listItemHeight;
+                                //
+                                //     // Return the greater of the total height or the default row height
+                                //     return Math.max(defaultRowHeight, totalHeight);
+
+                                // }}
+                            />
+                        </Box>
                     </div>
-                </Grid>
-            </Grid>
+                )}
+            </div>
             <div className="monster-drops">
-                <h2>Monster Drops</h2>
-                <MUIDataTable title={"Monster Drops"} data={dropstableData} columns={dropscolumns} options={options}/>
+                <Button onClick={() => handleVisibleChange("drops")}>
+                    <h2>Monster Drops</h2>
+                </Button>
+                {visible === "drops" && (
+                    <div className="monster-section monster-drops">
+                        <Box sx={{ height: 400, width: '100%'}}>
+                            <DataGrid
+                                rows={monsterdrops}
+                                columns={dropscolumns}
+                                getRowId={(row) => `${row["Item id"]}-${generateUniqueID()}`}
+                                autoHeight
+                                slots={{ toolbar: GridToolbar }}
+                                // disableColumnMenu
+                                pageSize={5}
+                                // checkboxSelection
+                                disableRowSelectionOnClick
+                                initialState={{
+                                    sorting: {
+                                        sortModel: [{ field: 'Item name', sort: 'asc' }],
+                                    },
+                                }}
+                                // getRowHeight={(params) => {
+                                //     const defaultRowHeight = 100; // Set a default row height (adjust as needed)
+                                //     const questNames = JSON.parse(params.model.quest_name);
+                                //
+                                //     // Calculate the height required for the list items in the cell
+                                //     const listItemHeight = 30; // Assuming each list item has a height of 30px
+                                //
+                                //     // Calculate the total height needed for all list items
+                                //     const totalHeight = questNames.length * listItemHeight;
+                                //
+                                //     // Return the greater of the total height or the default row height
+                                //     return Math.max(defaultRowHeight, totalHeight);
+
+                                // }}
+                            />
+                        </Box>
+                    </div>
+                    )}
             </div>
-            <div className="monster-forging-weapons">
-                <h2>Monster Forging Weapons</h2>
-                <MUIDataTable title={"Monster Forging Weapons"} data={weaponsforgingtableData} columns={weaponcolumns} options={options}/>
+            <div className="monster-weapon-forging">
+                <Button onClick={() => handleVisibleChange("forging")}>
+                    <h2>Monster Forging Weapons</h2>
+                </Button>
+                {visible === "forging" && (
+                    <div className="monster-section monster-weapon-forging">
+                        <Box sx={{ height: 400, width: '100%'}}>
+                            <DataGrid
+                                rows={monsterforgingweapons}
+                                columns={weaponcolumns}
+                                getRowId={(row) => `${row.weapon_id}-${generateUniqueID()}`}
+                                autoHeight
+                                // disableColumnMenu
+                                pageSize={5}
+                                // checkboxSelection
+                                disableRowSelectionOnClick
+                                initialState={{
+                                    sorting: {
+                                        sortModel: [{ field: 'weapon_name', sort: 'asc' }],
+                                    },
+                                }}
+                                getRowHeight={() => 'auto'}
+                                // getRowHeight={(params) => {
+                                //     const defaultRowHeight = 100; // Set a default row height (adjust as needed)
+                                //     const questNames = JSON.parse(params.model.quest_name);
+                                //
+                                //     // Calculate the height required for the list items in the cell
+                                //     const listItemHeight = 30; // Assuming each list item has a height of 30px
+                                //
+                                //     // Calculate the total height needed for all list items
+                                //     const totalHeight = questNames.length * listItemHeight;
+                                //
+                                //     // Return the greater of the total height or the default row height
+                                //     return Math.max(defaultRowHeight, totalHeight);
+
+                                // }}
+                            />
+                        </Box>
+                    </div>
+                    )}
             </div>
-            <div className="monster-upgrade-weapons">
-                <h2>Monster Upgrade Weapons</h2>
-                <MUIDataTable title={"Monster Upgrade Weapons"} data={weaponsupgradetableData} columns={weaponcolumns} options={options}/>
+            <div className="monster-weapon-upgrade">
+                <Button onClick={() => handleVisibleChange("upgrade")}>
+                    <h2>Monster Upgrade Weapons</h2>
+                </Button>
+                {visible === "upgrade" && (
+                    <div className="monster-section monster-weapon-upgrade">
+                        <Box sx={{ height: 400, width: '100%'}}>
+                            <DataGrid
+                                rows={monsterupgradeweapons}
+                                columns={weaponcolumns}
+                                getRowId={(row) => `${row.weapon_id}-${generateUniqueID()}`}
+                                autoHeight
+                                // disableColumnMenu
+                                pageSize={5}
+                                // checkboxSelection
+                                disableRowSelectionOnClick
+                                initialState={{
+                                    sorting: {
+                                        sortModel: [{ field: 'quest_name', sort: 'asc' }],
+                                    },
+                                }}
+                                getRowHeight={() => 'auto'}
+                                // getRowHeight={(params) => {
+                                //     const defaultRowHeight = 100; // Set a default row height (adjust as needed)
+                                //     const questNames = JSON.parse(params.model.quest_name);
+                                //
+                                //     // Calculate the height required for the list items in the cell
+                                //     const listItemHeight = 30; // Assuming each list item has a height of 30px
+                                //
+                                //     // Calculate the total height needed for all list items
+                                //     const totalHeight = questNames.length * listItemHeight;
+                                //
+                                //     // Return the greater of the total height or the default row height
+                                //     return Math.max(defaultRowHeight, totalHeight);
+
+                                // }}
+                            />
+                        </Box>
+                    </div>
+                    )}
             </div>
         </div>
 

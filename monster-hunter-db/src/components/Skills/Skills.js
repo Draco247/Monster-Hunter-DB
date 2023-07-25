@@ -1,105 +1,93 @@
 import * as React from 'react';
 import {useState, useEffect} from "react";
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, Pagination, TablePagination } from '@mui/material';
-import MUIDataTable from "mui-datatables";
-import { createTheme, ThemeProvider } from "@material-ui/core/styles";
-import { makeStyles } from "@material-ui/core/styles";
 import {Link} from "react-router-dom";
-
-const useStyles = makeStyles({
-    centerCell: {
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100%",
-    },
-});
+import { DataGrid } from '@mui/x-data-grid';
+import {Box} from "@mui/material";
 
 export default function Skills() {
     const [skills, setSkills] = useState([]);
-    const [page, setPage] = useState(1);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
-    const [searchValue, setSearchValue] = useState('');
-    const [searchBtn, setSearchBtn] = useState(true);
-    const [viewColumnBtn, setViewColumnBtn] = useState(true);
-    const [filterBtn, setFilterBtn] = useState(true);
-
-    const columns = [{
-        name: "Skill",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
-        },
-    },{
-        name: "Description",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
-        },
-    },{
-        name: "Skill Lvls",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
-        },
-    },{
-        name: "Decorations",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
-        },
-    }];
-
-    const classes = useStyles();
-
-    const options = {
-        search: searchBtn,
-        viewColumns: viewColumnBtn,
-        print: false,
-        selectableRows: false,
-        onTableChange: (event, state) => {
-            console.log(event);
-            console.dir(state);
-        }
-    };
-
 
     useEffect(() => {
         fetch(`${process.env.REACT_APP_react_url}/skills/getAll`)
             .then(res => res.json())
             .then((result)=> {
                 setSkills(result);
+                console.log(skills)
             })}, []);
-    // console.log(skills);
-    // console.log(JSON.parse(skills[0].skill_levels));
 
-    const tableData = skills.map((skill, index) => [
-        <a href={`/skills/${skill.id}`}>{skill.skill_name}</a>,
-        skill.skill_description,
-        // skill.skillDecorations,
-        <ul style={{ listStyleType: 'none', margin: 0, padding: 0 }}>
-            {JSON.parse(skill.skill_levels).map((level, index) => (
-                <li key={`skill-level-${index}`}>{level}</li>
-            ))}
-        </ul>,
-        <ul key={`decoration-list-${index}`} style={{ listStyleType: 'none', margin: 0, padding: 0 }}>
-            {skill.skillDecorations.map((deco, decoIndex) => (
-                <li key={`decoration-${index}-${decoIndex}`}>
-                    <Link to={`/decorations/${deco.id}`}>{deco.decoration_name}</Link>
-                </li>
-            ))}
-        </ul>
-    ]);
+    const columns = [
+        { field: 'skill_name', headerName: 'Skill', width: 150, sortable: true},
+        { field: 'skill_description', headerName: 'Description', flex: 1, renderCell: (params) => <div style={{ whiteSpace: 'pre-wrap' }}>{params.value}</div> },
+        {
+            field: 'skill_levels',
+            headerName: 'Skill Lvls',
+            flex: 1,
+            renderCell: (params) => {
+                const skillLevels = JSON.parse(params.value);
+
+                return (
+                    <div style={{ maxHeight: 100, overflowY: 'auto' }}>
+                        <ul style={{ margin: 0, paddingInlineStart: 20, whiteSpace: 'normal', listStyle: 'none' }}>
+                            {skillLevels.map((level, index) => (
+                                <li key={index}>{level}</li>
+                            ))}
+                        </ul>
+                    </div>
+                );
+            },
+        },
+        { field: 'skillDecorations', headerName: 'Decorations', width: 200,renderCell: (params) => {
+                // "params" contains the current row data, including the "skillDecorations" property
+                const decorations = params.value; // Assuming "skillDecorations" is an array of dictionaries
+
+                // Render an unordered list with list items for each decoration
+                return (
+                    <ul>
+                        {decorations.map((decoration) => (
+                            <li key={decoration.id}>
+                                <Link to={`/decorations/${decoration.id}`}>{decoration.decoration_name}</Link>
+                            </li>
+                        ))}
+                    </ul>
+                );
+            },
+        }
+    ];
+
+
     return (
         <div>
-            <ThemeProvider>
-                <MUIDataTable title={"Skills"} data={tableData} columns={columns} options={options} />
-            </ThemeProvider>
+            <Box sx={{ height: 400, width: '100%'}}>
+                <DataGrid
+                    rows={skills}
+                    columns={columns}
+                    autoHeight
+                    // disableColumnMenu
+                    pageSize={5}
+                    checkboxSelection
+                    disableRowSelectionOnClick
+                    initialState={{
+                        sorting: {
+                            sortModel: [{ field: 'skill_name', sort: 'asc' }],
+                        },
+                    }}
+                    getRowHeight={(params) => {
+                        const defaultRowHeight = 100; // Set a default row height (adjust as needed)
+                        const skillLevels = JSON.parse(params.model.skill_levels);
+
+                        // Calculate the height required for the list items in the cell
+                        const listItemHeight = 30; // Assuming each list item has a height of 30px
+
+                        // Calculate the total height needed for all list items
+                        const totalHeight = skillLevels.length * listItemHeight;
+
+                        // Return the greater of the total height or the default row height
+                        return Math.max(defaultRowHeight, totalHeight);
+                    }}
+                />
+            </Box>
         </div>
 
     );
 }
+

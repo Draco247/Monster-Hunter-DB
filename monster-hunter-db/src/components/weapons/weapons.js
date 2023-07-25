@@ -34,13 +34,6 @@ export default function Weapons(weaponType) {
     const [viewColumnBtn, setViewColumnBtn] = useState(true);
     const [filterBtn, setFilterBtn] = useState(true);
     const columns = [{
-        name: "Img",
-        options: {
-            customBodyRender: (value) => (
-                <div className={classes.centerCell}>{value}</div>
-            ),
-        },
-    },{
         name: "Weapon Name",
         options: {
             customBodyRender: (value) => (
@@ -112,19 +105,23 @@ export default function Weapons(weaponType) {
     };
 
     const tableData = weapons.map((weapon) => [
-        <Box
-            component="img"
-            sx={{
-                height: 100,
-                width: 100,
-                border: '2px solid black'
-                // maxHeight: { xs: 233, md: 167 },
-                // maxWidth: { xs: 350, md: 250 },
-            }}
-            alt=""
-            src={weapon.weapon_img_url}
-        />,
-        <a href = {`/weapons/${weapon.id}/weapons`}>{weapon.weapon_name}</a>,
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <Box
+                    component="img"
+                    sx={{
+                        height: 100,
+                        width: 100,
+                        border: '2px solid black',
+                        // maxHeight: { xs: 233, md: 167 },
+                        // maxWidth: { xs: 350, md: 250 },
+                    }}
+                    alt=""
+                    src={weapon.weapon_img_url}
+                />
+            </Box>
+            <a href={`/weapons/${weapon.id}/weapons`}>{weapon.weapon_name}</a>
+        </Box>,
         weapon.attack,
         weapon.element,
         weapon.elementval,
