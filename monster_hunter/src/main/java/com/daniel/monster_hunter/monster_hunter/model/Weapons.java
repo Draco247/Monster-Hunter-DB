@@ -50,6 +50,8 @@ public class Weapons {
 
     private String upgrade_mats;
 
+    private String base_sharpness;
+
 
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {

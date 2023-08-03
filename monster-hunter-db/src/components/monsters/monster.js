@@ -1,15 +1,23 @@
 import * as React from 'react';
 import './monster.css'
+import Blade from '../../assets/icons/GS.png'
+import Blunt from '../../assets/icons/HAM.png'
+import Gunner from '../../assets/icons/LBG.png'
+import Fire from '../../assets/icons/Element_Fire_Icon.webp'
+import Water from '../../assets/icons/Element_Water_Icon.webp'
+import Ice from '../../assets/icons/Element_Ice_Icon.webp'
+import Thunder from '../../assets/icons/Element_Thunder_Icon.webp'
+import Dragon from '../../assets/icons/Element_Dragon_Icon.webp'
 import {useState, useEffect} from "react";
 import CardMedia from '@mui/material/CardMedia';
 import { Grid,Box } from '@mui/material';
 import {Link, useParams} from "react-router-dom";
-import MUIDataTable from "mui-datatables";
 import { makeStyles } from "@material-ui/core/styles";
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {DataGrid,GridToolbar} from "@mui/x-data-grid";
 import { v4 as uuidv4 } from 'uuid';
 import Button from "@mui/material/Button";
+import {GridColumnHeaderParams} from "@mui/x-data-grid";
+import ProgressBar from 'react-bootstrap/ProgressBar';
 
 const useStyles = makeStyles({
     centerCell: {
@@ -33,38 +41,140 @@ export default function Monster() {
     // const [visiblesection, setVisibleSection] = useState(null);
 
     const questcolumns = [
-        { field: 'quest_name', headerName: 'Quest', width: 400, sortable: true, renderCell: (params) => <a href={`/quests/${params.row.id}`}>{params.row.quest_name}</a>},
-        { field: 'objective', headerName: 'Objective', width: 150, flex: 1},
-        { field: 'hrp', headerName: 'HRP', width: 100, sortable: true},
-        { field: 'mrp', headerName: 'MRP', width: 100, sortable: true}
+        { field: 'quest_name', headerName: 'Quest', flex:1, sortable: true, renderCell: (params) => <a href={`/quests/${params.row.id}`}>{params.row.quest_name}</a>},
+        { field: 'objective', headerName: 'Objective', flex: 1},
+        { field: 'hrp', headerName: 'HRP', flex:0.1, sortable: true},
+        { field: 'mrp', headerName: 'MRP', flex:0.1, sortable: true}
     ];
 
     const hitzonecolumns = [
-        { field: 'hitzone', headerName: 'Hitzone', width: 150, sortable: true},
-        { field: 'blade_hitzone', headerName: 'Blade', width: 150, sortable: true},
-        { field: 'blunt_hitzone', headerName: 'Blunt', width: 150, sortable: true},
-        { field: 'gunner_hitzone', headerName: 'Gunner', width: 150, sortable: true},
-        { field: 'fire_hitzone', headerName: 'Fire', width: 150, sortable: true},
-        { field: 'water_hitzone', headerName: 'Water', width: 150, sortable: true},
-        { field: 'ice_hitzone', headerName: 'Ice', width: 150, sortable: true},
-        { field: 'thunder_hitzone', headerName: 'Thunder', width: 150, sortable: true},
-        { field: 'dragon_hitzone', headerName: 'Dragon', width: 150, sortable: true}
+        { field: 'hitzone', headerName: 'Hitzone', flex:1, sortable: true},
+        { field: 'state', headerName: 'State', flex:1, sortable: true},
+        {
+            field: 'blade hitzone',
+            headerName: 'Blade',
+            flex: 1,
+            sortable: true,
+            renderHeader: (params: GridColumnHeaderParams) => (
+                <Box
+                    component="img"
+                    sx={{
+                        height: 40,
+                        width: 40,
+                        marginRight: '8px',
+                    }}
+                    alt="Blade"
+                    src={Blade}
+                />
+            ),
+        },
+        { field: 'blunt hitzone', headerName: 'Blunt', flex:1, sortable: true,
+            renderHeader: (params: GridColumnHeaderParams) => (
+                <Box
+                    component="img"
+                    sx={{
+                        height: 40,
+                        width: 40,
+                        marginRight: '8px',
+                    }}
+                    alt="Blunt"
+                    src={Blunt}
+                />
+            ),},
+        { field: 'gunner hitzone', headerName: 'Gunner', flex:1, sortable: true,
+            renderHeader: (params: GridColumnHeaderParams) => (
+                <Box
+                    component="img"
+                    sx={{
+                        height: 40,
+                        width: 40,
+                        marginRight: '8px',
+                    }}
+                    alt="Gunner"
+                    src={Gunner}
+                />
+            ),},
+        { field: 'fire hitzone', headerName: 'Fire', flex:1, sortable: true,
+            renderHeader: (params: GridColumnHeaderParams) => (
+                <Box
+                    component="img"
+                    sx={{
+                        height: 40,
+                        width: 40,
+                        marginRight: '8px',
+                    }}
+                    alt="Fire"
+                    src={Fire}
+                />
+            ),},
+        { field: 'water hitzone', headerName: 'Water', flex:1, sortable: true,
+            renderHeader: (params: GridColumnHeaderParams) => (
+                <Box
+                    component="img"
+                    sx={{
+                        height: 40,
+                        width: 40,
+                        marginRight: '8px',
+                    }}
+                    alt="Water"
+                    src={Water}
+                />
+            ),},
+        { field: 'ice hitzone', headerName: 'Ice', flex:1, sortable: true,
+            renderHeader: (params: GridColumnHeaderParams) => (
+                <Box
+                    component="img"
+                    sx={{
+                        height: 40,
+                        width: 40,
+                        marginRight: '8px',
+                    }}
+                    alt="Ice"
+                    src={Ice}
+                />
+            ),},
+        { field: 'thunder hitzone', headerName: 'Thunder', flex:1, sortable: true,
+            renderHeader: (params: GridColumnHeaderParams) => (
+                <Box
+                    component="img"
+                    sx={{
+                        height: 40,
+                        width: 40,
+                        marginRight: '8px',
+                    }}
+                    alt="Thunder"
+                    src={Thunder}
+                />
+            ),},
+        { field: 'dragon hitzone', headerName: 'Dragon', flex:1, sortable: true,
+            renderHeader: (params: GridColumnHeaderParams) => (
+                <Box
+                    component="img"
+                    sx={{
+                        height: 40,
+                        width: 40,
+                        marginRight: '8px',
+                    }}
+                    alt="Dragon"
+                    src={Dragon}
+                />
+            ),}
     ];
 
     const dropscolumns = [
-        { field: 'Item', headerName: 'Item', width: 150, sortable: true, valueGetter: (params) => params.row['Item'], // Use 'Item' directly as the cell value
+        { field: 'Item', headerName: 'Item', flex:1, sortable: true, valueGetter: (params) => params.row['Item'], // Use 'Item' directly as the cell value
             renderCell: (params) => (
                 <a href={`/items/${params.row['Item id']}`}>{params.row['Item']}</a>
             )},
-        { field: 'Drop Area', headerName: 'Area', width: 150, sortable: true},
-        { field: 'Drop Method', headerName: 'Method', width: 150, sortable: true},
-        { field: 'Drop Rate', headerName: 'Rate', width: 150, sortable: true},
-        { field: 'Item Rank', headerName: 'Rank', width: 150, sortable: true},
-        { field: 'Quantity', headerName: 'Quantity', width: 150, sortable: true}
+        { field: 'Drop Area', headerName: 'Area', flex:1, sortable: true},
+        { field: 'Drop Method', headerName: 'Method', flex:1, sortable: true},
+        { field: 'Drop Rate', headerName: 'Rate', flex:1, sortable: true},
+        { field: 'Item Rank', headerName: 'Rank', flex:1, sortable: true},
+        { field: 'Quantity', headerName: 'Quantity', flex:1, sortable: true}
     ];
 
     const weaponcolumns = [
-        { field: 'weapon_name', headerName: 'Name', width: 300, sortable: true, valueGetter: (params) => params.row['weapon_name'], // Use 'weapon_name' directly as the cell value
+        { field: 'weapon_name', headerName: 'Name', flex:0.5, sortable: true, valueGetter: (params) => params.row['weapon_name'], // Use 'weapon_name' directly as the cell value
             renderCell: (params) => (
                 <Box
                     sx={{
@@ -87,11 +197,29 @@ export default function Monster() {
                     <a href={`/weapons/${params.row.weapon_id}/weapons`}>{params.row.weapon_name}</a>
                 </Box>
             ),
+            cellClassName: 'centered-cell',
         },
-        { field: 'attack', headerName: 'Attack', width: 150, sortable: true},
-        { field: 'element', headerName: 'Element', width: 150, sortable: true},
-        { field: 'element_val', headerName: 'Ele Val', width: 150, sortable: true},
-        { field: 'deco_slots', headerName: 'Deco Slots', width: 150, sortable: true, renderCell: (params) => {
+        {
+            field: 'weapon_type_name',
+            headerName: 'Weapon Type',
+            flex: 0.5,
+            sortable: true,
+            renderCell: (params) =>
+                <Box
+                    component="img"
+                    sx={{
+                        height: 40,
+                        width: 40,
+                        marginRight: '8px',
+                    }}
+                    alt={params.row['weapon_type_name']}
+                    src={getWeaponIcon(params.row['weapon_type_name'])}// Remove the parentheses and return the JSX directly}
+                />
+        },
+        { field: 'attack', headerName: 'Attack', flex:0.1, sortable: true},
+        { field: 'element', headerName: 'Element', flex:0.3, sortable: true},
+        { field: 'element_val', headerName: 'Ele Val', flex:0.5, sortable: true},
+        { field: 'deco_slots', headerName: 'Deco Slots', flex:0.5, sortable: true, renderCell: (params) => {
         const decoSlots = JSON.parse(params.value);
 
         return (
@@ -99,14 +227,24 @@ export default function Monster() {
                 {decoSlots &&
                     decoSlots.map((decoration, index) => (
                         <span key={index}>
-                          <img src={deco_imgs[decoration]} alt={decoration} />
+                            <Box
+                                component="img"
+                                sx={{
+                                    height: 40,
+                                    width: 40,
+                                    marginRight: '8px',
+                                }}
+                                alt={decoration}
+                                src={deco_imgs[decoration]}
+                            />
+                          {/*<img src={deco_imgs[decoration]} alt={decoration} />*/}
                         </span>
                                     ))}
             </div>
                 );
             },
         },
-        { field: 'rampage_deco_slots', headerName: 'Rampage Deco Slots', width: 150, sortable: true, renderCell: (params) => {
+        { field: 'rampage_deco_slots', headerName: 'Rampage Deco Slots', flex:0.5, sortable: true, renderCell: (params) => {
                 const rampagedecoSlots = JSON.parse(params.value);
 
                 return (
@@ -114,14 +252,24 @@ export default function Monster() {
                         {rampagedecoSlots &&
                             rampagedecoSlots.map((decoration, index) => (
                                 <span key={index}>
-                                  <img src={deco_imgs[decoration]} alt={decoration} />
+                                    <Box
+                                        component="img"
+                                        sx={{
+                                            height: 40,
+                                            width: 40,
+                                            marginRight: '8px',
+                                        }}
+                                        alt={decoration}
+                                        src={deco_imgs[decoration]}
+                                    />
+                                  {/*<img src={deco_imgs[decoration]} alt={decoration} />*/}
                                 </span>
                                     ))}
                     </div>
                 );
             },
         },
-        { field: 'rarity', headerName: 'Rarity', width: 150, sortable: true},
+        { field: 'rarity', headerName: 'Rarity', flex:0.3, sortable: true},
     ];
 
     const deco_imgs = {
@@ -228,6 +376,40 @@ export default function Monster() {
         // console.log(visiblesection)
     };
 
+    const getMonsterIcon = (monster_name) => {
+        // Replace underscores (_) with spaces in the image name
+        const formattedImageName = `${monster_name
+            .replace(/(?:^|\s)\S/g, (char) => char.toUpperCase())}_Icon.png`
+            .replace(/ /g, '_') // First, replace underscores with spaces
+
+        console.log(formattedImageName);
+
+        try {
+            // Use require to dynamically import the image
+            return require(`../../assets/icons/${formattedImageName}`);
+        } catch (error) {
+            // Handle the case when the image doesn't exist
+            console.error(`Image ${formattedImageName} not found.`);
+            return null;
+        }
+    };
+
+    const getWeaponIcon = (weapon_type) => {
+        // Replace underscores (_) with spaces in the image name
+        const formattedImageName = `${weapon_type.toUpperCase()}.png`
+
+        console.log(formattedImageName);
+
+        try {
+            // Use require to dynamically import the image
+            return require(`../../assets/icons/${formattedImageName}`);
+        } catch (error) {
+            // Handle the case when the image doesn't exist
+            console.error(`Image ${formattedImageName} not found.`);
+            return null;
+        }
+    };
+
     return (
         <div>
             <div className="monster-details">
@@ -243,7 +425,7 @@ export default function Monster() {
                             <Box style={{ border: '1px solid red', borderRadius: '5px', padding: '10px', width: '100%' }}>
                                 <CardMedia
                                     component="img"
-                                    image={monster.image_link}
+                                    image={getMonsterIcon(monster.name)}
                                     title={monster.name}
                                     style={{ maxWidth: '100%', maxHeight: '100%', height: 'auto' }}
                                 />
@@ -304,7 +486,7 @@ export default function Monster() {
                             <DataGrid
                                 rows={monsterhitzones}
                                 columns={hitzonecolumns}
-                                getRowId={(row) => row.hitzone}
+                                getRowId={(row) => `${row.hitzone}-${generateUniqueID()}`}
                                 autoHeight
                                 // disableColumnMenu
                                 pageSize={5}
@@ -346,6 +528,7 @@ export default function Monster() {
                                 columns={dropscolumns}
                                 getRowId={(row) => `${row["Item id"]}-${generateUniqueID()}`}
                                 autoHeight
+                                sx={{ '.centered-cell': { justifyContent: 'center' } }} // Add this line to center the cell content
                                 slots={{ toolbar: GridToolbar }}
                                 // disableColumnMenu
                                 pageSize={5}
@@ -387,6 +570,8 @@ export default function Monster() {
                                 columns={weaponcolumns}
                                 getRowId={(row) => `${row.weapon_id}-${generateUniqueID()}`}
                                 autoHeight
+                                sx={{ '.centered-cell': { justifyContent: 'center' } }} // Add this line to center the cell content
+                                slots={{ toolbar: GridToolbar }}
                                 // disableColumnMenu
                                 pageSize={5}
                                 // checkboxSelection
@@ -397,20 +582,6 @@ export default function Monster() {
                                     },
                                 }}
                                 getRowHeight={() => 'auto'}
-                                // getRowHeight={(params) => {
-                                //     const defaultRowHeight = 100; // Set a default row height (adjust as needed)
-                                //     const questNames = JSON.parse(params.model.quest_name);
-                                //
-                                //     // Calculate the height required for the list items in the cell
-                                //     const listItemHeight = 30; // Assuming each list item has a height of 30px
-                                //
-                                //     // Calculate the total height needed for all list items
-                                //     const totalHeight = questNames.length * listItemHeight;
-                                //
-                                //     // Return the greater of the total height or the default row height
-                                //     return Math.max(defaultRowHeight, totalHeight);
-
-                                // }}
                             />
                         </Box>
                     </div>

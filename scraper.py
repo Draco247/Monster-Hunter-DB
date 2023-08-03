@@ -32,10 +32,10 @@ mydb = mysql.connector.connect(
 
 
 # mydb = mysql.connector.connect(
-#     host=os.getenv('DEV_MYSQL_HOST'),
-#     user=os.getenv('DEV_MYSQL_USER'),
-#     password=os.getenv('DEV_MYSQL_PW'),
-#     database=os.getenv('DEV_MYSQL_DB')
+#     host=os.getenv('SPRING_MYSQL_HOST'),
+#     user=os.getenv('SPRING_MYSQL_USER'),
+#     password=os.getenv('SPRING_MYSQL_PW'),
+#     database=os.getenv('SPRING_MYSQL_DB')
 # )
 
 
@@ -1515,6 +1515,8 @@ class Scraper(object):
                 item_text = item.text
 
             async with session.get(fx_url + item["href"], headers=headers) as r:
+                print(fx_url + item["href"])
+                print(item_text)
                 soup = BeautifulSoup(await r.text(), "html.parser")
                 set_img = soup.select("#infobox > div > table > tbody > tr:nth-child(2) > td > h4 > img")
                 if not set_img:
@@ -1527,12 +1529,15 @@ class Scraper(object):
                 try:
                     set_img = fx_url + set_img[0]["src"]
                 except IndexError:
+                    print("img not found")
                     set_img = ""
-                tables = soup.find_all("tbody")
+                print(set_img)
+                tables = soup.select("tbody")
+                print(len(tables))
 
+                find_pieces = []
                 if len(tables) > 1:
                     table = tables[1]
-                    find_pieces = []
                     rows = table.find_all("tr")
                     for row in rows:
                         first_td = row.find("td")
@@ -1556,7 +1561,6 @@ class Scraper(object):
             async with aiohttp.ClientSession() as session:
                 async with session.get(url, headers=headers) as r:
                     soup = BeautifulSoup(await r.text(), "html.parser")
-                    # print(soup)
                     div_elements = soup.select("div.col-xs-4") + soup.select("div.col-sm-4")
                     find_all_armour_sets = [element.find("a", attrs={"class": "wiki_link"}) for element in div_elements
                                             if element.find("a", attrs={"class": "wiki_link"}) is not None]
@@ -1718,19 +1722,49 @@ class Scraper(object):
 
         def save_armour(self, armours):
             print(armours)
+            # mycursor = mydb.cursor(buffered=True)
+            #
+            # for armour in armours:
+            #     mycursor.execute("SELECT COUNT(*) FROM armour WHERE armour_id = %s",
+            #                      [armour[0]])
+            #     exists = mycursor.fetchall()[0][0]
+            #     print(exists)
+            #     if exists == 0:
+            #         sql = "INSERT INTO armour (armour_id, armour_name, armour_url, m_armour_img_url, f_armour_img_url, deco_slots, defense," \
+            #               " fire_res, water_res, ice_res, thunder_res, dragon_res, armour_skills, armour_description, forging_materials, rarity, set_id, set_name) VALUES " \
+            #               "(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            #
+            #         mycursor.execute(sql, armour)
+            # mydb.commit()
+
             mycursor = mydb.cursor(buffered=True)
+            batch_size = 100  # Adjust the batch size according to your needs
+            batch_values = []
 
             for armour in armours:
-                mycursor.execute("SELECT COUNT(*) FROM armour WHERE armour_id = %s",
-                                 [armour[0]])
+                mycursor.execute("SELECT COUNT(*) FROM armour WHERE armour_id = %s", [armour[0]])
                 exists = mycursor.fetchall()[0][0]
                 print(exists)
                 if exists == 0:
-                    sql = "INSERT INTO armour (armour_id, armour_name, armour_url, m_armour_img_url, f_armour_img_url, deco_slots, defense," \
-                          " fire_res, water_res, ice_res, thunder_res, dragon_res, armour_skills, armour_description, forging_materials, rarity, set_id, set_name) VALUES " \
-                          "(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                    batch_values.append(armour)
 
-                    mycursor.execute(sql, armour)
+                    # If the batch_values list reaches the batch_size, execute the batch insert
+                    if len(batch_values) >= batch_size:
+                        sql = "INSERT INTO armour (armour_id, armour_name, armour_url, m_armour_img_url, f_armour_img_url, deco_slots, defense," \
+                              " fire_res, water_res, ice_res, thunder_res, dragon_res, armour_skills, armour_description, forging_materials, rarity, set_id, set_name) VALUES " \
+                              "(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+
+                        mycursor.executemany(sql, batch_values)
+                        batch_values = []
+
+            # Insert any remaining values in the batch_values list
+            if batch_values:
+                sql = "INSERT INTO armour (armour_id, armour_name, armour_url, m_armour_img_url, f_armour_img_url, deco_slots, defense," \
+                      " fire_res, water_res, ice_res, thunder_res, dragon_res, armour_skills, armour_description, forging_materials, rarity, set_id, set_name) VALUES " \
+                      "(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+
+                mycursor.executemany(sql, batch_values)
+
             mydb.commit()
 
             forging_item_ids = []
@@ -1874,12 +1908,12 @@ class Scraper(object):
 
 
 webscrape = Scraper(headers, base_url, mydb)
-webscrape.Quests().get_all_quests()
+# webscrape.Quests().get_all_quests()
 # webscrape.Monsters().get_monsters()
 # webscrape.Items().get_all_items()
 # webscrape.Weapons().get_all_weapons()
 # webscrape.Skills().get_skills()
-# webscrape.Armour().get_all_armour()
+webscrape.Armour().get_all_armour()
 
 # webscrape = Scraper(headers, base_url)
 

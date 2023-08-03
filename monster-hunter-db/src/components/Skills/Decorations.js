@@ -1,60 +1,60 @@
 import * as React from 'react';
 import {useState, useEffect} from "react";
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, Pagination, TablePagination } from '@mui/material';
-import MUIDataTable from "mui-datatables";
-import { createTheme, ThemeProvider } from "@material-ui/core/styles";
+import { Box } from '@mui/material';
+import './decorations.css'
+import Deco1 from '../../assets/icons/deco1.png';
+import Deco2 from '../../assets/icons/deco2.png';
+import Deco3 from '../../assets/icons/deco3.png';
+import Deco4 from '../../assets/icons/deco4.png';
+import {Link} from "react-router-dom";
+import {DataGrid} from "@mui/x-data-grid";
 
 export default function Decorations() {
     const [decorations, setDecorations] = useState([]);
-    const [page, setPage] = useState(1);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
-    const [searchValue, setSearchValue] = useState('');
-    const [searchBtn, setSearchBtn] = useState(true);
-    const [viewColumnBtn, setViewColumnBtn] = useState(true);
-    const [filterBtn, setFilterBtn] = useState(true);
 
-    const columns = ["Locale", "Quest","Objective", "HRP", "MRP"];
-
-    const options = {
-        search: searchBtn,
-        viewColumns: viewColumnBtn,
-        print: false,
-        // filter: filterBtn,
-        // filterType: "dropdown",
-        // responsive,
-        // tableBodyHeight,
-        // tableBodyMaxHeight,
-        onTableChange: (event, state) => {
-            console.log(event);
-            console.dir(state);
-        }
+    const decorationImages = {
+        1: Deco1,
+        2: Deco2,
+        3: Deco3,
+        4: Deco4,
     };
 
-    const tableData = decorations.map((decoration) => [
-        <a href={`/decorations/${decoration.id}`}>{decoration.decoration_name}</a>,
-        // quest.objective,
-        // parseInt(quest.hrp.replace(/,/g, ""), 10),
-        // parseInt(quest.mrp.replace(/,/g, ""), 10),
-    ]);
+    const columns = [
+        { field: 'decoration_name', headerName: 'Decoration', flex: 1, sortable: true,
+            renderCell: (params) => {
+                const decorationName = params.row.decoration_name;
+                const lastSpaceIndex = decorationName.lastIndexOf(' ');
+                const decoNumber = lastSpaceIndex !== -1 ? decorationName.slice(lastSpaceIndex + 1) : null;
 
-    const getMuiTheme = () =>
-        createTheme({
-            overrides: {
-                MUIDataTableBodyCell: {
-                    root: {
-                        backgroundColor: "#FF0000",
-                    },
-                },
-                MUIDataTablePagination: {
-                    root: {
-                        backgroundColor: "#000",
-                        color: "#fff",
-                    },
-                },
-            },
-        });
+                const decorationImage = decoNumber && decorationImages[parseInt(decoNumber, 10)] ? (
+                    <Box
+                        component="img"
+                        sx={{
+                            height: 40,
+                            width: 40,
+                            border: '2px solid black',
+                            marginRight: '8px',
+                        }}
+                        alt={decorationName}
+                        src={decorationImages[parseInt(decoNumber, 10)]}
+                    />
+                ) : null;
 
-
+                return (
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        {decorationImage}
+                        <Link to={`/decorations/${params.row.id}`}>{decorationName}</Link>
+                    </div>
+                );
+            },},
+        { field: 'skill_name', headerName: 'Skill', flex: 1, sortable: true,
+            renderCell: (params) => {
+                return (
+                    <Link to={`/skills/${params.row.id}`}>{params.row.skill_name}</Link>
+                );
+            },},
+        { field: 'skill_lvl', headerName: 'Lvl', flex: 1, sortable: true}
+    ];
 
     useEffect(() => {
         fetch(`${process.env.REACT_APP_react_url}/skills/skillDecorations/getAll`)
@@ -64,10 +64,23 @@ export default function Decorations() {
             })}, []);
     console.log(decorations);
     return (
-        <div>
-            <ThemeProvider theme={getMuiTheme}>
-                <MUIDataTable title={"Decorations"} data={tableData} columns={columns} options={options} />
-            </ThemeProvider>
+        <div className="decorations-table">
+            <Box sx={{ height: 400, width: '100%'}}>
+                <DataGrid
+                    rows={decorations}
+                    columns={columns}
+                    autoHeight
+                    // disableColumnMenu
+                    pageSize={5}
+                    checkboxSelection
+                    disableRowSelectionOnClick
+                    initialState={{
+                        sorting: {
+                            sortModel: [{ field: 'decoration_name', sort: 'asc' }],
+                        },
+                    }}
+                />
+            </Box>
         </div>
 
     );

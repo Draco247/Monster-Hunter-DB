@@ -8,15 +8,11 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { Grid,Box } from '@mui/material';
 import {Link, useParams} from "react-router-dom";
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import TableCell from "@mui/material/TableCell";
-import TableBody from "@mui/material/TableBody";
-import TableContainer from "@mui/material/TableContainer";
 import MUIDataTable from "mui-datatables";
 import { makeStyles } from "@material-ui/core/styles";
+import LinearProgress from "@mui/material/LinearProgress";
+import SharpnessBar from "../SharpnessBar";
+import ProgressBar from "react-bootstrap/ProgressBar";
 
 const useStyles = makeStyles({
     centerCell: {
@@ -151,6 +147,12 @@ export default function Weapon() {
         item.Quantity
     ]);
 
+    const sharpness = JSON.parse(weapon.base_sharpness);
+    console.log(sharpness);
+    const totalValue = sharpness.reduce((acc, val) => acc + val, 0);
+    const progressWidth = (totalValue / (sharpness.length * 100)) * 100;
+    const colors = ['red', 'orange', 'yellow', 'green', 'blue', 'white', 'purple'];
+    console.log(sharpness);
     return (
         <div>
             <div className="weapon-details">
@@ -164,10 +166,7 @@ export default function Weapon() {
                     />
                 </Box>
                 <p>{weapon.weapon_description}</p>
-                {/*<p>{quest.objective}</p>*/}
-                {/*<p>Failure Conditions: {quest.failure_conditions}</p>*/}
-                {/*<p>Hunter Rank Points: {quest.hrp}</p>*/}
-                {/*<p>Master Rank Points: {quest.mrp}</p>*/}
+                <SharpnessBar sharpness={sharpness}/>
             </div>
             <div>
                 <MUIDataTable title={"Forging Items"} data={forgetableData} columns={columns} options={options} />
@@ -175,75 +174,6 @@ export default function Weapon() {
             <div>
                 <MUIDataTable title={"Upgrade Items"} data={upgradetableData} columns={columns} options={options} />
             </div>
-            {/*<div className="quest-rewards">*/}
-            {/*    <h2>Quest Rewards</h2>*/}
-            {/*    <TableContainer component={Paper}>*/}
-            {/*        <Table sx={{ minWidth: 650 }} aria-label="simple table">*/}
-            {/*            <TableHead>*/}
-            {/*                <TableRow>*/}
-            {/*                    <TableCell align="right">Item Name</TableCell>*/}
-            {/*                    <TableCell align="right">Chance</TableCell>*/}
-            {/*                    <TableCell align="right">Quantity</TableCell>*/}
-            {/*                </TableRow>*/}
-            {/*            </TableHead>*/}
-            {/*            <TableBody>*/}
-            {/*                {questrewards.map(reward => (*/}
-            {/*                    <TableRow*/}
-            {/*                        // key={hitzone.quest_id}*/}
-            {/*                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}*/}
-            {/*                    >*/}
-            {/*                        <TableCell align="right" component="a" href={`/items/${reward["Item id"]}`}>{reward["Item"]}</TableCell>*/}
-            {/*                        <TableCell align="right">{reward["Chance"]}</TableCell>*/}
-            {/*                        <TableCell align="right">{reward["Quantity"]}</TableCell>*/}
-            {/*                    </TableRow>*/}
-            {/*                ))}*/}
-            {/*            </TableBody>*/}
-            {/*        </Table>*/}
-            {/*    </TableContainer>*/}
-            {/*</div>*/}
-            {/*<div className="quest-monsters">*/}
-            {/*    <h2>Monsters</h2>*/}
-            {/*    <Box display="flex" justifyContent="center">*/}
-            {/*        <Grid container spacing={2} justifyContent="space-between">*/}
-            {/*            {quest.monsters.map(monster => (*/}
-            {/*                <Grid item xs={12} sm={6} md={4} key={monster.id}>*/}
-            {/*                    <Box height="100%">*/}
-            {/*                        <Link to={`/monsters/${monster.id}`} >*/}
-            {/*                            <Card sx={{ height: '100%', maxWidth: 345 }} style={{*/}
-            {/*                                ...cardStyle,*/}
-            {/*                                ...(hoveredCard === monster.id && hoverStyle),*/}
-            {/*                            }}*/}
-            {/*                                  onMouseEnter={() => handleCardMouseEnter(monster.id)}*/}
-            {/*                                  onMouseLeave={handleCardMouseLeave}>*/}
-            {/*                                <Box m={4}>*/}
-            {/*                                    <CardMedia*/}
-            {/*                                        component="img"*/}
-            {/*                                        image={monster.image_link}*/}
-            {/*                                        title={monster.name}*/}
-            {/*                                        style={imageStyle}*/}
-            {/*                                    />*/}
-            {/*                                </Box>*/}
-
-            {/*                                <CardContent>*/}
-            {/*                                    <Typography gutterBottom variant="h5" component="div" textAlign="center">*/}
-            {/*                                        {monster.name}*/}
-            {/*                                    </Typography>*/}
-            {/*                                    /!*<Typography variant="body2" color="text.secondary">*!/*/}
-            {/*                                    /!*    {monster.description}*!/*/}
-            {/*                                    /!*</Typography>*!/*/}
-            {/*                                </CardContent>*/}
-            {/*                                /!*<CardActions>*!/*/}
-            {/*                                /!*    <Button size="small">Share</Button>*!/*/}
-            {/*                                /!*    <Button size="small">Learn More</Button>*!/*/}
-            {/*                                /!*</CardActions>*!/*/}
-            {/*                            </Card>*/}
-            {/*                        </Link>*/}
-            {/*                    </Box>*/}
-            {/*                </Grid>*/}
-            {/*            ))}*/}
-            {/*        </Grid>*/}
-            {/*    </Box>*/}
-            {/*</div>*/}
         </div>
 
     );

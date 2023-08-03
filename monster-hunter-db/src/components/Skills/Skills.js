@@ -16,7 +16,12 @@ export default function Skills() {
             })}, []);
 
     const columns = [
-        { field: 'skill_name', headerName: 'Skill', width: 150, sortable: true},
+        { field: 'skill_name', headerName: 'Skill', flex: 0.6, sortable: true,
+            renderCell: (params) => {
+                return (
+                    <Link to={`/skills/${params.row.id}`}>{params.row.skill_name}</Link>
+                );
+            },},
         { field: 'skill_description', headerName: 'Description', flex: 1, renderCell: (params) => <div style={{ whiteSpace: 'pre-wrap' }}>{params.value}</div> },
         {
             field: 'skill_levels',
@@ -36,7 +41,7 @@ export default function Skills() {
                 );
             },
         },
-        { field: 'skillDecorations', headerName: 'Decorations', width: 200,renderCell: (params) => {
+        { field: 'skillDecorations', headerName: 'Decorations', flex: 1,renderCell: (params) => {
                 // "params" contains the current row data, including the "skillDecorations" property
                 const decorations = params.value; // Assuming "skillDecorations" is an array of dictionaries
 

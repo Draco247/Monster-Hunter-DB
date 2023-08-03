@@ -51,6 +51,25 @@ export default function Monsters({ searchQuery }) {
 
             })}, []);
     console.log(monsters);
+
+    const getMonsterIcons = (monster_name) => {
+        // Replace underscores (_) with spaces in the image name
+        const formattedImageName = `${monster_name
+            .replace(/(?:^|\s)\S/g, (char) => char.toUpperCase())}_Icon.png`
+            .replace(/ /g, '_') // First, replace underscores with spaces
+
+        console.log(formattedImageName);
+
+        try {
+            // Use require to dynamically import the image
+            return require(`../../assets/icons/${formattedImageName}`);
+        } catch (error) {
+            // Handle the case when the image doesn't exist
+            console.error(`Image ${formattedImageName} not found.`);
+            return null;
+        }
+    };
+
     return (
         <Box m={8} display="flex" justifyContent="center" alignItems="center">
             <Grid container spacing={2} style={{ justifyContent: filteredMonsters.length === 2 ? 'flex-start' : 'space-between', flexWrap: 'wrap' }}>
@@ -70,7 +89,7 @@ export default function Monsters({ searchQuery }) {
                                     <Box m={4}>
                                         <CardMedia
                                             component="img"
-                                            image={monster.image_link}
+                                            image={getMonsterIcons(monster.name)}
                                             title={monster.name}
                                             style={imageStyle}
                                         />
