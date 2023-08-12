@@ -27,8 +27,9 @@ export default function Monsters({ searchQuery }) {
     };
 
     const cardStyle = {
-        height: '100%',
-        maxWidth: 345,
+        // height: '100%',
+        height: 350,
+        width: '100%',
         // transition: 'box-shadow 0.9s', // Add a smooth transition effect
     };
 
@@ -72,17 +73,17 @@ export default function Monsters({ searchQuery }) {
     };
 
     return (
-        <div>
+        <div className="monsters">
             <div className="large-monsters" id="large-monsters-section">
                 <h2>Large Monsters</h2>
                 <Box m={8} display="flex" justifyContent="center" alignItems="center">
                     <Grid container spacing={2} style={{ flexWrap: 'wrap' }}>
                         {filteredMonsters.filter(monster => monster.monster_size === "large").sort((a, b) => a.name.localeCompare(b.name)).map(monster => (
                             <Grid item xs={12} sm={6} md={3} lg={3} key={monster.id}>
-                                <Box height="100%" display="flex" alignItems="center" justifyContent="center">
+                                <Box height="100%" display="flex" alignItems="center" justifyContent="center">                  
                                     <Link to={`/monsters/${monster.id}`}>
                                         <Card
-                                            sx={{ height: '100%', maxWidth: 345 }}
+                                            // sx={{ height: '100%', maxWidth: 345 }}
                                             style={{
                                                 ...cardStyle,
                                                 ...(hoveredCard === monster.id && hoverStyle),
@@ -98,7 +99,7 @@ export default function Monsters({ searchQuery }) {
                                                     style={imageStyle}
                                                 />
                                             </Box>
-                                            <CardContent>
+                                            <CardContent >
                                                 <Typography gutterBottom variant="h5" component="div" textAlign="center">
                                                     {monster.name}
                                                 </Typography>
@@ -125,7 +126,7 @@ export default function Monsters({ searchQuery }) {
                                 <Box height="100%" display="flex" alignItems="center" justifyContent="center">
                                     <Link to={`/monsters/${monster.id}`}>
                                         <Card
-                                            sx={{ height: '100%', maxWidth: 345 }}
+                                            // sx={{ height: '100%', maxWidth: 345 }}
                                             style={{
                                                 ...cardStyle,
                                                 ...(hoveredCard === monster.id && hoverStyle),

@@ -435,198 +435,194 @@ export default function Monster() {
                 </Grid>
 
             </div>
-            <div className="monster-quests">
-                <Button onClick={() => handleVisibleChange("quests")}>
-                    <h2>Monster Quests</h2>
-                </Button>
-                {visible === "quests" && (
-                    <div className="monster-section monster-quests">
-                        <Box sx={{ height: 400, width: '100%'}}>
-                            <DataGrid
-                                rows={monsterquests}
-                                columns={questcolumns}
-                                getRowId={(row) => row.id}
-                                autoHeight
-                                slots={{ toolbar: GridToolbar }}
-                                // disableColumnMenu
-                                pageSize={5}
-                                // checkboxSelection
-                                disableRowSelectionOnClick
-                                initialState={{
-                                    sorting: {
-                                        sortModel: [{ field: 'quest_name', sort: 'asc' }],
-                                    },
-                                }}
-                                // getRowHeight={(params) => {
-                                //     const defaultRowHeight = 100; // Set a default row height (adjust as needed)
-                                //     const questNames = JSON.parse(params.model.quest_name);
-                                //
-                                //     // Calculate the height required for the list items in the cell
-                                //     const listItemHeight = 30; // Assuming each list item has a height of 30px
-                                //
-                                //     // Calculate the total height needed for all list items
-                                //     const totalHeight = questNames.length * listItemHeight;
-                                //
-                                //     // Return the greater of the total height or the default row height
-                                //     return Math.max(defaultRowHeight, totalHeight);
-
-                                // }}
-                            />
-                        </Box>
+            <div className="monster-tables">
+                <div className="monster-quests">
+                    <div className="expand-button">
+                        <Button onClick={() => handleVisibleChange("quests")}>
+                            <h2>Monster Quests</h2>
+                        </Button>
                     </div>
-                )}
-            </div>
-            <div className="monster-hitzones" >
-                <Button onClick={() => handleVisibleChange("hitzones")}>
-                    <h2>Monster Hitzones</h2>
-                </Button>
-                {visible === "hitzones" && (
-                    <div className="monster-section monster-hitzones">
-                        <Box sx={{ height: 400, width: '100%'}}>
-                            <DataGrid
-                                rows={monsterhitzones}
-                                columns={hitzonecolumns}
-                                getRowId={(row) => `${row.hitzone}-${generateUniqueID()}`}
-                                autoHeight
-                                // disableColumnMenu
-                                pageSize={5}
-                                // checkboxSelection
-                                disableRowSelectionOnClick
-                                initialState={{
-                                    sorting: {
-                                        sortModel: [{ field: 'hitzone', sort: 'asc' }],
-                                    },
-                                }}
-                                // getRowHeight={(params) => {
-                                //     const defaultRowHeight = 100; // Set a default row height (adjust as needed)
-                                //     const questNames = JSON.parse(params.model.quest_name);
-                                //
-                                //     // Calculate the height required for the list items in the cell
-                                //     const listItemHeight = 30; // Assuming each list item has a height of 30px
-                                //
-                                //     // Calculate the total height needed for all list items
-                                //     const totalHeight = questNames.length * listItemHeight;
-                                //
-                                //     // Return the greater of the total height or the default row height
-                                //     return Math.max(defaultRowHeight, totalHeight);
-
-                                // }}
-                            />
-                        </Box>
-                    </div>
-                )}
-            </div>
-            <div className="monster-drops">
-                <Button onClick={() => handleVisibleChange("drops")}>
-                    <h2>Monster Drops</h2>
-                </Button>
-                {visible === "drops" && (
-                    <div className="monster-section monster-drops">
-                        <Box sx={{ height: 400, width: '100%'}}>
-                            <DataGrid
-                                rows={monsterdrops}
-                                columns={dropscolumns}
-                                getRowId={(row) => `${row["Item id"]}-${generateUniqueID()}`}
-                                autoHeight
-                                sx={{ '.centered-cell': { justifyContent: 'center' } }} // Add this line to center the cell content
-                                slots={{ toolbar: GridToolbar }}
-                                // disableColumnMenu
-                                pageSize={5}
-                                // checkboxSelection
-                                disableRowSelectionOnClick
-                                initialState={{
-                                    sorting: {
-                                        sortModel: [{ field: 'Item name', sort: 'asc' }],
-                                    },
-                                }}
-                                // getRowHeight={(params) => {
-                                //     const defaultRowHeight = 100; // Set a default row height (adjust as needed)
-                                //     const questNames = JSON.parse(params.model.quest_name);
-                                //
-                                //     // Calculate the height required for the list items in the cell
-                                //     const listItemHeight = 30; // Assuming each list item has a height of 30px
-                                //
-                                //     // Calculate the total height needed for all list items
-                                //     const totalHeight = questNames.length * listItemHeight;
-                                //
-                                //     // Return the greater of the total height or the default row height
-                                //     return Math.max(defaultRowHeight, totalHeight);
-
-                                // }}
-                            />
-                        </Box>
-                    </div>
+                    {visible === "quests" && (
+                        <div className="monster-section monster-quests-content">
+                            <Box sx={{ height: 400, width: '100%'}}>
+                                <DataGrid
+                                    rows={monsterquests}
+                                    columns={questcolumns}
+                                    getRowId={(row) => row.id}
+                                    autoHeight
+                                    slots={{ toolbar: GridToolbar }}
+                                    pageSize={5}
+                                    disableRowSelectionOnClick
+                                    initialState={{
+                                        sorting: {
+                                            sortModel: [{ field: 'quest_name', sort: 'asc' }],
+                                        },
+                                    }}
+                                />
+                            </Box>
+                        </div>
                     )}
-            </div>
-            <div className="monster-weapon-forging">
-                <Button onClick={() => handleVisibleChange("forging")}>
-                    <h2>Monster Forging Weapons</h2>
-                </Button>
-                {visible === "forging" && (
-                    <div className="monster-section monster-weapon-forging">
-                        <Box sx={{ height: 400, width: '100%'}}>
-                            <DataGrid
-                                rows={monsterforgingweapons}
-                                columns={weaponcolumns}
-                                getRowId={(row) => `${row.weapon_id}-${generateUniqueID()}`}
-                                autoHeight
-                                sx={{ '.centered-cell': { justifyContent: 'center' } }} // Add this line to center the cell content
-                                slots={{ toolbar: GridToolbar }}
-                                // disableColumnMenu
-                                pageSize={5}
-                                // checkboxSelection
-                                disableRowSelectionOnClick
-                                initialState={{
-                                    sorting: {
-                                        sortModel: [{ field: 'weapon_name', sort: 'asc' }],
-                                    },
-                                }}
-                                getRowHeight={() => 'auto'}
-                            />
-                        </Box>
+                </div>
+                <div className="monster-hitzones" >
+                    <div className="expand-button">
+                       <Button onClick={() => handleVisibleChange("hitzones")}>
+                        <h2>Monster Hitzones</h2>
+                    </Button>
                     </div>
-                    )}
-            </div>
-            <div className="monster-weapon-upgrade">
-                <Button onClick={() => handleVisibleChange("upgrade")}>
-                    <h2>Monster Upgrade Weapons</h2>
-                </Button>
-                {visible === "upgrade" && (
-                    <div className="monster-section monster-weapon-upgrade">
-                        <Box sx={{ height: 400, width: '100%'}}>
-                            <DataGrid
-                                rows={monsterupgradeweapons}
-                                columns={weaponcolumns}
-                                getRowId={(row) => `${row.weapon_id}-${generateUniqueID()}`}
-                                autoHeight
-                                // disableColumnMenu
-                                pageSize={5}
-                                // checkboxSelection
-                                disableRowSelectionOnClick
-                                initialState={{
-                                    sorting: {
-                                        sortModel: [{ field: 'quest_name', sort: 'asc' }],
-                                    },
-                                }}
-                                getRowHeight={() => 'auto'}
-                                // getRowHeight={(params) => {
-                                //     const defaultRowHeight = 100; // Set a default row height (adjust as needed)
-                                //     const questNames = JSON.parse(params.model.quest_name);
-                                //
-                                //     // Calculate the height required for the list items in the cell
-                                //     const listItemHeight = 30; // Assuming each list item has a height of 30px
-                                //
-                                //     // Calculate the total height needed for all list items
-                                //     const totalHeight = questNames.length * listItemHeight;
-                                //
-                                //     // Return the greater of the total height or the default row height
-                                //     return Math.max(defaultRowHeight, totalHeight);
+                    {visible === "hitzones" && (
+                        <div className="monster-section monster-hitzones">
+                            <Box sx={{ height: 400, width: '100%'}}>
+                                <DataGrid
+                                    rows={monsterhitzones}
+                                    columns={hitzonecolumns}
+                                    getRowId={(row) => `${row.hitzone}-${generateUniqueID()}`}
+                                    autoHeight
+                                    // disableColumnMenu
+                                    pageSize={5}
+                                    // checkboxSelection
+                                    disableRowSelectionOnClick
+                                    initialState={{
+                                        sorting: {
+                                            sortModel: [{ field: 'hitzone', sort: 'asc' }],
+                                        },
+                                    }}
+                                    // getRowHeight={(params) => {
+                                    //     const defaultRowHeight = 100; // Set a default row height (adjust as needed)
+                                    //     const questNames = JSON.parse(params.model.quest_name);
+                                    //
+                                    //     // Calculate the height required for the list items in the cell
+                                    //     const listItemHeight = 30; // Assuming each list item has a height of 30px
+                                    //
+                                    //     // Calculate the total height needed for all list items
+                                    //     const totalHeight = questNames.length * listItemHeight;
+                                    //
+                                    //     // Return the greater of the total height or the default row height
+                                    //     return Math.max(defaultRowHeight, totalHeight);
 
-                                // }}
-                            />
-                        </Box>
-                    </div>
+                                    // }}
+                                />
+                            </Box>
+                        </div>
                     )}
+                </div>
+                <div className="monster-drops">
+                    <div className="expand-button">
+                       <Button onClick={() => handleVisibleChange("drops")}>
+                        <h2>Monster Drops</h2>
+                    </Button>
+                    </div>  
+                    {visible === "drops" && (
+                        <div className="monster-section monster-drops">
+                            <Box sx={{ height: 400, width: '100%'}}>
+                                <DataGrid
+                                    rows={monsterdrops}
+                                    columns={dropscolumns}
+                                    getRowId={(row) => `${row["Item id"]}-${generateUniqueID()}`}
+                                    autoHeight
+                                    sx={{ '.centered-cell': { justifyContent: 'center' } }} // Add this line to center the cell content
+                                    slots={{ toolbar: GridToolbar }}
+                                    // disableColumnMenu
+                                    pageSize={5}
+                                    // checkboxSelection
+                                    disableRowSelectionOnClick
+                                    initialState={{
+                                        sorting: {
+                                            sortModel: [{ field: 'Item name', sort: 'asc' }],
+                                        },
+                                    }}
+                                    // getRowHeight={(params) => {
+                                    //     const defaultRowHeight = 100; // Set a default row height (adjust as needed)
+                                    //     const questNames = JSON.parse(params.model.quest_name);
+                                    //
+                                    //     // Calculate the height required for the list items in the cell
+                                    //     const listItemHeight = 30; // Assuming each list item has a height of 30px
+                                    //
+                                    //     // Calculate the total height needed for all list items
+                                    //     const totalHeight = questNames.length * listItemHeight;
+                                    //
+                                    //     // Return the greater of the total height or the default row height
+                                    //     return Math.max(defaultRowHeight, totalHeight);
+
+                                    // }}
+                                />
+                            </Box>
+                        </div>
+                        )}
+                </div>
+                <div className="monster-weapon-forging">
+                    <div className="expand-button">
+                        <Button onClick={() => handleVisibleChange("forging")}>
+                            <h2>Monster Forging Weapons</h2>
+                        </Button>
+                    </div>
+                    {visible === "forging" && (
+                        <div className="monster-section monster-weapon-forging">
+                            <Box sx={{ height: 400, width: '100%'}}>
+                                <DataGrid
+                                    rows={monsterforgingweapons}
+                                    columns={weaponcolumns}
+                                    getRowId={(row) => `${row.weapon_id}-${generateUniqueID()}`}
+                                    autoHeight
+                                    sx={{ '.centered-cell': { justifyContent: 'center' } }} // Add this line to center the cell content
+                                    slots={{ toolbar: GridToolbar }}
+                                    // disableColumnMenu
+                                    pageSize={5}
+                                    // checkboxSelection
+                                    disableRowSelectionOnClick
+                                    initialState={{
+                                        sorting: {
+                                            sortModel: [{ field: 'weapon_name', sort: 'asc' }],
+                                        },
+                                    }}
+                                    getRowHeight={() => 'auto'}
+                                />
+                            </Box>
+                        </div>
+                        )}
+                </div>
+                <div className="monster-weapon-upgrade">
+                    <div className="expand-button">
+                       <Button onClick={() => handleVisibleChange("upgrade")}>
+                            <h2>Monster Upgrade Weapons</h2>
+                        </Button>
+                    </div>
+                    {visible === "upgrade" && (
+                        <div className="monster-section monster-weapon-upgrade">
+                            <Box sx={{ height: 400, width: '100%'}}>
+                                <DataGrid
+                                    rows={monsterupgradeweapons}
+                                    columns={weaponcolumns}
+                                    getRowId={(row) => `${row.weapon_id}-${generateUniqueID()}`}
+                                    autoHeight
+                                    // disableColumnMenu
+                                    pageSize={5}
+                                    // checkboxSelection
+                                    disableRowSelectionOnClick
+                                    initialState={{
+                                        sorting: {
+                                            sortModel: [{ field: 'quest_name', sort: 'asc' }],
+                                        },
+                                    }}
+                                    getRowHeight={() => 'auto'}
+                                    // getRowHeight={(params) => {
+                                    //     const defaultRowHeight = 100; // Set a default row height (adjust as needed)
+                                    //     const questNames = JSON.parse(params.model.quest_name);
+                                    //
+                                    //     // Calculate the height required for the list items in the cell
+                                    //     const listItemHeight = 30; // Assuming each list item has a height of 30px
+                                    //
+                                    //     // Calculate the total height needed for all list items
+                                    //     const totalHeight = questNames.length * listItemHeight;
+                                    //
+                                    //     // Return the greater of the total height or the default row height
+                                    //     return Math.max(defaultRowHeight, totalHeight);
+
+                                    // }}
+                                />
+                            </Box>
+                        </div>
+                        )}
+                </div>
             </div>
         </div>
 

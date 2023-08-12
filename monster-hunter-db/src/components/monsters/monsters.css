@@ -1,10 +1,10 @@
-h2 {
+.monsters h2 {
     text-align: center;
     position: relative; /* Needed for absolute positioning of the underline */
     color: inherit; /* Inherit the color from the parent element */
 }
 
-h2::after {
+.monsters h2::after {
     content: ""; /* Empty content for the underline */
     position: absolute;
     bottom: -10px; /* Adjust this value to control the distance between text and underline */
