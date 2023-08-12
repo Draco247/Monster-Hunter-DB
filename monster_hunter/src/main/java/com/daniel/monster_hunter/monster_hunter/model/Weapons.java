@@ -52,6 +52,28 @@ public class Weapons {
 
     private String base_sharpness;
 
+    private String max_sharpness;
+
+    private String additional_property;
+
+    private String songs;
+
+    private String shelling_type;
+
+    private String phial_type;
+
+    private String kinsect_lvl;
+
+    private String arc_shot_type;
+
+    private String charge_shot_levels;
+
+    private String coatings;
+
+    private String bowgun_stats;
+
+    private String ammo;
+
 
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {
