@@ -124,36 +124,13 @@ export default function Quest() {
             <div className="quest-rewards">
                 <h2>Quest Rewards</h2>
                 <MUIDataTable title={"Quests"} data={tableData} columns={columns} options={options} />
-                {/*<TableContainer component={Paper}>*/}
-                {/*    <Table sx={{ minWidth: 650 }} aria-label="simple table">*/}
-                {/*        <TableHead>*/}
-                {/*            <TableRow>*/}
-                {/*                <TableCell align="right">Item Name</TableCell>*/}
-                {/*                <TableCell align="right">Chance</TableCell>*/}
-                {/*                <TableCell align="right">Quantity</TableCell>*/}
-                {/*            </TableRow>*/}
-                {/*        </TableHead>*/}
-                {/*        <TableBody>*/}
-                {/*            {questrewards.map(reward => (*/}
-                {/*                <TableRow*/}
-                {/*                    // key={hitzone.quest_id}*/}
-                {/*                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}*/}
-                {/*                >*/}
-                {/*                    <TableCell align="right" component="a" href={`/items/${reward["Item id"]}`}>{reward["Item"]}</TableCell>*/}
-                {/*                    <TableCell align="right">{reward["Chance"]}</TableCell>*/}
-                {/*                    <TableCell align="right">{reward["Quantity"]}</TableCell>*/}
-                {/*                </TableRow>*/}
-                {/*            ))}*/}
-                {/*        </TableBody>*/}
-                {/*    </Table>*/}
-                {/*</TableContainer>*/}
             </div>
             <div className="quest-monsters">
                 <h2>Monsters</h2>
                 <Box display="flex" justifyContent="center">
                     <Grid container justifyContent={quest.monsters.length === 2 ? "flex-start" : "space-between"}>
                         {quest.monsters.map(monster => (
-                            <Grid item xs={12} sm={6} md={4} key={monster.id}>
+                            <Grid item xs={12} sm={6} md={3} lg={3} key={monster.id}>
                                 <Box height="100%">
                                     <Link to={`/monsters/${monster.id}`}>
                                         <Card

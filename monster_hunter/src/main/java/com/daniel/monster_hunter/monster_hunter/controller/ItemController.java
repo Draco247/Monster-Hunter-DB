@@ -4,9 +4,11 @@ import com.daniel.monster_hunter.monster_hunter.model.Items;
 import com.daniel.monster_hunter.monster_hunter.model.Monsters;
 import com.daniel.monster_hunter.monster_hunter.model.Quests;
 import com.daniel.monster_hunter.monster_hunter.model.Weapons;
+import com.daniel.monster_hunter.monster_hunter.model.Armour;
 import com.daniel.monster_hunter.monster_hunter.repository.ItemRepository;
 import com.daniel.monster_hunter.monster_hunter.repository.MonsterRepository;
 import com.daniel.monster_hunter.monster_hunter.repository.WeaponRepository;
+import com.daniel.monster_hunter.monster_hunter.repository.ArmourRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,9 @@ public class ItemController {
 
     @Autowired
     private WeaponRepository weaponRepository;
+
+    @Autowired
+    private ArmourRepository armourRepository;
 
     @Autowired
     private ItemRepository itemRepository;
@@ -66,6 +71,16 @@ public class ItemController {
 
         List<Weapons> weapons = weaponRepository.findWeaponsByUpgradeId(itemId);
         return new ResponseEntity<>(weapons, HttpStatus.OK);
+    }
+
+    @GetMapping("/{itemId}/armour")
+    public ResponseEntity<List<Armour>> getAllArmourByItemId(@PathVariable(value = "itemId") Long itemId) {
+//        if (!questRepository.existsById(questId)) {
+//            throw new ResourceNotFoundException("Not found Tag  with id = " + questId);
+//        }
+
+        List<Armour> armour = armourRepository.findByArmourforgingId(itemId);
+        return new ResponseEntity<>(armour, HttpStatus.OK);
     }
 
 

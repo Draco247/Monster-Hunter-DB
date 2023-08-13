@@ -35,6 +35,7 @@ public class Armour {
     private Integer thunder_res;
     private Integer dragon_res;
     private String rarity;
+    private String piece_type;
 
 //    @Column(name = "armour_skills", columnDefinition = "json")
 //    private String skills;

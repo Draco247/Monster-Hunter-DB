@@ -27,53 +27,58 @@ export default function BasicTable() {
 
     // const columns = ["Locale", "Quest","Objective", "HRP", "MRP"];
     const columns = [
-        { field: 'quest_name', headerName: 'Quest', flex:1, sortable: true, renderCell: (params) => <a href={`/quests/${params.row.id}`}>{params.row.quest_name}</a>},
+        { field: 'quest_name', headerName: 'Quest', flex:1, sortable: true,
+        renderCell: (params) => {
+            const questTypeKeywords = ['hunt', 'capture', 'slay']; // Add more keywords as needed
+            const questTypeMatches = questTypeKeywords.filter(keyword =>
+                params.row.objective.toLowerCase().includes(keyword)
+            );
+
+            const isArena = /^arena \d+★/.test(params.row.quest_name.toLowerCase()) // check if quest name starts with arena *star to display arena icon
+
+            const questType =
+                isArena
+                    ? 'Arena'
+                    : questTypeMatches.length > 1
+                    ? 'Endurance'
+                    : questTypeMatches.length === 1
+                    ? questTypeMatches[0]
+                    : 'Other';
+
+            const questIcon = getQuestIcon(questType);
+
+            return (
+                <div>
+                    {questIcon && (
+                        <img src={questIcon} alt={questType} style={{ marginRight: '5px', verticalAlign: 'middle' }} />
+                    )}
+                    <a href={`/quests/${params.row.id}`}>{params.row.quest_name}</a>
+                </div>
+                );
+            },
+        },
         { field: 'objective', headerName: 'Objective', flex: 1},
-        { field: 'hrp', headerName: 'HRP', flex:0.1, sortable: true},
-        { field: 'mrp', headerName: 'MRP', flex:0.1, sortable: true}
+        { field: 'hrp', headerName: 'HRP', flex:0.3, sortable: true},
+        { field: 'mrp', headerName: 'MRP', flex:0.3, sortable: true}
     ];
 
-    // const options = {
-    //     search: searchBtn,
-    //     viewColumns: viewColumnBtn,
-    //     print: false,
-    //     // filter: filterBtn,
-    //     // filterType: "dropdown",
-    //     // responsive,
-    //     // tableBodyHeight,
-    //     // tableBodyMaxHeight,
-    //     onTableChange: (event, state) => {
-    //         console.log(event);
-    //         console.dir(state);
-    //     }
-    // };
+    const getQuestIcon = (quest_type) => {
+        // Replace underscores (_) with spaces in the image name
+        const formattedImageName = `${quest_type
+            .replace(/(?:^|\s)\S/g, (char) => char.toUpperCase())}.png`
+            .replace(/ /g, '_') // First, replace underscores with spaces
 
+        // console.log(formattedImageName);
 
-    // const tableData = quests.map((quest) => [
-    //     ".....",
-    //     <a href={`/quests/${quest.id}`}>{quest.quest_name}</a>,
-    //     quest.objective,
-    //     parseInt(quest.hrp.replace(/,/g, ""), 10),
-    //     parseInt(quest.mrp.replace(/,/g, ""), 10),
-    // ]);
-
-    // const getMuiTheme = () =>
-    //     createTheme({
-    //         overrides: {
-    //             MUIDataTableBodyCell: {
-    //                 root: {
-    //                     backgroundColor: "#FF0000",
-    //                 },
-    //             },
-    //             MUIDataTablePagination: {
-    //                 root: {
-    //                     backgroundColor: "#000",
-    //                     color: "#fff",
-    //                 },
-    //             },
-    //         },
-    //     });
-
+        try {
+            // Use require to dynamically import the image
+            return require(`../../assets/icons/${formattedImageName}`);
+        } catch (error) {
+            // Handle the case when the image doesn't exist
+            // console.error(`Image ${formattedImageName} not found.`);
+            return null;
+        }
+    };
 
     useEffect(() => {
         fetch(`${process.env.REACT_APP_react_url}/quests/getAll`)
@@ -101,20 +106,6 @@ export default function BasicTable() {
                             sortModel: [{ field: 'quest_name', sort: 'asc' }],
                         },
                     }}
-                    // getRowHeight={(params) => {
-                    //     const defaultRowHeight = 100; // Set a default row height (adjust as needed)
-                    //     const questNames = JSON.parse(params.model.quest_name);
-                    //
-                    //     // Calculate the height required for the list items in the cell
-                    //     const listItemHeight = 30; // Assuming each list item has a height of 30px
-                    //
-                    //     // Calculate the total height needed for all list items
-                    //     const totalHeight = questNames.length * listItemHeight;
-                    //
-                    //     // Return the greater of the total height or the default row height
-                    //     return Math.max(defaultRowHeight, totalHeight);
-
-                    // }}
                 />
             </Box>
         </div>

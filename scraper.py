@@ -1590,8 +1590,8 @@ class Scraper(object):
                 item_text = item.text
 
             async with session.get(fx_url + item["href"], headers=headers) as r:
-                print(fx_url + item["href"])
-                print(item_text)
+                # print(fx_url + item["href"])
+                # print(item_text)
                 soup = BeautifulSoup(await r.text(), "html.parser")
                 set_img = soup.select("#infobox > div > table > tbody > tr:nth-child(2) > td > h4 > img")
                 if not set_img:
@@ -1621,12 +1621,14 @@ class Scraper(object):
                 else:
                     print("Table not found or index out of range.")
                 pieces = []
-                for p in find_pieces:
+                piece_types = {0:"Head", 1:"Chest", 2:"Arms" ,3:"Waist" ,4:"Legs"}
+                for index,p in enumerate(find_pieces):
+                    piece_type = piece_types[index]
                     if p.find("img") is not None:
                         piece_img = fx_url + p.find("img")["src"]
                     else:
                         piece_img = ""
-                    pieces.append({p.text.strip(): piece_img})
+                    pieces.append({p.text.strip(): [piece_img, piece_type]})
                 return {'id': idx, 'item': item_text, 'img': set_img, 'pieces': pieces}
 
         async def get_armour_sets(self):
@@ -1684,7 +1686,6 @@ class Scraper(object):
                     print("Pieces:" + str(num_pieces))
                     rarity = str(i + 1)
                     armour_id = armour.find("a")["href"].split("armors/")[1]
-                    # print(armour_id)
                     armour_name = armour.find("a").text
                     print(armour_name)
                     armour_name_split = armour_name.split(" ")
@@ -1750,6 +1751,7 @@ class Scraper(object):
                     # print(forging_materials)
                     set_id = None
                     set_name = None
+                    piece_type = None
                     for armour_set in armour_sets:
                         # print(type(armour_set["pieces"]))
                         for piece in armour_set["pieces"]:
@@ -1759,6 +1761,7 @@ class Scraper(object):
                                 # print(armour_set["item"])
                                 set_name = armour_set["item"]
                                 set_id = armour_set["id"]
+                                piece_type = piece[armour_name][1]
                                 # matched +=1
                                 # print("Matched:"+str(matched))
                                 break
@@ -1766,7 +1769,7 @@ class Scraper(object):
                     armours.append(
                         (armour_id, armour_name, armour_url, m_armour_img_url, f_armour_img_url, deco_slots,
                          defense, fire_res, water_res, ice_res, thunder_res, dragon_res, armour_skills,
-                         armour_description, forging_materials, rarity, set_id, set_name))
+                         armour_description, forging_materials, rarity, set_id, set_name, piece_type))
 
             print(num_pieces)
             print(len(armours))
@@ -1826,8 +1829,8 @@ class Scraper(object):
                     # If the batch_values list reaches the batch_size, execute the batch insert
                     if len(batch_values) >= batch_size:
                         sql = "INSERT INTO armour (armour_id, armour_name, armour_url, m_armour_img_url, f_armour_img_url, deco_slots, defense," \
-                              " fire_res, water_res, ice_res, thunder_res, dragon_res, armour_skills, armour_description, forging_materials, rarity, set_id, set_name) VALUES " \
-                              "(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                              " fire_res, water_res, ice_res, thunder_res, dragon_res, armour_skills, armour_description, forging_materials, rarity, set_id, set_name, piece_type) VALUES " \
+                              "(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
                         mycursor.executemany(sql, batch_values)
                         batch_values = []
@@ -1835,8 +1838,8 @@ class Scraper(object):
             # Insert any remaining values in the batch_values list
             if batch_values:
                 sql = "INSERT INTO armour (armour_id, armour_name, armour_url, m_armour_img_url, f_armour_img_url, deco_slots, defense," \
-                      " fire_res, water_res, ice_res, thunder_res, dragon_res, armour_skills, armour_description, forging_materials, rarity, set_id, set_name) VALUES " \
-                      "(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                      " fire_res, water_res, ice_res, thunder_res, dragon_res, armour_skills, armour_description, forging_materials, rarity, set_id, set_name,piece_type) VALUES " \
+                      "(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
                 mycursor.executemany(sql, batch_values)
 
@@ -2237,12 +2240,12 @@ class Scraper(object):
 
 
 webscrape = Scraper(headers, base_url, mydb)
-webscrape.Quests().get_all_quests()
+# webscrape.Quests().get_all_quests()
 # webscrape.Monsters().get_monsters()
 # webscrape.Items().get_all_items()
 # webscrape.Weapons().get_all_weapons()
 # webscrape.Skills().get_skills()
-# webscrape.Armour().get_all_armour()
+webscrape.Armour().get_all_armour()
 
 # webscrape = Scraper(headers, base_url)
 

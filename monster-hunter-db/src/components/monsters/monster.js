@@ -37,14 +37,62 @@ export default function Monster() {
     const [monsterdrops, setMonsterDrops] = useState(null);
     const [monsterforgingweapons, setMonsterForgingWeapons] = useState(null);
     const [monsterupgradeweapons, setMonsterUpgradeWeapons] = useState(null);
+    const [monsterarmour, setMonsterArmour] = useState(null);
     const [visible, setVisible] = useState(null);
     // const [visiblesection, setVisibleSection] = useState(null);
 
+    const getQuestIcon = (quest_type) => {
+        // Replace underscores (_) with spaces in the image name
+        const formattedImageName = `${quest_type
+            .replace(/(?:^|\s)\S/g, (char) => char.toUpperCase())}.png`
+            .replace(/ /g, '_') // First, replace underscores with spaces
+
+        // console.log(formattedImageName);
+
+        try {
+            // Use require to dynamically import the image
+            return require(`../../assets/icons/${formattedImageName}`);
+        } catch (error) {
+            // Handle the case when the image doesn't exist
+            // console.error(`Image ${formattedImageName} not found.`);
+            return null;
+        }
+    };
+    
     const questcolumns = [
-        { field: 'quest_name', headerName: 'Quest', flex:1, sortable: true, renderCell: (params) => <a href={`/quests/${params.row.id}`}>{params.row.quest_name}</a>},
+        { field: 'quest_name', headerName: 'Quest', flex:1, sortable: true, 
+        renderCell: (params) => {
+            const questTypeKeywords = ['hunt', 'capture', 'slay']; // Add more keywords as needed
+            const questTypeMatches = questTypeKeywords.filter(keyword =>
+                params.row.objective.toLowerCase().includes(keyword)
+            );
+
+            const isArena = /^arena \d+★/.test(params.row.quest_name.toLowerCase()) // check if quest name starts with arena *star to display arena icon
+
+            const questType =
+                isArena
+                    ? 'Arena'
+                    : questTypeMatches.length > 1
+                    ? 'Endurance'
+                    : questTypeMatches.length === 1
+                    ? questTypeMatches[0]
+                    : 'Other';
+
+            const questIcon = getQuestIcon(questType);
+
+            return (
+                <div>
+                    {questIcon && (
+                        <img src={questIcon} alt={questType} style={{ marginRight: '5px', verticalAlign: 'middle' }} />
+                    )}
+                    <a href={`/quests/${params.row.id}`}>{params.row.quest_name}</a>
+                </div>
+                );
+            },
+        },
         { field: 'objective', headerName: 'Objective', flex: 1},
-        { field: 'hrp', headerName: 'HRP', flex:0.1, sortable: true},
-        { field: 'mrp', headerName: 'MRP', flex:0.1, sortable: true}
+        { field: 'hrp', headerName: 'HRP', flex:0.2, sortable: true},
+        { field: 'mrp', headerName: 'MRP', flex:0.2, sortable: true}
     ];
 
     const hitzonecolumns = [
@@ -174,7 +222,7 @@ export default function Monster() {
     ];
 
     const weaponcolumns = [
-        { field: 'weapon_name', headerName: 'Name', flex:0.5, sortable: true, valueGetter: (params) => params.row['weapon_name'], // Use 'weapon_name' directly as the cell value
+        { field: 'weapon_name', headerName: 'Name', flex:0.3, sortable: true, valueGetter: (params) => params.row['weapon_name'], // Use 'weapon_name' directly as the cell value
             renderCell: (params) => (
                 <Box
                     sx={{
@@ -201,8 +249,8 @@ export default function Monster() {
         },
         {
             field: 'weapon_type_name',
-            headerName: 'Weapon Type',
-            flex: 0.5,
+            headerName: '',
+            flex: 0.1,
             sortable: true,
             renderCell: (params) =>
                 <Box
@@ -217,9 +265,9 @@ export default function Monster() {
                 />
         },
         { field: 'attack', headerName: 'Attack', flex:0.1, sortable: true},
-        { field: 'element', headerName: 'Element', flex:0.3, sortable: true},
-        { field: 'element_val', headerName: 'Ele Val', flex:0.5, sortable: true},
-        { field: 'deco_slots', headerName: 'Deco Slots', flex:0.5, sortable: true, renderCell: (params) => {
+        { field: 'element', headerName: 'Element', flex:0.2, sortable: true},
+        { field: 'element_val', headerName: 'Ele Val', flex:0.1, sortable: true},
+        { field: 'deco_slots', headerName: 'Deco Slots', flex:0.3, sortable: true, renderCell: (params) => {
         const decoSlots = JSON.parse(params.value);
 
         return (
@@ -244,7 +292,7 @@ export default function Monster() {
                 );
             },
         },
-        { field: 'rampage_deco_slots', headerName: 'Rampage Deco Slots', flex:0.5, sortable: true, renderCell: (params) => {
+        { field: 'rampage_deco_slots', headerName: 'Rampage Deco Slots', flex:0.3, sortable: true, renderCell: (params) => {
                 const rampagedecoSlots = JSON.parse(params.value);
 
                 return (
@@ -272,6 +320,168 @@ export default function Monster() {
         { field: 'rarity', headerName: 'Rarity', flex:0.3, sortable: true},
     ];
 
+    const armourcolumns = [
+        { field: 'armour_name', headerName: 'Name', flex:0.3, sortable: true, valueGetter: (params) => params.row.armour_name,
+            renderCell: (params) => (
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: '5px',
+                    }}
+                >
+                    {/* <Box
+                        component="img"
+                        sx={{
+                            height: 100,
+                            width: 100,
+                            border: '2px solid black',
+                        }}
+                        alt=""
+                        src={params.row['weapon_img_url']}
+                    /> */}
+                    <a href={`/armour/${params.row.armour_id}`}>{params.row.armour_name}</a>
+                </Box>
+            ),
+            cellClassName: 'centered-cell',
+        },
+        {
+            field: 'piece_type',
+            headerName: '',
+            flex: 0.1,
+            sortable: true,
+            renderCell: (params) =>
+                <Box
+                    component="img"
+                    sx={{
+                        height: 40,
+                        width: 40,
+                        marginRight: '8px',
+                    }}
+                    alt={params.row.piece_type}
+                    src={getArmourIcon(params.row.piece_type)}// Remove the parentheses and return the JSX directly}
+                />
+        },
+        { field: 'set_name', headerName: 'Set', flex:0.3, sortable: true, valueGetter: (params) => params.row.set_name,
+            renderCell: (params) => (
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: '5px',
+                    }}
+                >
+                    {/* <Box
+                        component="img"
+                        sx={{
+                            height: 100,
+                            width: 100,
+                            border: '2px solid black',
+                        }}
+                        alt=""
+                        src={params.row['weapon_img_url']}
+                    /> */}
+                    <a href={`/armourSets/${params.row.set_id}`}>{params.row.set_name}</a>
+                </Box>
+            ),
+            cellClassName: 'centered-cell',
+        },
+        { field: 'defense', headerName: 'Defense', flex:0.2, sortable: true},
+        { field: 'fire_res', headerName: 'Fire', flex:0.2, sortable: true,
+        renderHeader: (params: GridColumnHeaderParams) => (
+            <Box
+                component="img"
+                sx={{
+                    height: 40,
+                    width: 40,
+                    marginRight: '8px',
+                }}
+                alt="Fire"
+                src={Fire}
+            />
+        ),},
+        { field: 'water_res', headerName: 'Water', flex:0.2, sortable: true,
+        renderHeader: (params: GridColumnHeaderParams) => (
+            <Box
+                component="img"
+                sx={{
+                    height: 40,
+                    width: 40,
+                    marginRight: '8px',
+                }}
+                alt="Water"
+                src={Water}
+            />
+        ),},
+        { field: 'ice_res', headerName: 'Ice', flex:0.2, sortable: true,
+        renderHeader: (params: GridColumnHeaderParams) => (
+            <Box
+                component="img"
+                sx={{
+                    height: 40,
+                    width: 40,
+                    marginRight: '8px',
+                }}
+                alt="Ice"
+                src={Ice}
+            />
+        ),},
+        { field: 'thunder_res', headerName: 'Thunder', flex:0.2, sortable: true,
+        renderHeader: (params: GridColumnHeaderParams) => (
+            <Box
+                component="img"
+                sx={{
+                    height: 40,
+                    width: 40,
+                    marginRight: '8px',
+                }}
+                alt="Thunder"
+                src={Thunder}
+            />
+        ),},
+        { field: 'dragon_res', headerName: 'Dragon', flex:0.2, sortable: true,
+        renderHeader: (params: GridColumnHeaderParams) => (
+            <Box
+                component="img"
+                sx={{
+                    height: 40,
+                    width: 40,
+                    marginRight: '8px',
+                }}
+                alt="Dragon"
+                src={Dragon}
+            />
+        ),},
+        { field: 'deco_slots', headerName: 'Deco Slots', flex:0.3, sortable: true, renderCell: (params) => {
+        const decoSlots = JSON.parse(params.value);
+
+        return (
+            <div>
+                {decoSlots &&
+                    decoSlots.map((decoration, index) => (
+                        <span key={index}>
+                            <Box
+                                component="img"
+                                sx={{
+                                    height: 40,
+                                    width: 40,
+                                    marginRight: '8px',
+                                }}
+                                alt={decoration}
+                                src={deco_imgs[decoration]}
+                            />
+                          {/*<img src={deco_imgs[decoration]} alt={decoration} />*/}
+                        </span>
+                                    ))}
+            </div>
+                );
+            },
+        },
+        { field: 'rarity', headerName: 'Rarity', flex:0.3, sortable: true},
+    ];
+
     const deco_imgs = {
         "deco1": "https://cdn.kiranico.net/file/kiranico/mhrise-web/images/ui/deco1.png",
         "deco2": "https://cdn.kiranico.net/file/kiranico/mhrise-web/images/ui/deco2.png",
@@ -286,7 +496,7 @@ export default function Monster() {
                 const response = await fetch(`${process.env.REACT_APP_react_url}/monsters/${id}`);
                 const data = await response.json();
                 setMonster(data);
-                console.log(data);
+                // console.log(data);
             } catch (error) {
                 console.error('Error fetching monster:', error);
             }
@@ -297,7 +507,7 @@ export default function Monster() {
                 const response = await fetch(`${process.env.REACT_APP_react_url}/monsters/${id}/quests`);
                 const data = await response.json();
                 setMonsterQuests(data);
-                console.log(data);
+                // console.log(data);
             } catch (error) {
                 console.error('Error fetching monster quests:', error);
             }
@@ -308,7 +518,7 @@ export default function Monster() {
                 const response = await fetch(`${process.env.REACT_APP_react_url}/monsters/${id}/hitzones`);
                 const data = await response.json();
                 setMonsterHitzones(data);
-                console.log(data);
+                // console.log(data);
             } catch (error) {
                 console.error('Error fetching monster hitzones:', error);
             }
@@ -319,7 +529,7 @@ export default function Monster() {
                 const response = await fetch(`${process.env.REACT_APP_react_url}/monsters/${id}/drops`);
                 const data = await response.json();
                 setMonsterDrops(data);
-                console.log(data);
+                // console.log(data);
             } catch (error) {
                 console.error('Error fetching monster drops:', error);
             }
@@ -330,7 +540,7 @@ export default function Monster() {
                 const response = await fetch(`${process.env.REACT_APP_react_url}/monsters/${id}/forging-weapons`);
                 const data = await response.json();
                 setMonsterForgingWeapons(data);
-                console.log(data);
+                // console.log(data);
             } catch (error) {
                 console.error('Error fetching monster forging weapons:', error);
             }
@@ -341,9 +551,20 @@ export default function Monster() {
                 const response = await fetch(`${process.env.REACT_APP_react_url}/monsters/${id}/upgrade-weapons`);
                 const data = await response.json();
                 setMonsterUpgradeWeapons(data);
-                console.log(data);
+                // console.log(data);
             } catch (error) {
                 console.error('Error fetching monster upgrade weapons:', error);
+            }
+        };
+
+        const fetchMonsterArmour = async () => {
+            try {
+                const response = await fetch(`${process.env.REACT_APP_react_url}/monsters/${id}/armour`);
+                const data = await response.json();
+                setMonsterArmour(data);
+                console.log(data);
+            } catch (error) {
+                console.error('Error fetching monster armour:', error);
             }
         };
 
@@ -353,9 +574,10 @@ export default function Monster() {
         fetchMonsterDrops()
         fetchMonsterForgingWeapons()
         fetchMonsterUpgradeWeapons()
+        fetchMonsterArmour()
     }, [id]);
 
-    if (!monster || !monsterquests || !monsterhitzones || !monsterdrops || !monsterupgradeweapons || !monsterforgingweapons) {
+    if (!monster || !monsterquests || !monsterhitzones || !monsterdrops || !monsterupgradeweapons || !monsterforgingweapons ||!monsterarmour) {
         return <div>Loading...</div>;
     }
 
@@ -371,9 +593,8 @@ export default function Monster() {
             setVisible(table);
         }
 
-
-        console.log(visible)
-        // console.log(visiblesection)
+        // console.log(visible)
+        // // console.log(visiblesection)
     };
 
     const getMonsterIcon = (monster_name) => {
@@ -382,7 +603,7 @@ export default function Monster() {
             .replace(/(?:^|\s)\S/g, (char) => char.toUpperCase())}_Icon.png`
             .replace(/ /g, '_') // First, replace underscores with spaces
 
-        console.log(formattedImageName);
+        // console.log(formattedImageName);
 
         try {
             // Use require to dynamically import the image
@@ -398,7 +619,23 @@ export default function Monster() {
         // Replace underscores (_) with spaces in the image name
         const formattedImageName = `${weapon_type.toUpperCase()}.png`
 
-        console.log(formattedImageName);
+        // console.log(formattedImageName);
+
+        try {
+            // Use require to dynamically import the image
+            return require(`../../assets/icons/${formattedImageName}`);
+        } catch (error) {
+            // Handle the case when the image doesn't exist
+            console.error(`Image ${formattedImageName} not found.`);
+            return null;
+        }
+    };
+
+    const getArmourIcon = (piece_type) => {
+        // Replace underscores (_) with spaces in the image name
+        const formattedImageName = `${piece_type}.png`
+
+        // console.log(formattedImageName);
 
         try {
             // Use require to dynamically import the image
@@ -435,6 +672,11 @@ export default function Monster() {
                 </Grid>
 
             </div>
+            {
+                /*
+                might get rid of the buttons and just display everything
+                */
+            }
             <div className="monster-tables">
                 <div className="monster-quests">
                     <div className="expand-button">
@@ -486,25 +728,13 @@ export default function Monster() {
                                             sortModel: [{ field: 'hitzone', sort: 'asc' }],
                                         },
                                     }}
-                                    // getRowHeight={(params) => {
-                                    //     const defaultRowHeight = 100; // Set a default row height (adjust as needed)
-                                    //     const questNames = JSON.parse(params.model.quest_name);
-                                    //
-                                    //     // Calculate the height required for the list items in the cell
-                                    //     const listItemHeight = 30; // Assuming each list item has a height of 30px
-                                    //
-                                    //     // Calculate the total height needed for all list items
-                                    //     const totalHeight = questNames.length * listItemHeight;
-                                    //
-                                    //     // Return the greater of the total height or the default row height
-                                    //     return Math.max(defaultRowHeight, totalHeight);
-
-                                    // }}
+                                
                                 />
                             </Box>
                         </div>
                     )}
                 </div>
+                {/* {need to fix the filter for drops table} */}
                 <div className="monster-drops">
                     <div className="expand-button">
                        <Button onClick={() => handleVisibleChange("drops")}>
@@ -530,25 +760,14 @@ export default function Monster() {
                                             sortModel: [{ field: 'Item name', sort: 'asc' }],
                                         },
                                     }}
-                                    // getRowHeight={(params) => {
-                                    //     const defaultRowHeight = 100; // Set a default row height (adjust as needed)
-                                    //     const questNames = JSON.parse(params.model.quest_name);
-                                    //
-                                    //     // Calculate the height required for the list items in the cell
-                                    //     const listItemHeight = 30; // Assuming each list item has a height of 30px
-                                    //
-                                    //     // Calculate the total height needed for all list items
-                                    //     const totalHeight = questNames.length * listItemHeight;
-                                    //
-                                    //     // Return the greater of the total height or the default row height
-                                    //     return Math.max(defaultRowHeight, totalHeight);
-
-                                    // }}
+                                    
                                 />
                             </Box>
                         </div>
                         )}
                 </div>
+                {/* {might need to change heights of these tables since it looks weird
+                when their heights are inconsistent} */}
                 <div className="monster-weapon-forging">
                     <div className="expand-button">
                         <Button onClick={() => handleVisibleChange("forging")}>
@@ -604,20 +823,35 @@ export default function Monster() {
                                         },
                                     }}
                                     getRowHeight={() => 'auto'}
-                                    // getRowHeight={(params) => {
-                                    //     const defaultRowHeight = 100; // Set a default row height (adjust as needed)
-                                    //     const questNames = JSON.parse(params.model.quest_name);
-                                    //
-                                    //     // Calculate the height required for the list items in the cell
-                                    //     const listItemHeight = 30; // Assuming each list item has a height of 30px
-                                    //
-                                    //     // Calculate the total height needed for all list items
-                                    //     const totalHeight = questNames.length * listItemHeight;
-                                    //
-                                    //     // Return the greater of the total height or the default row height
-                                    //     return Math.max(defaultRowHeight, totalHeight);
-
-                                    // }}
+                                />
+                            </Box>
+                        </div>
+                        )}
+                </div>
+                <div className="monster-armour">
+                    <div className="expand-button">
+                       <Button onClick={() => handleVisibleChange("armour")}>
+                            <h2>Monster Armour</h2>
+                        </Button>
+                    </div>
+                    {visible === "armour" && (
+                        <div className="monster-section monster-armour">
+                            <Box sx={{ height: 400, width: '100%'}}>
+                                <DataGrid
+                                    rows={monsterarmour}
+                                    columns={armourcolumns}
+                                    getRowId={(row) => row.armour_id}
+                                    autoHeight
+                                    // disableColumnMenu
+                                    pageSize={5}
+                                    // checkboxSelection
+                                    disableRowSelectionOnClick
+                                    initialState={{
+                                        sorting: {
+                                            sortModel: [{ field: 'quest_name', sort: 'asc' }],
+                                        },
+                                    }}
+                                    getRowHeight={() => 'auto'}
                                 />
                             </Box>
                         </div>

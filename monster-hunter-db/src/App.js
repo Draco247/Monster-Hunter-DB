@@ -59,20 +59,6 @@ function App() {
     };
 
     const theme = React.useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
-    // const [theme, settheme] = useState(false);
-    // const darkTheme = createTheme({
-    //     palette: {
-    //         mode: theme ? 'dark' : 'light',
-    //         type: "dark",
-    //         primary: purple,
-    //         secondary: {
-    //             main: '#b9f6ca',
-    //         },
-    //     },
-    // });
-    // const handleChange = (event) => {
-    //     settheme(event.target.checked);
-    // }
   return (
       <ThemeProvider theme={theme}>
           <CssBaseline />

@@ -73,7 +73,8 @@ export default function Monsters({ searchQuery }) {
     };
 
     return (
-        <div className="monsters">
+        // need to fix the monster cards so that they always fill their box
+        <div className="monsters"> 
             <div className="large-monsters" id="large-monsters-section">
                 <h2>Large Monsters</h2>
                 <Box m={8} display="flex" justifyContent="center" alignItems="center">
