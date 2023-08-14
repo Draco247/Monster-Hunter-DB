@@ -5,19 +5,11 @@
 .monster-tables h2 {
     text-align: center; /* Center text within the container */
     color: inherit;
-    position: relative; /* Added position to contain pseudo-element */
+    /* position: relative; Added position to contain pseudo-element */
+    text-decoration: underline;
+    font-size: 30px;
 }
 
-.monster-tables h2::after {
-    content: ""; /* Empty content for the underline */
-    position: absolute;
-    bottom: 0; /* Place the underline at the bottom of the h2 element */
-    left: 50%; /* Center the underline horizontally */
-    transform: translateX(-50%); /* Adjust to center the underline properly */
-    width: 100%; /* Make the underline span the entire width */
-    height: 2px; /* Height of the underline */
-    background-color: currentColor; /* Underline color matches the text color */
-}
 
 .expand-button {
     text-align: center;

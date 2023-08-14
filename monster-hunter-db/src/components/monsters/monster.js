@@ -615,6 +615,35 @@ export default function Monster() {
         }
     };
 
+    const getMonsterIntro = (monster_name) => {
+        // Replace underscores (_) with spaces in the image name
+        // console.log(monster_name);
+        const formattedImageName = `${monster_name
+            .replace(/(?:^|\s)\S/g, (char) => char.toUpperCase())}.png`
+            .replace(/ /g, '_') // First, replace underscores with spaces
+
+        // console.log(formattedImageName);
+
+        try {
+            // Use require to dynamically import the image
+            return require(`../../assets/monster intros/${formattedImageName}`);
+        } catch (error) {
+            try {
+                const formattedImageName = `${monster_name
+                    .replace(/(?:^|\s)\S/g, (char) => char.toUpperCase())}.jpeg`
+                    .replace(/ /g, '_')
+
+                // console.log(formattedImageName);
+
+                return require(`../../assets/monster intros/${formattedImageName}`);
+            } catch (error) {
+                // Handle the case when the image doesn't exist
+                console.error(`Image ${formattedImageName} not found.`);
+                return null;
+            }
+        }
+    };
+
     const getWeaponIcon = (weapon_type) => {
         // Replace underscores (_) with spaces in the image name
         const formattedImageName = `${weapon_type.toUpperCase()}.png`
@@ -647,30 +676,60 @@ export default function Monster() {
         }
     };
 
+    
+
     return (
         <div>
             <div className="monster-details">
-                <h1>{monster.name}</h1>
+                <h1 style={{ textDecoration: 'underline' }}>{monster.name}</h1>
                 <Grid container spacing={2} alignItems="stretch">
                     <Grid item xs={12} sm={9}>
-                        <div style={{ border: '1px solid black', borderRadius: '5px', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <p style={{ fontSize: '32px', textAlign: 'center', padding: '10px' }}>{monster.description}</p>
+                        <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            {getMonsterIntro(monster.name) ? (
+                                <Box
+                                    component="img"
+                                    sx={{
+                                        maxHeight: '100%',
+                                        maxWidth: '100%',
+                                        height: 'auto',
+                                        border: '2px solid black',
+                                        borderRadius: '5px',
+                                    }}
+                                    alt={monster.name}
+                                    src={getMonsterIntro(monster.name)}
+                                />
+                            ) : (
+                                <p style={{ fontSize: '30px', textAlign: 'center', padding: '10px' }}>
+                                    {monster.description}
+                                </p>
+                            )}
                         </div>
                     </Grid>
-                    <Grid item xs={12} sm={3}>
-                        <div style={{ border: '1px solid black', borderRadius: '5px', height: '100%', display: 'flex' }}>
-                            <Box style={{ border: '1px solid red', borderRadius: '5px', padding: '10px', width: '100%' }}>
-                                <CardMedia
-                                    component="img"
-                                    image={getMonsterIcon(monster.name)}
-                                    title={monster.name}
-                                    style={{ maxWidth: '100%', maxHeight: '100%', height: 'auto' }}
-                                />
-                            </Box>
+                    <Grid item xs={12} sm={3} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                        <div>
+                            <div style={{ flex: '1 0 50%', display: 'flex', alignItems: 'flex-end' }}>
+                                {/* Empty space to move the second image down */}
+                            </div>
+                            <Box
+                                component="img"
+                                sx={{
+                                    maxHeight: '100%',
+                                    maxWidth: '100%',
+                                    height: 'auto',
+                                    border: '2px solid black',
+                                    borderRadius: '5px',
+                                }}
+                                alt={monster.name}
+                                src={getMonsterIcon(monster.name)}
+                            />
                         </div>
                     </Grid>
                 </Grid>
-
+                {getMonsterIntro(monster.name) && (
+                    <p style={{ fontSize: '30px', textAlign: 'center', padding: '10px' }}>
+                        {monster.description}
+                    </p>
+                )}
             </div>
             {
                 /*
