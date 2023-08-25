@@ -16,7 +16,7 @@ export default function Monsters({ searchQuery }) {
     const filteredMonsters = monsters.filter((monster) =>
         monster.name.toLowerCase().includes(searchQuery.toLowerCase().trim())
     );
-    console.log(filteredMonsters);
+    // console.log(filteredMonsters);
 
     const handleCardMouseEnter = (id) => {
         setHoveredCard(id);
@@ -44,7 +44,6 @@ export default function Monsters({ searchQuery }) {
     };
 
     useEffect(() => {
-        console.log(process.env.REACT_APP_react_url)
         fetch(`${process.env.REACT_APP_react_url}/monsters/getAll`)
             .then(res => res.json())
             .then((result)=> {
@@ -52,7 +51,7 @@ export default function Monsters({ searchQuery }) {
 
 
             })}, []);
-    console.log(monsters);
+    // console.log(monsters);
 
     const getMonsterIcons = (monster_name) => {
         // Replace underscores (_) with spaces in the image name

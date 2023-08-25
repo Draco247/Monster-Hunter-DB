@@ -1,0 +1,10 @@
+.quest-details h1{
+    text-align: center;
+}
+
+.quest-section {
+    height: 400px;
+    width: 100%;
+    overflow-y: auto; /* Add a scrollbar if the content overflows */
+    margin-bottom: 20px; /* Optional: Add some space between each section */
+}

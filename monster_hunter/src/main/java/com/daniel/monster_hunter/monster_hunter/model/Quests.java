@@ -18,7 +18,7 @@ import java.util.Set;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "quests")
+@Table(name = "quests2")
 public class Quests {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +26,7 @@ public class Quests {
     private Long id;
 
     private String quest_name;
-    private String quest_url;
+//     private String quest_url;
     private String objective;
     private String HRP;
     private String MRP;
@@ -40,13 +40,23 @@ public class Quests {
     @Column(name = "rewards" ,columnDefinition = "json")
     private String rewards;
 
+    private String quest_lvl;
+
+    private String quest_type;
+    
+    @Column(name="quest_type_id")
+    private Long questtypeid;
+
+    private String quest_location;
+
+    
 
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {
                     CascadeType.PERSIST,
                     CascadeType.MERGE
             })
-    @JoinTable(name = "quest_monsters",
+    @JoinTable(name = "quest_monsters2",
             joinColumns = { @JoinColumn(name = "quest_id") },
             inverseJoinColumns = { @JoinColumn(name = "monster_id") })
     private Set<Monsters> monsters = new HashSet<>();

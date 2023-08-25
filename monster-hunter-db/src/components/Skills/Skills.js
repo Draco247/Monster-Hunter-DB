@@ -12,11 +12,12 @@ export default function Skills() {
             .then(res => res.json())
             .then((result)=> {
                 setSkills(result);
-                console.log(skills)
+                console.log(result)
             })}, []);
 
     const columns = [
-        { field: 'skill_name', headerName: 'Skill', flex: 0.6, sortable: true,
+        { field: 'skill_name', headerName: 'Skill', flex: 0.6, sortable: true,type: "singleSelect",
+            valueOptions: skills.map(skill => skill.skill_name),
             renderCell: (params) => {
                 return (
                     <Link to={`/skills/${params.row.id}`}>{params.row.skill_name}</Link>
@@ -41,24 +42,25 @@ export default function Skills() {
                 );
             },
         },
-        { field: 'skillDecorations', headerName: 'Decorations', flex: 1,renderCell: (params) => {
-                // "params" contains the current row data, including the "skillDecorations" property
-                const decorations = params.value; // Assuming "skillDecorations" is an array of dictionaries
+        // { field: 'skillDecorations', headerName: 'Decorations', type: "singleSelect",
+        //     valueOptions: skills.flatMap(skill => skill.skillDecorations.map(decoration => decoration.decoration_name)),flex: 1,
+        //     renderCell: (params) => {
+        //         // "params" contains the current row data, including the "skillDecorations" property
+        //         const decorations = params.value; // Assuming "skillDecorations" is an array of dictionaries
 
-                // Render an unordered list with list items for each decoration
-                return (
-                    <ul>
-                        {decorations.map((decoration) => (
-                            <li key={decoration.id}>
-                                <Link to={`/decorations/${decoration.id}`}>{decoration.decoration_name}</Link>
-                            </li>
-                        ))}
-                    </ul>
-                );
-            },
-        }
+        //         // Render an unordered list with list items for each decoration
+        //         return (
+        //             <ul>
+        //                 {decorations.map((decoration) => (
+        //                     <li key={decoration.id}>
+        //                         <Link to={`/decorations/${decoration.id}`}>{decoration.decoration_name}</Link>
+        //                     </li>
+        //                 ))}
+        //             </ul>
+        //         );
+        //     },
+        // }
     ];
-
 
     return (
         <div>
@@ -69,7 +71,7 @@ export default function Skills() {
                     autoHeight
                     // disableColumnMenu
                     pageSize={5}
-                    checkboxSelection
+                    // checkboxSelection
                     disableRowSelectionOnClick
                     initialState={{
                         sorting: {

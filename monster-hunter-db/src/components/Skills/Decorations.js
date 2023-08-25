@@ -7,7 +7,7 @@ import Deco2 from '../../assets/icons/deco2.png';
 import Deco3 from '../../assets/icons/deco3.png';
 import Deco4 from '../../assets/icons/deco4.png';
 import {Link} from "react-router-dom";
-import {DataGrid} from "@mui/x-data-grid";
+import {DataGrid, GridToolbar} from "@mui/x-data-grid";
 
 export default function Decorations() {
     const [decorations, setDecorations] = useState([]);
@@ -20,7 +20,8 @@ export default function Decorations() {
     };
 
     const columns = [
-        { field: 'decoration_name', headerName: 'Decoration', flex: 1, sortable: true,
+        { field: 'decoration_name', headerName: 'Decoration', flex: 1, sortable: true, type: "singleSelect",
+            valueOptions: decorations.map(decoration => decoration.decoration_name),
             renderCell: (params) => {
                 const decorationName = params.row.decoration_name;
                 const lastSpaceIndex = decorationName.lastIndexOf(' ');
@@ -47,7 +48,8 @@ export default function Decorations() {
                     </div>
                 );
             },},
-        { field: 'skill_name', headerName: 'Skill', flex: 1, sortable: true,
+        { field: 'skill_name', headerName: 'Skill', flex: 1, sortable: true,type: "singleSelect",
+            valueOptions: decorations.map(decoration => decoration.skill_name),
             renderCell: (params) => {
                 return (
                     <Link to={`/skills/${params.row.id}`}>{params.row.skill_name}</Link>
@@ -71,14 +73,18 @@ export default function Decorations() {
                     columns={columns}
                     autoHeight
                     // disableColumnMenu
+                    slots={{ toolbar: GridToolbar }}
                     pageSize={5}
-                    checkboxSelection
+                    // checkboxSelection
                     disableRowSelectionOnClick
                     initialState={{
                         sorting: {
                             sortModel: [{ field: 'decoration_name', sort: 'asc' }],
                         },
                     }}
+                    // filterModel={{
+                    //     items: [{ columnField: "Decoration", operatorValue: "isAnyOf", value: ["1","2"] }],
+                    // }}
                 />
             </Box>
         </div>

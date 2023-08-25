@@ -65,4 +65,9 @@ public class QuestController {
     public List<Map<String, Object>> getQuestRewards(@PathVariable Long questId) {
         return questService.getQuestRewards(questId);
     }
+
+    @GetMapping("/quest_type/{questtypeId}")
+    public List<Quests> getQuestsByQuestTypeId(@PathVariable(value = "questtypeId") Long questtypeId) {
+        return questRepository.findQuestsByQuesttypeid(questtypeId);
+    }
 }

@@ -3,8 +3,7 @@ import React from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { Switch } from '@mui/material';
-import TopBar from './components/topbar/topbar'
-import Monsters from './components/monsters/monsters'
+import NavBar from './components/navbar/navbar'
 import MonstersPage from './pages/Monsters/MonstersPage'
 import MonsterPage from './pages/Monsters/MonsterPage'
 import SelectWeaponsPage from './pages/Weapons/SelectWeaponsPage'
@@ -21,10 +20,12 @@ import QuestsPage from './pages/Quests/QuestsPage'
 import QuestPage from './pages/Quests/QuestPage'
 import { Box } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route } from'react-router-dom';
-import Monster from "./components/monsters/monster";
 import WeaponPage from "./pages/Weapons/WeaponPage";
 import {useState} from "react";
 import {blueGrey, deepOrange, grey, pink, purple, red, teal} from "@mui/material/colors";
+import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
 
 
 const getDesignTokens = (mode) => ({
@@ -52,6 +53,8 @@ const getDesignTokens = (mode) => ({
     },
 });
 
+
+
 function App() {
     const [mode, setMode] = React.useState('dark');
     const toggleColorMode = () => {
@@ -63,20 +66,29 @@ function App() {
       <ThemeProvider theme={theme}>
           <CssBaseline />
           <Router>
-              <TopBar/>
-              <label>Dark Mode</label>
+              {/* <TopBar/> */}
+              <NavBar/>
+              {/* <label>Dark Mode</label> */}
               <Switch
-                  checked={theme}
-                  color='success'
-                  onChange={toggleColorMode} />
+                checked={mode === 'dark'}
+                color='success'
+                onChange={toggleColorMode}
+                />
+                {mode === 'dark' ? (
+                <FontAwesomeIcon icon={faMoon} style={{ marginLeft: '10px' }} />
+                ) : (
+                <FontAwesomeIcon icon={faSun} style={{ marginLeft: '10px' }} />
+                )}
+
               <Routes>
                   <Route path='/monsters' element={<MonstersPage/>}/>
-                  <Route path='/quests' element={<QuestsPage/>}/>
+                  {/* <Route path='/quests' element={<QuestsPage/>}/> */}
                   <Route path="/monsters/:id" element={<MonsterPage />}/>
-                  <Route path="/quests/:id" element={<QuestPage />}/>
+                  <Route path="/quests/:quest_type" element={<QuestsPage />}/>
+                  <Route path="/quest/:id" element={<QuestPage />}/>
                   <Route path="/weapons" element={<SelectWeaponsPage/>}/>
                   <Route path="/weapons/:id" element={<WeaponsPage/>}/>
-                  <Route path="/weapons/:id/weapons" element={<WeaponPage/>}/>
+                  <Route path="/weapon/:id" element={<WeaponPage/>}/>
                   <Route path="/items" element={<ItemsPage/>}/>
                   <Route path="/items/:id" element={<ItemPage/>}/>
                   <Route path="/armour" element={<ArmoursPage/>}/>
@@ -86,9 +98,7 @@ function App() {
                   <Route path="/decorations" element={<DecorationsPage/>}/>
                   <Route path="/decorations/:id" element={<DecorationPage/>}/>
               </Routes>
-              {/*<Box m={10}>*/}
-              {/*    <Monsters/>*/}
-              {/*</Box>*/}
+             
           </Router>
       </ThemeProvider>
   );

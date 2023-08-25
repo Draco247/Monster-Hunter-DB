@@ -1,29 +1,14 @@
 import * as React from 'react';
 import {useState, useEffect} from "react";
-import {
-    TableContainer,
-    Table,
-    TableHead,
-    TableRow,
-    TableCell,
-    TableBody,
-    Paper,
-    Pagination,
-    TablePagination,
-    Box
-} from '@mui/material';
-import MUIDataTable from "mui-datatables";
-import { createTheme, ThemeProvider } from "@material-ui/core/styles";
+import { Box } from '@mui/material';
 import {DataGrid, GridToolbar} from "@mui/x-data-grid";
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom'
 
-export default function BasicTable() {
+export default function Quests() {
+    const id = useSelector(state => state.id); 
+    console.log(id)
     const [quests, setQuests] = useState([]);
-    const [page, setPage] = useState(1);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
-    const [searchValue, setSearchValue] = useState('');
-    const [searchBtn, setSearchBtn] = useState(true);
-    const [viewColumnBtn, setViewColumnBtn] = useState(true);
-    const [filterBtn, setFilterBtn] = useState(true);
 
     // const columns = ["Locale", "Quest","Objective", "HRP", "MRP"];
     const columns = [
@@ -52,7 +37,9 @@ export default function BasicTable() {
                     {questIcon && (
                         <img src={questIcon} alt={questType} style={{ marginRight: '5px', verticalAlign: 'middle' }} />
                     )}
-                    <a href={`/quests/${params.row.id}`}>{params.row.quest_name}</a>
+                    <Link to={`/quest/${params.row.id}`}>
+                        {params.row.quest_name}
+                    </Link>
                 </div>
                 );
             },
@@ -81,11 +68,11 @@ export default function BasicTable() {
     };
 
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_react_url}/quests/getAll`)
+        fetch(`${process.env.REACT_APP_react_url}/quests/quest_type/${id}`)
             .then(res => res.json())
             .then((result)=> {
                 setQuests(result);
-            })}, []);
+            })}, [id]);
     console.log(quests);
 
     return (

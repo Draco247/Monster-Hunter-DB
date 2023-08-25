@@ -252,6 +252,8 @@ export default function Monster() {
             headerName: '',
             flex: 0.1,
             sortable: true,
+            // type: "singleSelect",
+            // valueOptions: ["sns"],
             renderCell: (params) =>
                 <Box
                     component="img"
@@ -261,7 +263,7 @@ export default function Monster() {
                         marginRight: '8px',
                     }}
                     alt={params.row['weapon_type_name']}
-                    src={getWeaponIcon(params.row['weapon_type_name'])}// Remove the parentheses and return the JSX directly}
+                    src={getWeaponIcon(params.row['weapon_type_name'])}
                 />
         },
         { field: 'attack', headerName: 'Attack', flex:0.1, sortable: true},
@@ -529,7 +531,7 @@ export default function Monster() {
                 const response = await fetch(`${process.env.REACT_APP_react_url}/monsters/${id}/drops`);
                 const data = await response.json();
                 setMonsterDrops(data);
-                // console.log(data);
+                console.log(data);
             } catch (error) {
                 console.error('Error fetching monster drops:', error);
             }
@@ -540,7 +542,7 @@ export default function Monster() {
                 const response = await fetch(`${process.env.REACT_APP_react_url}/monsters/${id}/forging-weapons`);
                 const data = await response.json();
                 setMonsterForgingWeapons(data);
-                // console.log(data);
+                console.log(data);
             } catch (error) {
                 console.error('Error fetching monster forging weapons:', error);
             }
@@ -738,7 +740,7 @@ export default function Monster() {
             }
             <div className="monster-tables">
                 <div className="monster-quests">
-                    <div className="expand-button">
+                    {/* <div className="expand-button">
                         <Button onClick={() => handleVisibleChange("quests")}>
                             <h2>Monster Quests</h2>
                         </Button>
@@ -762,10 +764,31 @@ export default function Monster() {
                                 />
                             </Box>
                         </div>
-                    )}
+                    )} */}
+                    <h2>Quests</h2>
+                    <div className="monster-section monster-quests">
+                         <Box sx={{ height: 400, width: '100%'}}>
+                                <DataGrid
+                                    rows={monsterquests}
+                                    columns={questcolumns}
+                                    getRowId={(row) => row.id}
+                                    autoHeight
+                                    slots={{ toolbar: GridToolbar }}
+                                    // pageSize={5}
+                                    disableRowSelectionOnClick
+                                    initialState={{
+                                        sorting: {
+                                            sortModel: [{ field: 'quest_name', sort: 'asc' }],
+                                        },
+                                        pagination: { paginationModel: { pageSize: 5 } },
+                                    }}
+                                    pageSizeOptions={[5, 10, 25]}
+                                />
+                            </Box>
+                    </div>
                 </div>
                 <div className="monster-hitzones" >
-                    <div className="expand-button">
+                    {/* <div className="expand-button">
                        <Button onClick={() => handleVisibleChange("hitzones")}>
                         <h2>Monster Hitzones</h2>
                     </Button>
@@ -791,11 +814,35 @@ export default function Monster() {
                                 />
                             </Box>
                         </div>
-                    )}
+                    )} */}
+                    <h2>Hitzones</h2>
+                    <div className="monster-section monster-hitzones">
+                        <Box sx={{ height: 400, width: '100%'}}>
+                        <DataGrid
+                            rows={monsterhitzones}
+                            columns={hitzonecolumns}
+                            getRowId={(row) => `${row.hitzone}-${generateUniqueID()}`}
+                            autoHeight
+                            // disableColumnMenu
+                            pageSize={5}
+                            // checkboxSelection
+                            disableRowSelectionOnClick
+                            initialState={{
+                                sorting: {
+                                    sortModel: [{ field: 'hitzone', sort: 'asc' }],
+                                },
+                                pagination: { paginationModel: { pageSize: 5 } },
+                            }}
+                            pageSizeOptions={[5, 10, 25]}
+                        
+                        />
+                    </Box>
+                    </div>
+                    
                 </div>
                 {/* {need to fix the filter for drops table} */}
                 <div className="monster-drops">
-                    <div className="expand-button">
+                    {/* <div className="expand-button">
                        <Button onClick={() => handleVisibleChange("drops")}>
                         <h2>Monster Drops</h2>
                     </Button>
@@ -823,12 +870,37 @@ export default function Monster() {
                                 />
                             </Box>
                         </div>
-                        )}
+                        )} */}
+                    <h2>Drops</h2>
+                    <div className="monster-section monster-drops">
+                            <Box sx={{ height: 400, width: '100%'}}>
+                                <DataGrid
+                                    rows={monsterdrops}
+                                    columns={dropscolumns}
+                                    getRowId={(row) => `${row["Item id"]}-${generateUniqueID()}`}
+                                    autoHeight
+                                    sx={{ '.centered-cell': { justifyContent: 'center' } }} // Add this line to center the cell content
+                                    slots={{ toolbar: GridToolbar }}
+                                    // disableColumnMenu
+                                    pageSize={5}
+                                    // checkboxSelection
+                                    disableRowSelectionOnClick
+                                    initialState={{
+                                        sorting: {
+                                            sortModel: [{ field: 'Item name', sort: 'asc' }],
+                                        },
+                                        pagination: { paginationModel: { pageSize: 5 } },
+                                    }}
+                                    pageSizeOptions={[5, 10, 25]}
+                                    
+                                />
+                            </Box>
+                    </div>
                 </div>
                 {/* {might need to change heights of these tables since it looks weird
                 when their heights are inconsistent} */}
                 <div className="monster-weapon-forging">
-                    <div className="expand-button">
+                    {/* <div className="expand-button">
                         <Button onClick={() => handleVisibleChange("forging")}>
                             <h2>Monster Forging Weapons</h2>
                         </Button>
@@ -856,10 +928,35 @@ export default function Monster() {
                                 />
                             </Box>
                         </div>
-                        )}
+                        )} */}
+                    <h2>Weapon Forging</h2>
+                    <div className="monster-section monster-weapon-forging">
+                            <Box sx={{ height: 400, width: '100%'}}>
+                                <DataGrid
+                                    rows={monsterforgingweapons}
+                                    columns={weaponcolumns}
+                                    getRowId={(row) => `${row.weapon_id}-${generateUniqueID()}`}
+                                    autoHeight
+                                    sx={{ '.centered-cell': { justifyContent: 'center' } }} // Add this line to center the cell content
+                                    slots={{ toolbar: GridToolbar }}
+                                    // disableColumnMenu
+                                    pageSize={5}
+                                    // checkboxSelection
+                                    disableRowSelectionOnClick
+                                    initialState={{
+                                        sorting: {
+                                            sortModel: [{ field: 'weapon_name', sort: 'asc' }],
+                                        },
+                                        pagination: { paginationModel: { pageSize: 5 } },
+                                    }}
+                                    pageSizeOptions={[5, 10, 25]}
+                                    getRowHeight={() => 'auto'}
+                                />
+                            </Box>
+                    </div>
                 </div>
                 <div className="monster-weapon-upgrade">
-                    <div className="expand-button">
+                    {/* <div className="expand-button">
                        <Button onClick={() => handleVisibleChange("upgrade")}>
                             <h2>Monster Upgrade Weapons</h2>
                         </Button>
@@ -885,10 +982,33 @@ export default function Monster() {
                                 />
                             </Box>
                         </div>
-                        )}
+                        )} */}
+                    <h2>Weapon Upgrades</h2>
+                    <div className="monster-section monster-weapon-upgrade">
+                            <Box sx={{ height: 400, width: '100%'}}>
+                                <DataGrid
+                                    rows={monsterupgradeweapons}
+                                    columns={weaponcolumns}
+                                    getRowId={(row) => `${row.weapon_id}-${generateUniqueID()}`}
+                                    autoHeight
+                                    // disableColumnMenu
+                                    pageSize={5}
+                                    // checkboxSelection
+                                    disableRowSelectionOnClick
+                                    initialState={{
+                                        sorting: {
+                                            sortModel: [{ field: 'quest_name', sort: 'asc' }],
+                                        },
+                                        pagination: { paginationModel: { pageSize: 5 } },
+                                    }}
+                                    pageSizeOptions={[5, 10, 25]}
+                                    getRowHeight={() => 'auto'}
+                                />
+                            </Box>
+                    </div>
                 </div>
                 <div className="monster-armour">
-                    <div className="expand-button">
+                    {/* <div className="expand-button">
                        <Button onClick={() => handleVisibleChange("armour")}>
                             <h2>Monster Armour</h2>
                         </Button>
@@ -909,12 +1029,37 @@ export default function Monster() {
                                         sorting: {
                                             sortModel: [{ field: 'quest_name', sort: 'asc' }],
                                         },
+                                        pagination: { paginationModel: { pageSize: 5 } },
                                     }}
+                                    pageSizeOptions={[5, 10, 25]}
                                     getRowHeight={() => 'auto'}
                                 />
                             </Box>
                         </div>
-                        )}
+                        )} */}
+                    <h2>Armour</h2>
+                    <div className="monster-section monster-armour">
+                            <Box sx={{ height: 400, width: '100%'}}>
+                                <DataGrid
+                                    rows={monsterarmour}
+                                    columns={armourcolumns}
+                                    getRowId={(row) => row.armour_id}
+                                    autoHeight
+                                    // disableColumnMenu
+                                    pageSize={5}
+                                    // checkboxSelection
+                                    disableRowSelectionOnClick
+                                    initialState={{
+                                        sorting: {
+                                            sortModel: [{ field: 'quest_name', sort: 'asc' }],
+                                        },
+                                        pagination: { paginationModel: { pageSize: 5 } },
+                                    }}
+                                    pageSizeOptions={[5, 10, 25]}
+                                    getRowHeight={() => 'auto'}
+                                />
+                            </Box>
+                    </div>
                 </div>
             </div>
         </div>
