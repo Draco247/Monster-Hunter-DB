@@ -4,7 +4,6 @@ import {useState, useEffect} from "react";
 import CardMedia from '@mui/material/CardMedia';
 import { Grid,Box } from '@mui/material';
 import {Link, useParams} from "react-router-dom";
-import { makeStyles } from "@material-ui/core/styles";
 import SharpnessBar from "../SharpnessBar";
 import {DataGrid} from "@mui/x-data-grid";
 import {v4 as uuidv4} from "uuid";

@@ -4,7 +4,6 @@ import ArmourSets from "../../components/armour/armourSets";
 import {Box, TextField} from "@mui/material";
 import {useLocation} from "react-router-dom";
 import MUIDataTable from "mui-datatables";
-import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import ArmourSet from "../../components/armour/armourSet";
 
 

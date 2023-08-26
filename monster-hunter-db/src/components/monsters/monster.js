@@ -12,21 +12,21 @@ import {useState, useEffect} from "react";
 import CardMedia from '@mui/material/CardMedia';
 import { Grid,Box } from '@mui/material';
 import {Link, useParams} from "react-router-dom";
-import { makeStyles } from "@material-ui/core/styles";
+// import { makeStyles } from "@material-ui/core/styles";
 import {DataGrid,GridToolbar} from "@mui/x-data-grid";
 import { v4 as uuidv4 } from 'uuid';
 import Button from "@mui/material/Button";
 import {GridColumnHeaderParams} from "@mui/x-data-grid";
 import ProgressBar from 'react-bootstrap/ProgressBar';
 
-const useStyles = makeStyles({
-    centerCell: {
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100%",
-    },
-});
+// const useStyles = makeStyles({
+//     centerCell: {
+//         display: "flex",
+//         justifyContent: "center",
+//         alignItems: "center",
+//         height: "100%",
+//     },
+// });
 
 export default function Monster() {
     const { id } = useParams();
