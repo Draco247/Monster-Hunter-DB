@@ -11,6 +11,7 @@ import Items from '../../assets/icons/Potion.png'
 import Skills from '../../assets/icons/Attack.png'
 import Decorations from '../../assets/icons/deco4.png'
 import * as RiIcons from 'react-icons/ri'
+import * as FaIcons from 'react-icons/fa';
 
 const getWeaponIcon = (weapon_type) => {
     // Replace underscores (_) with spaces in the image name
@@ -29,6 +30,12 @@ const getWeaponIcon = (weapon_type) => {
 };
 
 export const Sidebar = [
+    {
+        title: "Home",
+        path: "/",
+        icon: <FaIcons.FaHome alt="home" style={{color: '#34c6e3', marginRight: '5px', verticalAlign: 'middle', height: '40px', width: '40px'}} />,
+        cName: "nav-text"
+    },
     {
         title: "Monsters",
         path: "/monsters",

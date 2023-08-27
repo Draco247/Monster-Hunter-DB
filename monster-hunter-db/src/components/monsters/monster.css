@@ -18,10 +18,12 @@
 
 
 .monster-section {
-    height: 450px;
+    height: 100%;
     width: 100%;
-    overflow-y: auto; /* Add a scrollbar if the content overflows */
     margin-bottom: 20px; /* Optional: Add some space between each section */
+    display: flex;
+    flex-direction: column;
+   
 }
 
 

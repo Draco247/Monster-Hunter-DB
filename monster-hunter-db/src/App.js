@@ -4,6 +4,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { Switch } from '@mui/material';
 import NavBar from './components/navbar/navbar'
+import HomePage from './pages/Home/HomePage'
 import MonstersPage from './pages/Monsters/MonstersPage'
 import MonsterPage from './pages/Monsters/MonsterPage'
 import SelectWeaponsPage from './pages/Weapons/SelectWeaponsPage'
@@ -34,14 +35,14 @@ const getDesignTokens = (mode) => ({
         ...(mode === 'light'
             ? {
                 // 👇 palette values for light mode
-                primary: { main: purple[800] },
+                // primary: { main: purple[800] },
                 text: {
                     primary: grey[900],
                 },
             }
             : {
                 // 👇 palette values for dark mode
-                primary: { main: teal[700] },
+                // primary: { main: teal[700] },
                 background: {
                     default: '#2B3142',
                     paper: blueGrey[900],
@@ -66,9 +67,7 @@ function App() {
       <ThemeProvider theme={theme}>
           <CssBaseline />
           <Router>
-              {/* <TopBar/> */}
               <NavBar/>
-              {/* <label>Dark Mode</label> */}
               <Switch
                 checked={mode === 'dark'}
                 color='success'
@@ -81,22 +80,23 @@ function App() {
                 )}
 
               <Routes>
-                  <Route path='/monsters' element={<MonstersPage/>}/>
-                  {/* <Route path='/quests' element={<QuestsPage/>}/> */}
-                  <Route path="/monsters/:id" element={<MonsterPage />}/>
-                  <Route path="/quests/:quest_type" element={<QuestsPage />}/>
-                  <Route path="/quest/:id" element={<QuestPage />}/>
-                  <Route path="/weapons" element={<SelectWeaponsPage/>}/>
-                  <Route path="/weapons/:id" element={<WeaponsPage/>}/>
-                  <Route path="/weapon/:id" element={<WeaponPage/>}/>
-                  <Route path="/items" element={<ItemsPage/>}/>
-                  <Route path="/items/:id" element={<ItemPage/>}/>
-                  <Route path="/armour" element={<ArmoursPage/>}/>
-                  <Route path="/armour/:id" element={<ArmourPage/>}/>
-                  <Route path="/armour/armourSets/:id" element={<ArmourSetPage/>}/>
-                  <Route path="/skills" element={<SkillsPage/>}/>
-                  <Route path="/decorations" element={<DecorationsPage/>}/>
-                  <Route path="/decorations/:id" element={<DecorationPage/>}/>
+                <Route path='/' element={<HomePage/>}/>
+                <Route path='/monsters' element={<MonstersPage/>}/>
+                {/* <Route path='/quests' element={<QuestsPage/>}/> */}
+                <Route path="/monsters/:id" element={<MonsterPage />}/>
+                <Route path="/quests/:quest_type" element={<QuestsPage />}/>
+                <Route path="/quest/:id" element={<QuestPage />}/>
+                <Route path="/weapons" element={<SelectWeaponsPage/>}/>
+                <Route path="/weapons/:id" element={<WeaponsPage/>}/>
+                <Route path="/weapon/:id" element={<WeaponPage/>}/>
+                <Route path="/items" element={<ItemsPage/>}/>
+                <Route path="/items/:id" element={<ItemPage/>}/>
+                <Route path="/armour" element={<ArmoursPage/>}/>
+                <Route path="/armour/:id" element={<ArmourPage/>}/>
+                <Route path="/armour/armourSets/:id" element={<ArmourSetPage/>}/>
+                <Route path="/skills" element={<SkillsPage/>}/>
+                <Route path="/decorations" element={<DecorationsPage/>}/>
+                <Route path="/decorations/:id" element={<DecorationPage/>}/>
               </Routes>
              
           </Router>

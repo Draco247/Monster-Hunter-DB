@@ -740,34 +740,9 @@ export default function Monster() {
             }
             <div className="monster-tables">
                 <div className="monster-quests">
-                    {/* <div className="expand-button">
-                        <Button onClick={() => handleVisibleChange("quests")}>
-                            <h2>Monster Quests</h2>
-                        </Button>
-                    </div>
-                    {visible === "quests" && (
-                        <div className="monster-section monster-quests-content">
-                            <Box sx={{ height: 400, width: '100%'}}>
-                                <DataGrid
-                                    rows={monsterquests}
-                                    columns={questcolumns}
-                                    getRowId={(row) => row.id}
-                                    autoHeight
-                                    slots={{ toolbar: GridToolbar }}
-                                    pageSize={5}
-                                    disableRowSelectionOnClick
-                                    initialState={{
-                                        sorting: {
-                                            sortModel: [{ field: 'quest_name', sort: 'asc' }],
-                                        },
-                                    }}
-                                />
-                            </Box>
-                        </div>
-                    )} */}
                     <h2>Quests</h2>
                     <div className="monster-section monster-quests">
-                         <Box sx={{ height: 400, width: '100%'}}>
+                         <Box>
                                 <DataGrid
                                     rows={monsterquests}
                                     columns={questcolumns}
@@ -788,89 +763,33 @@ export default function Monster() {
                     </div>
                 </div>
                 <div className="monster-hitzones" >
-                    {/* <div className="expand-button">
-                       <Button onClick={() => handleVisibleChange("hitzones")}>
-                        <h2>Monster Hitzones</h2>
-                    </Button>
-                    </div>
-                    {visible === "hitzones" && (
-                        <div className="monster-section monster-hitzones">
-                            <Box sx={{ height: 400, width: '100%'}}>
-                                <DataGrid
-                                    rows={monsterhitzones}
-                                    columns={hitzonecolumns}
-                                    getRowId={(row) => `${row.hitzone}-${generateUniqueID()}`}
-                                    autoHeight
-                                    // disableColumnMenu
-                                    pageSize={5}
-                                    // checkboxSelection
-                                    disableRowSelectionOnClick
-                                    initialState={{
-                                        sorting: {
-                                            sortModel: [{ field: 'hitzone', sort: 'asc' }],
-                                        },
-                                    }}
-                                
-                                />
-                            </Box>
-                        </div>
-                    )} */}
                     <h2>Hitzones</h2>
                     <div className="monster-section monster-hitzones">
-                        <Box sx={{ height: 400, width: '100%'}}>
-                        <DataGrid
-                            rows={monsterhitzones}
-                            columns={hitzonecolumns}
-                            getRowId={(row) => `${row.hitzone}-${generateUniqueID()}`}
-                            autoHeight
-                            // disableColumnMenu
-                            pageSize={5}
-                            // checkboxSelection
-                            disableRowSelectionOnClick
-                            initialState={{
-                                sorting: {
-                                    sortModel: [{ field: 'hitzone', sort: 'asc' }],
-                                },
-                                pagination: { paginationModel: { pageSize: 5 } },
-                            }}
-                            pageSizeOptions={[5, 10, 25]}
-                        
-                        />
-                    </Box>
+                        <Box>
+                            <DataGrid
+                                rows={monsterhitzones}
+                                columns={hitzonecolumns}
+                                getRowId={(row) => `${row.hitzone}-${generateUniqueID()}`}
+                                autoHeight
+                                slots={{ toolbar: GridToolbar }}
+                                // disableColumnMenu
+                                pageSize={5}
+                                // checkboxSelection
+                                disableRowSelectionOnClick
+                                initialState={{
+                                    sorting: {
+                                        sortModel: [{ field: 'hitzone', sort: 'asc' }],
+                                    },
+                                    pagination: { paginationModel: { pageSize: 5 } },
+                                }}
+                                pageSizeOptions={[5, 10, 25]}
+                            
+                            />
+                        </Box>
                     </div>
-                    
                 </div>
                 {/* {need to fix the filter for drops table} */}
                 <div className="monster-drops">
-                    {/* <div className="expand-button">
-                       <Button onClick={() => handleVisibleChange("drops")}>
-                        <h2>Monster Drops</h2>
-                    </Button>
-                    </div>  
-                    {visible === "drops" && (
-                        <div className="monster-section monster-drops">
-                            <Box sx={{ height: 400, width: '100%'}}>
-                                <DataGrid
-                                    rows={monsterdrops}
-                                    columns={dropscolumns}
-                                    getRowId={(row) => `${row["Item id"]}-${generateUniqueID()}`}
-                                    autoHeight
-                                    sx={{ '.centered-cell': { justifyContent: 'center' } }} // Add this line to center the cell content
-                                    slots={{ toolbar: GridToolbar }}
-                                    // disableColumnMenu
-                                    pageSize={5}
-                                    // checkboxSelection
-                                    disableRowSelectionOnClick
-                                    initialState={{
-                                        sorting: {
-                                            sortModel: [{ field: 'Item name', sort: 'asc' }],
-                                        },
-                                    }}
-                                    
-                                />
-                            </Box>
-                        </div>
-                        )} */}
                     <h2>Drops</h2>
                     <div className="monster-section monster-drops">
                             <Box sx={{ height: 400, width: '100%'}}>
@@ -900,38 +819,9 @@ export default function Monster() {
                 {/* {might need to change heights of these tables since it looks weird
                 when their heights are inconsistent} */}
                 <div className="monster-weapon-forging">
-                    {/* <div className="expand-button">
-                        <Button onClick={() => handleVisibleChange("forging")}>
-                            <h2>Monster Forging Weapons</h2>
-                        </Button>
-                    </div>
-                    {visible === "forging" && (
-                        <div className="monster-section monster-weapon-forging">
-                            <Box sx={{ height: 400, width: '100%'}}>
-                                <DataGrid
-                                    rows={monsterforgingweapons}
-                                    columns={weaponcolumns}
-                                    getRowId={(row) => `${row.weapon_id}-${generateUniqueID()}`}
-                                    autoHeight
-                                    sx={{ '.centered-cell': { justifyContent: 'center' } }} // Add this line to center the cell content
-                                    slots={{ toolbar: GridToolbar }}
-                                    // disableColumnMenu
-                                    pageSize={5}
-                                    // checkboxSelection
-                                    disableRowSelectionOnClick
-                                    initialState={{
-                                        sorting: {
-                                            sortModel: [{ field: 'weapon_name', sort: 'asc' }],
-                                        },
-                                    }}
-                                    getRowHeight={() => 'auto'}
-                                />
-                            </Box>
-                        </div>
-                        )} */}
                     <h2>Weapon Forging</h2>
                     <div className="monster-section monster-weapon-forging">
-                            <Box sx={{ height: 400, width: '100%'}}>
+                            <Box>
                                 <DataGrid
                                     rows={monsterforgingweapons}
                                     columns={weaponcolumns}
@@ -956,41 +846,15 @@ export default function Monster() {
                     </div>
                 </div>
                 <div className="monster-weapon-upgrade">
-                    {/* <div className="expand-button">
-                       <Button onClick={() => handleVisibleChange("upgrade")}>
-                            <h2>Monster Upgrade Weapons</h2>
-                        </Button>
-                    </div>
-                    {visible === "upgrade" && (
-                        <div className="monster-section monster-weapon-upgrade">
-                            <Box sx={{ height: 400, width: '100%'}}>
-                                <DataGrid
-                                    rows={monsterupgradeweapons}
-                                    columns={weaponcolumns}
-                                    getRowId={(row) => `${row.weapon_id}-${generateUniqueID()}`}
-                                    autoHeight
-                                    // disableColumnMenu
-                                    pageSize={5}
-                                    // checkboxSelection
-                                    disableRowSelectionOnClick
-                                    initialState={{
-                                        sorting: {
-                                            sortModel: [{ field: 'quest_name', sort: 'asc' }],
-                                        },
-                                    }}
-                                    getRowHeight={() => 'auto'}
-                                />
-                            </Box>
-                        </div>
-                        )} */}
                     <h2>Weapon Upgrades</h2>
                     <div className="monster-section monster-weapon-upgrade">
-                            <Box sx={{ height: 400, width: '100%'}}>
+                            <Box>
                                 <DataGrid
                                     rows={monsterupgradeweapons}
                                     columns={weaponcolumns}
                                     getRowId={(row) => `${row.weapon_id}-${generateUniqueID()}`}
                                     autoHeight
+                                    slots={{ toolbar: GridToolbar }}
                                     // disableColumnMenu
                                     pageSize={5}
                                     // checkboxSelection
@@ -1039,12 +903,13 @@ export default function Monster() {
                         )} */}
                     <h2>Armour</h2>
                     <div className="monster-section monster-armour">
-                            <Box sx={{ height: 400, width: '100%'}}>
+                            <Box>
                                 <DataGrid
                                     rows={monsterarmour}
                                     columns={armourcolumns}
                                     getRowId={(row) => row.armour_id}
                                     autoHeight
+                                    slots={{ toolbar: GridToolbar }}
                                     // disableColumnMenu
                                     pageSize={5}
                                     // checkboxSelection

@@ -28,7 +28,7 @@ export default function Monsters({ searchQuery }) {
 
     const cardStyle = {
         // height: '100%',
-        height: 350,
+        height: '100%',
         width: '100%',
         // transition: 'box-shadow 0.9s', // Add a smooth transition effect
     };
