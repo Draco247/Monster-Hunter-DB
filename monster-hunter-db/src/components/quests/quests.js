@@ -1,9 +1,12 @@
 import * as React from 'react';
+import './quests.css';
 import {useState, useEffect} from "react";
-import { Box } from '@mui/material';
+import { Grid,Box } from '@mui/material';
 import {DataGrid, GridToolbar} from "@mui/x-data-grid";
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom'
+import QuestBox from './questbox'
+
 
 export default function Quests() {
     const id = useSelector(state => state.id); 
@@ -75,26 +78,130 @@ export default function Quests() {
             })}, [id]);
     console.log(quests);
 
+    const getMonsterIcons = (monster_name) => {
+        // Replace underscores (_) with spaces in the image name
+        const formattedImageName = `${monster_name
+            .replace(/(?:^|\s)\S/g, (char) => char.toUpperCase())}_Icon.png`
+            .replace(/ /g, '_') // First, replace underscores with spaces
+
+        // console.log(formattedImageName);
+
+        try {
+            // Use require to dynamically import the image
+            return require(`../../assets/icons/${formattedImageName}`);
+        } catch (error) {
+            // Handle the case when the image doesn't exist
+            console.error(`Image ${formattedImageName} not found.`);
+            return null;
+        }
+    };
+    
     return (
         <div>
-            <Box sx={{ height: 400, width: '100%'}}>
-                <DataGrid
-                    rows={quests}
-                    columns={columns}
-                    getRowId={(row) => row.id}
-                    autoHeight
-                    slots={{ toolbar: GridToolbar }}
-                    // disableColumnMenu
-                    pageSize={5}
-                    // checkboxSelection
-                    disableRowSelectionOnClick
-                    initialState={{
-                        sorting: {
-                            sortModel: [{ field: 'quest_name', sort: 'asc' }],
-                        },
-                    }}
-                />
-            </Box>
+            {id === 6 && (
+                <div className="quests">
+                    <h1>Village</h1>
+                    <div className="★1 Quests">
+                        <h2>★1 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="★1"/>
+                    </div>
+                    <div className="★2 Quests">
+                        <h2>★2 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="★2"/>
+                    </div>
+                    <div className="★3 Quests">
+                        <h2>★3 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="★3"/>
+                    </div>
+                    <div className="★4 Quests">
+                        <h2>★4 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="★4"/>
+                    </div>
+                    <div className="★5 Quests">
+                        <h2>★5 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="★5"/>
+                    </div>
+                    <div className="★6 Quests">
+                        <h2>★6 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="★6"/>
+                    </div>
+                    <div className="★7 Quests">
+                        <h2>★7 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="★7"/>
+                    </div>
+                </div>
+               
+            )}
+            {id === 5 && (
+                <div className="quests">
+                    <h1>Hub Low Rank</h1>
+                    <div className="★1 Quests">
+                        <h2>★1 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="★1"/>
+                    </div>
+                    <div className="★2 Quests">
+                        <h2>★2 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="★2"/>
+                    </div>
+                    <div className="★3 Quests">
+                        <h2>★3 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="★3"/>
+                    </div>
+                </div>
+               
+            )}
+            {id === 4 && (
+                <div className="quests">
+                    <h1>Hub High Rank</h1>
+                    <div className="★4 Quests">
+                        <h2>★4 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="★4"/>
+                    </div>
+                    <div className="★5 Quests">
+                        <h2>★5 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="★5"/>
+                    </div>
+                    <div className="★6 Quests">
+                        <h2>★6 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="★6"/>
+                    </div>
+                    <div className="★7 Quests">
+                        <h2>★7 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="★7"/>
+                    </div>
+                </div>
+               
+            )}
+            {id === 3 && (
+                <div className="quests">
+                    <h1>Hub Master Rank</h1>
+                    <div className="M★1 Quests">
+                        <h2>M★1 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="M★1"/>
+                    </div>
+                    <div className="M★2 Quests">
+                        <h2>M★2 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="M★2"/>
+                    </div>
+                    <div className="M★3 Quests">
+                        <h2>M★3 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="M★3"/>
+                    </div>
+                    <div className="M★4 Quests">
+                        <h2>M★4 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="M★4"/>
+                    </div>
+                    <div className="M★5 Quests">
+                        <h2>M★5 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="M★5"/>
+                    </div>
+                    <div className="M★6 Quests">
+                        <h2>M★6 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="M★6"/>
+                    </div>
+                </div>
+               
+            )}
         </div>
 
     );
