@@ -17,7 +17,11 @@ import {DataGrid,GridToolbar} from "@mui/x-data-grid";
 import { v4 as uuidv4 } from 'uuid';
 import Button from "@mui/material/Button";
 import {GridColumnHeaderParams} from "@mui/x-data-grid";
-import ProgressBar from 'react-bootstrap/ProgressBar';
+import { getWeaponIcon } from '../weapons/getWeaponIcon';
+import { getMonsterIcon } from './getMonsterIcon';
+import { getMonsterIntro } from './getMonsterIntro';
+import { getArmourIcon } from '../armour/getArmourIcon';
+// import ProgressBar from 'react-bootstrap/ProgressBar';
 
 // const useStyles = makeStyles({
 //     centerCell: {
@@ -599,84 +603,22 @@ export default function Monster() {
         // // console.log(visiblesection)
     };
 
-    const getMonsterIcon = (monster_name) => {
-        // Replace underscores (_) with spaces in the image name
-        const formattedImageName = `${monster_name
-            .replace(/(?:^|\s)\S/g, (char) => char.toUpperCase())}_Icon.png`
-            .replace(/ /g, '_') // First, replace underscores with spaces
 
-        // console.log(formattedImageName);
+    // const getArmourIcon = (piece_type) => {
+    //     // Replace underscores (_) with spaces in the image name
+    //     const formattedImageName = `${piece_type}.png`
 
-        try {
-            // Use require to dynamically import the image
-            return require(`../../assets/icons/${formattedImageName}`);
-        } catch (error) {
-            // Handle the case when the image doesn't exist
-            console.error(`Image ${formattedImageName} not found.`);
-            return null;
-        }
-    };
+    //     // console.log(formattedImageName);
 
-    const getMonsterIntro = (monster_name) => {
-        // Replace underscores (_) with spaces in the image name
-        // console.log(monster_name);
-        const formattedImageName = `${monster_name
-            .replace(/(?:^|\s)\S/g, (char) => char.toUpperCase())}.png`
-            .replace(/ /g, '_') // First, replace underscores with spaces
-
-        // console.log(formattedImageName);
-
-        try {
-            // Use require to dynamically import the image
-            return require(`../../assets/monster intros/${formattedImageName}`);
-        } catch (error) {
-            try {
-                const formattedImageName = `${monster_name
-                    .replace(/(?:^|\s)\S/g, (char) => char.toUpperCase())}.jpeg`
-                    .replace(/ /g, '_')
-
-                // console.log(formattedImageName);
-
-                return require(`../../assets/monster intros/${formattedImageName}`);
-            } catch (error) {
-                // Handle the case when the image doesn't exist
-                console.error(`Image ${formattedImageName} not found.`);
-                return null;
-            }
-        }
-    };
-
-    const getWeaponIcon = (weapon_type) => {
-        // Replace underscores (_) with spaces in the image name
-        const formattedImageName = `${weapon_type.toUpperCase()}.png`
-
-        // console.log(formattedImageName);
-
-        try {
-            // Use require to dynamically import the image
-            return require(`../../assets/icons/${formattedImageName}`);
-        } catch (error) {
-            // Handle the case when the image doesn't exist
-            console.error(`Image ${formattedImageName} not found.`);
-            return null;
-        }
-    };
-
-    const getArmourIcon = (piece_type) => {
-        // Replace underscores (_) with spaces in the image name
-        const formattedImageName = `${piece_type}.png`
-
-        // console.log(formattedImageName);
-
-        try {
-            // Use require to dynamically import the image
-            return require(`../../assets/icons/${formattedImageName}`);
-        } catch (error) {
-            // Handle the case when the image doesn't exist
-            console.error(`Image ${formattedImageName} not found.`);
-            return null;
-        }
-    };
+    //     try {
+    //         // Use require to dynamically import the image
+    //         return require(`../../assets/icons/${formattedImageName}`);
+    //     } catch (error) {
+    //         // Handle the case when the image doesn't exist
+    //         console.error(`Image ${formattedImageName} not found.`);
+    //         return null;
+    //     }
+    // };
 
     
 

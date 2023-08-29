@@ -2,7 +2,7 @@ import './App.css';
 import React from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { Switch } from '@mui/material';
+import { Button, Switch } from '@mui/material';
 import NavBar from './components/navbar/navbar'
 import HomePage from './pages/Home/HomePage'
 import MonstersPage from './pages/Monsters/MonstersPage'
@@ -27,6 +27,8 @@ import {blueGrey, deepOrange, grey, pink, purple, red, teal} from "@mui/material
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
+import IconButton from '@mui/material/IconButton';
+
 
 
 const getDesignTokens = (mode) => ({
@@ -67,17 +69,20 @@ function App() {
       <ThemeProvider theme={theme}>
           <CssBaseline />
           <Router>
-              <NavBar/>
-              <Switch
+              <NavBar mode={mode} toggleColorMode={toggleColorMode}/>
+              {/* <Switch
                 checked={mode === 'dark'}
                 color='success'
                 onChange={toggleColorMode}
-                />
-                {mode === 'dark' ? (
-                <FontAwesomeIcon icon={faMoon} style={{ marginLeft: '10px' }} />
-                ) : (
-                <FontAwesomeIcon icon={faSun} style={{ marginLeft: '10px' }} />
-                )}
+                /> */}
+                {/* <IconButton onClick={toggleColorMode}>
+                    {mode === 'dark' ? (
+                    <FontAwesomeIcon icon={faMoon} style={{ color: 'white' }} />
+                    ) : (
+                    <FontAwesomeIcon icon={faSun} style={{ color: 'black' }} />
+                    )}
+                </IconButton> */}
+               
 
               <Routes>
                 <Route path='/' element={<HomePage/>}/>
@@ -87,7 +92,7 @@ function App() {
                 <Route path="/quests/:quest_type" element={<QuestsPage />}/>
                 <Route path="/quest/:id" element={<QuestPage />}/>
                 <Route path="/weapons" element={<SelectWeaponsPage/>}/>
-                <Route path="/weapons/:id" element={<WeaponsPage/>}/>
+                <Route path="/weapons/:weapon_type" element={<WeaponsPage/>}/>
                 <Route path="/weapon/:id" element={<WeaponPage/>}/>
                 <Route path="/items" element={<ItemsPage/>}/>
                 <Route path="/items/:id" element={<ItemPage/>}/>

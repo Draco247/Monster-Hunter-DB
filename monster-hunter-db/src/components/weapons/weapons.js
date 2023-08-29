@@ -9,11 +9,11 @@ import {Link, useNavigate} from "react-router-dom";
 import { useSelector } from 'react-redux';
 
 
-export default function Weapons(weaponType) {
+export default function Weapons({id}) {
     const [weapons, setWeapons] = useState([])
-    const navigate = useNavigate();
-    console.log(weaponType)
-    const id = useSelector(state => state.id);
+    // const navigate = useNavigate();
+    // console.log(weaponType)
+    // const id = useSelector(state => state.id);
 
     const deco_imgs = {
         "deco1": "https://cdn.kiranico.net/file/kiranico/mhrise-web/images/ui/deco1.png",

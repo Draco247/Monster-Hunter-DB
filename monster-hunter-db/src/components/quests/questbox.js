@@ -2,6 +2,8 @@ import { Grid,Box } from '@mui/material';
 import { Link } from 'react-router-dom'
 import { useState } from 'react';
 import Tooltip from '@mui/material/Tooltip';
+import { useTheme } from '@mui/material/styles';
+
 
 
 
@@ -11,7 +13,7 @@ const QuestBox = ({quests, quest_lvl}) => {
 
     const hoverStyle = {
         boxShadow: '0 0 5px 2px #888', // Apply a box shadow when hovered
-        background: '#03204d'
+        background: 'light' === useTheme().palette.mode ? '#fcdfb2' : '#03204d'
     };
 
     const handleMouseEnter = (id) => {
@@ -47,23 +49,22 @@ const QuestBox = ({quests, quest_lvl}) => {
                     .filter(quest => quest.quest_lvl === quest_lvl)
                     .map(quest => (
                         <Grid item xs={12} sm={6} md={3} lg={3} key={quest.id}>
-                            <Link to={`/quest/${quest.id}`}>
+                            <Link to={`/quest/${quest.id}`} style={{ color: 'inherit' }}>
                                 <Box height="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" sx={{...(hovered === quest.id && hoverStyle), 
                                     border: '2px solid black', borderRadius: '5px'}} onMouseEnter={() => handleMouseEnter(quest.id)}
                                     onMouseLeave={handleMouseLeave}>
-                                    <p key={quest.id}>{quest.quest_name}</p>
-                                    <Box ml={3} mr={3} sx={{ width: '100%'}}>
-                                        <Grid container spacing={2} style={{ flexWrap: 'wrap' }}>
+                                    <h5 key={quest.id}>{quest.quest_name}</h5>
+                                    <Box m={2} display="flex"  sx={{ width: '100%'}}>
+                                        <Grid container spacing={2} style={{ flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
                                             {quest.monsters.map(monster => (
-                                                <Grid item xs={12} sm={6} md={3} lg={3} key={monster.id}>
+                                                <Grid item xs={12} sm='auto' md='auto' lg='auto' key={monster.id}>
                                                      <Tooltip title={monster.name}>
                                                         <Box
                                                             component="img"
-                                                            m={3}
                                                             sx={{
                                                                 height: 60,
                                                                 width: 60,
-                                                                marginRight: '8px',
+                                                                // marginRight: '8px',
                                                                 border: '2px solid black', 
                                                                 borderRadius: '5px'
                                                             }}

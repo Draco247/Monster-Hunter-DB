@@ -4,6 +4,12 @@
     display: flex;
     justify-content: start;
     align-items: center;
+    /* border-top-right-radius: 80px;
+    border-bottom-right-radius: 80px; */
+    border-radius: 80px;
+    margin-top: 10px;
+    margin-left: 100px;
+    margin-right: 100px;
   }
   
   .menu-bars {

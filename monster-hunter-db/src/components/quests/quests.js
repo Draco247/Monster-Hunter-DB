@@ -8,8 +8,8 @@ import { Link } from 'react-router-dom'
 import QuestBox from './questbox'
 
 
-export default function Quests() {
-    const id = useSelector(state => state.id); 
+export default function Quests({id}) {
+    // const id = useSelector(state => state.id); 
     console.log(id)
     const [quests, setQuests] = useState([]);
 
@@ -175,6 +175,132 @@ export default function Quests() {
             {id === 3 && (
                 <div className="quests">
                     <h1>Hub Master Rank</h1>
+                    <div className="M★1 Quests">
+                        <h2>M★1 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="M★1"/>
+                    </div>
+                    <div className="M★2 Quests">
+                        <h2>M★2 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="M★2"/>
+                    </div>
+                    <div className="M★3 Quests">
+                        <h2>M★3 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="M★3"/>
+                    </div>
+                    <div className="M★4 Quests">
+                        <h2>M★4 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="M★4"/>
+                    </div>
+                    <div className="M★5 Quests">
+                        <h2>M★5 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="M★5"/>
+                    </div>
+                    <div className="M★6 Quests">
+                        <h2>M★6 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="M★6"/>
+                    </div>
+                </div>
+               
+            )}
+            {id === 2 && (
+                <div className="quests">
+                    <h1>Follower Quests</h1>
+                    <div className="M★2 Quests">
+                        <h2>M★2 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="M★2"/>
+                    </div>
+                    <div className="M★3 Quests">
+                        <h2>M★3 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="M★3"/>
+                    </div>
+                    <div className="M★4 Quests">
+                        <h2>M★4 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="M★4"/>
+                    </div>
+                    <div className="M★5 Quests">
+                        <h2>M★5 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="M★5"/>
+                    </div>
+                    <div className="M★6 Quests">
+                        <h2>M★6 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="M★6"/>
+                    </div>
+                </div>
+               
+            )}
+            {id === 1 && (
+                <div className="quests">
+                    <h1>Anomaly Quests</h1>
+                    <div className="A★1 Quests">
+                        <h2>A★1 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="A★1"/>
+                    </div>
+                    <div className="A★2 Quests">
+                        <h2>A★2 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="A★2"/>
+                    </div>
+                    <div className="A★3 Quests">
+                        <h2>A★3 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="A★3"/>
+                    </div>
+                    <div className="A★4 Quests">
+                        <h2>A★4 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="A★4"/>
+                    </div>
+                    <div className="A★5 Quests">
+                        <h2>A★5 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="A★5"/>
+                    </div>
+                    <div className="A★6 Quests">
+                        <h2>A★6 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="A★6"/>
+                    </div>
+                    <div className="A★7 Quests">
+                        <h2>A★7 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="A★7"/>
+                    </div>
+                    <div className="A★8 Quests">
+                        <h2>A★8 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="A★8"/>
+                    </div>
+                    <div className="A★9 Quests">
+                        <h2>A★9 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="A★9"/>
+                    </div>
+                </div>
+               
+            )}
+            {id === 0 && (
+                <div className="quests">
+                    <h1>Event Quests</h1>
+                    <div className="★1 Quests">
+                        <h2>★1 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="★1"/>
+                    </div>
+                    <div className="★2 Quests">
+                        <h2>★2 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="★2"/>
+                    </div>
+                    <div className="★3 Quests">
+                        <h2>★3 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="★3"/>
+                    </div>
+                    <div className="★4 Quests">
+                        <h2>★4 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="★4"/>
+                    </div>
+                    <div className="★5 Quests">
+                        <h2>★5 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="★5"/>
+                    </div>
+                    <div className="★6 Quests">
+                        <h2>★6 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="★6"/>
+                    </div>
+                    <div className="★7 Quests">
+                        <h2>★7 Quests</h2>
+                        <QuestBox quests={quests} quest_lvl="★7"/>
+                    </div>
                     <div className="M★1 Quests">
                         <h2>M★1 Quests</h2>
                         <QuestBox quests={quests} quest_lvl="M★1"/>

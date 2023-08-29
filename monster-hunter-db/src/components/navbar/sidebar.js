@@ -12,22 +12,23 @@ import Skills from '../../assets/icons/Attack.png'
 import Decorations from '../../assets/icons/deco4.png'
 import * as RiIcons from 'react-icons/ri'
 import * as FaIcons from 'react-icons/fa';
+import { getWeaponIcon } from '../weapons/getWeaponIcon';
 
-const getWeaponIcon = (weapon_type) => {
-    // Replace underscores (_) with spaces in the image name
-    const formattedImageName = `${weapon_type.toUpperCase()}.png`
+// const getWeaponIcon = (weapon_type) => {
+//     // Replace underscores (_) with spaces in the image name
+//     const formattedImageName = `${weapon_type.toUpperCase()}.png`
 
-    // console.log(formattedImageName);
+//     // console.log(formattedImageName);
 
-    try {
-        // Use require to dynamically import the image
-        return require(`../../assets/icons/${formattedImageName}`);
-    } catch (error) {
-        // Handle the case when the image doesn't exist
-        console.error(`Image ${formattedImageName} not found.`);
-        return null;
-    }
-};
+//     try {
+//         // Use require to dynamically import the image
+//         return require(`../../assets/icons/${formattedImageName}`);
+//     } catch (error) {
+//         // Handle the case when the image doesn't exist
+//         console.error(`Image ${formattedImageName} not found.`);
+//         return null;
+//     }
+// };
 
 export const Sidebar = [
     {

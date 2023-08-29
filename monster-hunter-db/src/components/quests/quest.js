@@ -157,7 +157,7 @@ export default function Quest() {
     return (
         <div>
             <div className="quest-details">
-                <h1 style={{ textDecoration: 'underline' }}>>{quest.quest_name}</h1>
+                <h1 style={{ textDecoration: 'underline' }}>{quest.quest_name}</h1>
                 <p>{quest.objective}</p>
                 <p>Failure Conditions: {quest.failure_conditions}</p>
                 <p>Hunter Rank Points: {quest.hrp}</p>
