@@ -1,5 +1,6 @@
 package com.daniel.monster_hunter.monster_hunter.controller;
 
+import com.daniel.monster_hunter.monster_hunter.dto.MonsterDTO;
 import com.daniel.monster_hunter.monster_hunter.model.Items;
 import com.daniel.monster_hunter.monster_hunter.model.Monsters;
 import com.daniel.monster_hunter.monster_hunter.model.Quests;
@@ -11,6 +12,7 @@ import com.daniel.monster_hunter.monster_hunter.service.MonsterService;
 import com.daniel.monster_hunter.monster_hunter.service.WeaponService;
 import com.daniel.monster_hunter.monster_hunter.service.ArmourService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequestMapping("/api/v1/monsters")
@@ -42,9 +46,12 @@ public class MonsterController {
     private QuestRepository questRepository;
 
     @GetMapping("/getAll")
-    public List<Monsters> getAllMonsters() {
-        return monsterRepository.findAll();
+    public List<MonsterDTO> getAllMonsters() {
+        return monsterRepository.findAllBy();
     }
+    // public List<Monsters> getAllMonsters() {
+    //     return monsterRepository.findAll();
+    // }
 
     @GetMapping("/{monsterId}")
     public Optional<Monsters> getMonsterById(@PathVariable(value = "monsterId") Long monsterId) {

@@ -6,6 +6,7 @@ import {DataGrid, GridToolbar} from "@mui/x-data-grid";
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom'
 import QuestBox from './questbox'
+import { getQuestIcon } from './getQuestIcon';
 
 
 export default function Quests({id}) {
@@ -17,7 +18,7 @@ export default function Quests({id}) {
     const columns = [
         { field: 'quest_name', headerName: 'Quest', flex:1, sortable: true,
         renderCell: (params) => {
-            const questTypeKeywords = ['hunt', 'capture', 'slay']; // Add more keywords as needed
+            const questTypeKeywords = ['hunt', 'capture', 'slay','deliver']; 
             const questTypeMatches = questTypeKeywords.filter(keyword =>
                 params.row.objective.toLowerCase().includes(keyword)
             );
@@ -29,6 +30,8 @@ export default function Quests({id}) {
                     ? 'Arena'
                     : questTypeMatches.length > 1
                     ? 'Endurance'
+                    : 'Deliver'
+                    ? 'Gathering'
                     : questTypeMatches.length === 1
                     ? questTypeMatches[0]
                     : 'Other';
@@ -52,23 +55,23 @@ export default function Quests({id}) {
         { field: 'mrp', headerName: 'MRP', flex:0.3, sortable: true}
     ];
 
-    const getQuestIcon = (quest_type) => {
-        // Replace underscores (_) with spaces in the image name
-        const formattedImageName = `${quest_type
-            .replace(/(?:^|\s)\S/g, (char) => char.toUpperCase())}.png`
-            .replace(/ /g, '_') // First, replace underscores with spaces
+    // const getQuestIcon = (quest_type) => {
+    //     // Replace underscores (_) with spaces in the image name
+    //     const formattedImageName = `${quest_type
+    //         .replace(/(?:^|\s)\S/g, (char) => char.toUpperCase())}.png`
+    //         .replace(/ /g, '_') // First, replace underscores with spaces
 
-        // console.log(formattedImageName);
+    //     // console.log(formattedImageName);
 
-        try {
-            // Use require to dynamically import the image
-            return require(`../../assets/icons/${formattedImageName}`);
-        } catch (error) {
-            // Handle the case when the image doesn't exist
-            // console.error(`Image ${formattedImageName} not found.`);
-            return null;
-        }
-    };
+    //     try {
+    //         // Use require to dynamically import the image
+    //         return require(`../../assets/icons/${formattedImageName}`);
+    //     } catch (error) {
+    //         // Handle the case when the image doesn't exist
+    //         // console.error(`Image ${formattedImageName} not found.`);
+    //         return null;
+    //     }
+    // };
 
     useEffect(() => {
         fetch(`${process.env.REACT_APP_react_url}/quests/quest_type/${id}`)
@@ -78,23 +81,6 @@ export default function Quests({id}) {
             })}, [id]);
     console.log(quests);
 
-    const getMonsterIcons = (monster_name) => {
-        // Replace underscores (_) with spaces in the image name
-        const formattedImageName = `${monster_name
-            .replace(/(?:^|\s)\S/g, (char) => char.toUpperCase())}_Icon.png`
-            .replace(/ /g, '_') // First, replace underscores with spaces
-
-        // console.log(formattedImageName);
-
-        try {
-            // Use require to dynamically import the image
-            return require(`../../assets/icons/${formattedImageName}`);
-        } catch (error) {
-            // Handle the case when the image doesn't exist
-            console.error(`Image ${formattedImageName} not found.`);
-            return null;
-        }
-    };
     
     return (
         <div>
@@ -124,10 +110,6 @@ export default function Quests({id}) {
                     <div className="★6 Quests">
                         <h2>★6 Quests</h2>
                         <QuestBox quests={quests} quest_lvl="★6"/>
-                    </div>
-                    <div className="★7 Quests">
-                        <h2>★7 Quests</h2>
-                        <QuestBox quests={quests} quest_lvl="★7"/>
                     </div>
                 </div>
                

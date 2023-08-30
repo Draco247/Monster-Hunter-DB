@@ -61,4 +61,9 @@ public class Quests {
             inverseJoinColumns = { @JoinColumn(name = "monster_id") })
     private Set<Monsters> monsters = new HashSet<>();
 
+    public Quest(Long id, Set<Monster> monsters) {
+        this.id = id;
+        this.monsters = monsters;
+    }
+
 }

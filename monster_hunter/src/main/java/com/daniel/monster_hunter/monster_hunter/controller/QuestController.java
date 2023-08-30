@@ -2,6 +2,7 @@ package com.daniel.monster_hunter.monster_hunter.controller;
 
 import com.daniel.monster_hunter.monster_hunter.model.Monsters;
 import com.daniel.monster_hunter.monster_hunter.model.Quests;
+import com.daniel.monster_hunter.monster_hunter.dto.QuestDTO;
 //import com.daniel.monster_hunter.monster_hunter.model.Quests_Monsters;
 import com.daniel.monster_hunter.monster_hunter.repository.MonsterRepository;
 import com.daniel.monster_hunter.monster_hunter.repository.QuestRepository;
@@ -67,6 +68,9 @@ public class QuestController {
     }
 
     @GetMapping("/quest_type/{questtypeId}")
+    // public List<QuestDTO> getQuestsByQuestTypeId(@PathVariable(value = "questtypeId") Long questtypeId) {
+    //     return questRepository.findQuestsByQuesttypeid(questtypeId);
+    // }
     public List<Quests> getQuestsByQuestTypeId(@PathVariable(value = "questtypeId") Long questtypeId) {
         return questRepository.findQuestsByQuesttypeid(questtypeId);
     }

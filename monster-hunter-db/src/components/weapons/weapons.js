@@ -4,9 +4,18 @@ import { Grid,Box } from '@mui/material';
 import {DataGrid} from "@mui/x-data-grid";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import LinearProgress from '@mui/material/LinearProgress';
-import SharpnessBar from "../SharpnessBar";
+import SharpnessBar from "./SharpnessBar";
 import {Link, useNavigate} from "react-router-dom";
 import { useSelector } from 'react-redux';
+import Fire from '../../assets/icons/Element_Fire_Icon.webp'
+import Water from '../../assets/icons/Element_Water_Icon.webp'
+import Ice from '../../assets/icons/Element_Ice_Icon.webp'
+import Thunder from '../../assets/icons/Element_Thunder_Icon.webp'
+import Dragon from '../../assets/icons/Element_Dragon_Icon.webp'
+import Blast from '../../assets/icons/Element_Icon_Blast.png'
+import Paralysis from '../../assets/icons/Element_Paralysis_Icon.png'
+import Sleep from '../../assets/icons/Element_Icon_Sleep.png'
+import Poison from '../../assets/icons/Element_Poison_Icon.png'
 
 
 export default function Weapons({id}) {
@@ -21,6 +30,18 @@ export default function Weapons({id}) {
         "deco3": "https://cdn.kiranico.net/file/kiranico/mhrise-web/images/ui/deco3.png",
         "deco4": "https://cdn.kiranico.net/file/kiranico/mhrise-web/images/ui/deco4.png"
     }
+
+    const elementIcons = {
+        Fire,
+        Water,
+        Ice,
+        Thunder,
+        Dragon,
+        Blast,
+        Paralysis,
+        Sleep,
+        Poison,
+    };
 
     useEffect(() => {
         // fetch(`${process.env.REACT_APP_react_url}/weapons/${weaponType.weaponType}/weapons`)
@@ -67,7 +88,26 @@ export default function Weapons({id}) {
             cellClassName: 'centered-cell',
         },
         { field: 'attack', headerName: 'Attack', flex:0.1, sortable: true},
-        { field: 'additional_property', headerName: 'Additional', flex:0.5, sortable: true},
+        { field: 'additional_property', headerName: 'Additional', flex:0.5, sortable: true, renderCell: (params) => {
+            const text = params.row.additional_property;
+            if (text === null) {
+                return <div>{text}</div>; // Render null as is
+            }
+            const isPositive = text.includes('+');
+            const isNegative = text.includes('-');
+    
+            const textStyle = {
+                color: isPositive ? '#07fa3c' : isNegative ? '#f72f2f' : 'black',
+                fontWeight: 'bold'
+            };
+    
+            return (
+                <div style={textStyle}>
+                    {text}
+                </div>
+            );
+        },
+        },
         { field: 'deco_slots', headerName: 'Deco Slots', flex:0.5, sortable: true, renderCell: (params) => {
                 // console.log(params);
                 const decoSlots = JSON.parse(params.row.decoSlots);
@@ -137,7 +177,24 @@ export default function Weapons({id}) {
     if (id !== "12" && id !== "13") {
         const elementColumn = {
             field: 'element', headerName: 'Element', flex:0.3, sortable: true, type: "singleSelect",
-            valueOptions: ["Fire", "Water", "Ice", "Thunder", "Dragon", "Poison", "Paralysis", "Blast", "Sleep"]
+            valueOptions: ["Fire", "Water", "Ice", "Thunder", "Dragon", "Poison", "Paralysis", "Blast", "Sleep"],
+            renderCell: (params) => {
+                // console.log(params.row.element)
+                const elementIconSrc = elementIcons[params.row.element];
+                // console.log(elementIconSrc);
+                return (
+                    elementIconSrc && (
+                        <div>
+                            <img
+                                src={elementIconSrc}
+                                alt={params.row.element}
+                                style={{ width: '40px', height: '40px' }}
+                            />
+                        </div>
+                    )
+                );
+                
+            },
         };
 
         const elementvalColumn = {

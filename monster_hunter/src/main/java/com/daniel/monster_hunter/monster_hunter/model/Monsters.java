@@ -1,14 +1,11 @@
 package com.daniel.monster_hunter.monster_hunter.model;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -55,6 +52,9 @@ public class Monsters {
             joinColumns = { @JoinColumn(name = "monster_id") },
             inverseJoinColumns = { @JoinColumn(name = "item_id") })
     private Set<Items> items = new HashSet<>();
+    
+
+    
 
 }
 

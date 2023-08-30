@@ -4,7 +4,7 @@ import {useState, useEffect} from "react";
 import CardMedia from '@mui/material/CardMedia';
 import { Grid,Box } from '@mui/material';
 import {Link, useParams} from "react-router-dom";
-import SharpnessBar from "../SharpnessBar";
+import SharpnessBar from "./SharpnessBar";
 import {DataGrid} from "@mui/x-data-grid";
 import {v4 as uuidv4} from "uuid";
 import {useLocation} from "react-router-dom";
@@ -401,7 +401,7 @@ export default function Weapon() {
                 </Box>
                 <p>{weapon.weapon_description}</p>
             <div className="weapon-stats" style={{ marginTop: '100px' }}>
-                <Box sx={{ height: 400, width: '100%'}}>
+                <Box sx={{ marginBottom: 10, width: '100%'}}>
                     <DataGrid
                         rows={[weapon]}
                         columns={weaponcolumns}
@@ -425,7 +425,7 @@ export default function Weapon() {
 
             </div>
             <div>
-                <Box sx={{ height: 400, width: '100%'}}>
+                <Box sx={{  marginBottom: 10,width: '100%'}}>
                     <DataGrid
                         rows={forge}
                         columns={itemcolumns}
@@ -446,7 +446,7 @@ export default function Weapon() {
                 {/*<MUIDataTable title={"Forging Items"} data={forgetableData} columns={columns} options={options} />*/}
             </div>
             <div>
-                <Box sx={{ height: 400, width: '100%'}}>
+                <Box sx={{  marginBottom: 10,width: '100%'}}>
                     <DataGrid
                         rows={upgrades}
                         columns={itemcolumns}

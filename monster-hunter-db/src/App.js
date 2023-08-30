@@ -38,8 +38,11 @@ const getDesignTokens = (mode) => ({
             ? {
                 // 👇 palette values for light mode
                 // primary: { main: purple[800] },
+                background: {
+                    paper: '#f7a354'
+                },
                 text: {
-                    primary: grey[900],
+                    primary: grey[900]
                 },
             }
             : {
@@ -47,7 +50,7 @@ const getDesignTokens = (mode) => ({
                 // primary: { main: teal[700] },
                 background: {
                     default: '#2B3142',
-                    paper: blueGrey[900],
+                    paper: '#1d284d',
                 },
                 text: {
                     primary: grey[50],

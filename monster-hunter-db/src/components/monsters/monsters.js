@@ -48,7 +48,7 @@ export default function Monsters({ searchQuery }) {
             .then(res => res.json())
             .then((result)=> {
             setMonsters(result);
-
+            console.log(result);
 
             })}, []);
     // console.log(monsters);

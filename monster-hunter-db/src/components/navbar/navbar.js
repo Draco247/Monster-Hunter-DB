@@ -59,7 +59,9 @@ export default function Navbar({mode, toggleColorMode}) {
         <>
          <div className="navbar">
                 <Link to='#' className="menu-bars">
-                    <FaIcons.FaBars onClick={showSidebar} style={{color: '#9827b8'}} />
+                    <IconButton onClick={showSidebar} style={{color: '#9827b8'}}>
+                        <FaIcons.FaBars />
+                    </IconButton>
                 </Link>
                 <IconButton onClick={toggleColorMode} style={{marginLeft:'10px', width: '50px', height:'50px'}}>
                     {mode === 'dark' ? (
@@ -82,7 +84,9 @@ export default function Navbar({mode, toggleColorMode}) {
             <SidebarNav sidebar={sidebar}>
                 <SidebarWrap>
                     <NavIcon to='#'>
-                        <FaIcons.FaBars onClick={showSidebar} style={{color: '#9827b8'}} />
+                        <IconButton onClick={showSidebar} style={{color: '#9827b8'}}>
+                            <FaIcons.FaBars />
+                        </IconButton>
                     </NavIcon>
                     {Sidebar.map((item, index) => {
                     return <SubMenu item={item} key={index} showSidebar={showSidebar}/>;
