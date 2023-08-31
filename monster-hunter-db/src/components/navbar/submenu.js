@@ -50,18 +50,18 @@ const DropdownLink = styled(Link)`
 `;
 
 const SubMenu = ({ item, showSidebar }) => {
-  const [subnav, setSubnav] = useState(false);
-  const dispatch = useDispatch();
-  
+  const [subnav, setSubnav] = useState(false);  
   const showSubnav = () => {
     setSubnav(!subnav)
   }
 
-  const showSidebarandGetID = (id) => {
-    showSidebar()
-    // console.log(id)
-    dispatch(setId(id))
-  }
+  
+
+  // const showSidebarandGetID = (id) => {
+  //   showSidebar()
+  //   // console.log(id)
+  //   dispatch(setId(id))
+  // }
 
   
 
@@ -83,7 +83,7 @@ const SubMenu = ({ item, showSidebar }) => {
       {subnav &&
         item.subNav.map((item, index) => {
           return (
-            <DropdownLink to={item.path} key={index} onClick={() => showSidebarandGetID(item.id)}>
+            <DropdownLink to={item.path} key={index} onClick={() => {showSubnav(); showSidebar();}}>
               {item.icon}
               <SidebarLabel>{item.title}</SidebarLabel>
             </DropdownLink>

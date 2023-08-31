@@ -19,9 +19,10 @@ import com.daniel.monster_hunter.monster_hunter.model.Monsters;
 public class QuestDTO {
     private Long id;
     private String quest_name;
-    private Set<Monsters> monsters;
+    private Set<MonsterDTO> monsters;
     private String quest_type;
     private Long questtypeid;
     private String quest_lvl;
+    private String objective;
     
 }

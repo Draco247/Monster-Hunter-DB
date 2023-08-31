@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import {useState} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Sidebar } from "./sidebar";
 import SubMenu from "./submenu";
 import "./navbar.css";
@@ -21,7 +21,7 @@ const SidebarNav = styled.nav`
   height: 100vh;
   display: flex;
   flex-direction: column; /* Stack items vertically */
-  position: fixed;
+  position: absolute;
   border-right: 4px solid #632ce4;
   top: 0;
   left: ${({ sidebar }) => (sidebar ? '0' : '-100%')};
@@ -51,9 +51,56 @@ const NavIcon = styled(Link)`
 //   border-bottom: 4px solid #632ce4;
 `;
 
+const DropdownContainer = styled.div`
+  position: relative;
+  display: inline-block;
+`;
+
+const DropdownButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: #9827b8;
+`;
+
+const DropdownContent = styled.div`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #060b26;
+  border: 4px solid #632ce4;
+  width: 250px;
+  z-index: 10;
+  display: ${({ open }) => (open ? 'block' : 'none')};
+`;
+
+
+
 export default function Navbar({mode, toggleColorMode}) {
     const [sidebar, setSidebar] = useState(false);
     const showSidebar = () => setSidebar(!sidebar);
+    const sidebarRef = useRef(null);
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+
+    const toggleDropdown = () => {
+        setDropdownOpen(!dropdownOpen);
+    };
+
+    useEffect(() => {
+        const handleOutsideClick = (event) => {
+          if (sidebar && sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+            showSidebar();
+          }
+        };
+    
+        document.addEventListener('mousedown', handleOutsideClick);
+    
+        return () => {
+          document.removeEventListener('mousedown', handleOutsideClick);
+        };
+      }, [sidebar]);
 
     return (
         <>
@@ -63,6 +110,13 @@ export default function Navbar({mode, toggleColorMode}) {
                         <FaIcons.FaBars />
                     </IconButton>
                 </Link>
+                {/* <DropdownContainer>
+                    <DropdownContent   open={dropdownOpen}>
+                        {Sidebar.map((item, index) => {
+                            return <SubMenu item={item} key={index} showSidebar={showSidebar}/>;
+                            })}
+                    </DropdownContent>
+                </DropdownContainer> */}
                 <IconButton onClick={toggleColorMode} style={{marginLeft:'10px', width: '50px', height:'50px'}}>
                     {mode === 'dark' ? (
                     <FontAwesomeIcon icon={faMoon} style={{ color: '#538eed' }} />
@@ -81,7 +135,8 @@ export default function Navbar({mode, toggleColorMode}) {
                     Monster Hunter DB
                 </Typography>
             </div>
-            <SidebarNav sidebar={sidebar}>
+            
+            <SidebarNav ref={sidebarRef} sidebar={sidebar}>
                 <SidebarWrap>
                     <NavIcon to='#'>
                         <IconButton onClick={showSidebar} style={{color: '#9827b8'}}>

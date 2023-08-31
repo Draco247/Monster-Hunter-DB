@@ -12,6 +12,10 @@ import ArenaQuests from '../../assets/icons/Arena.png'
 import { useState } from "react";
 import Button from "@mui/material/Button";
 import { WeaponsNav } from "../../components/weapons/weaponnavdata";
+import MonsterArt from "../../assets/monster intros/Magnamalo.jpeg";
+import ForgeArt from "../../assets/other art/Forge.jpg"
+import QuestArt from "../../assets/other art/Quests.jpg"
+
 
 
 
@@ -114,6 +118,7 @@ function HomePage() {
                          onMouseEnter={() => handleMouseEnter("monsters")}
                          onMouseLeave={handleMouseLeave}
                          >
+                            <img src={MonsterArt} alt="monsters" style={{width: '70%', height: '50%'}}/>
                             <h1>Monsters</h1>
                         </Button>
                     </Grid>
@@ -121,6 +126,7 @@ function HomePage() {
                     <Grid item xs={12} sm={6} md={3} lg={3}>
                         <Box m={8} display="flex" flexDirection="column" alignItems="center" sx={{ maxWidth: '100%',width: '300px', border: '2px solid black', borderRadius: '5px' }}>
                             <h1>Quests</h1>
+                            <img src={QuestArt} alt="quests" style={{width: '90%' ,height: '40%' }}/>
                                 {QuestsList.map((item, index) => (
                                     <ul style={{ textDecoration: "none", listStyleType: "none", padding: 0 }}>
                                         <li key={item.id}>

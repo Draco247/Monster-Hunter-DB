@@ -1,4 +1,5 @@
 package com.daniel.monster_hunter.monster_hunter.model;
+import com.daniel.monster_hunter.monster_hunter.dto.MonsterDTO;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -60,10 +61,5 @@ public class Quests {
             joinColumns = { @JoinColumn(name = "quest_id") },
             inverseJoinColumns = { @JoinColumn(name = "monster_id") })
     private Set<Monsters> monsters = new HashSet<>();
-
-    public Quest(Long id, Set<Monster> monsters) {
-        this.id = id;
-        this.monsters = monsters;
-    }
 
 }

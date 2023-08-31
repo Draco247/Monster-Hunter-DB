@@ -1,5 +1,6 @@
 package com.daniel.monster_hunter.monster_hunter.controller;
 
+import com.daniel.monster_hunter.monster_hunter.dto.WeaponDTO;
 import com.daniel.monster_hunter.monster_hunter.model.Items;
 import com.daniel.monster_hunter.monster_hunter.model.Quests;
 import com.daniel.monster_hunter.monster_hunter.model.Weapons;
@@ -39,9 +40,12 @@ public class WeaponController {
     }
 
     @GetMapping("/{typeId}/weapons")
-    public List<Weapons> getWeaponsByType(@PathVariable("typeId") Long typeId) {
-        return weaponRepository.findByWeapontypeid(typeId);
+    public List<WeaponDTO> getWeaponsByType(@PathVariable("typeId") Long typeId) {
+        return weaponRepository.findAllByWeaponTypeId(typeId);
     }
+    // public List<Weapons> getWeaponsByType(@PathVariable("typeId") Long typeId) {
+    //     return weaponRepository.findByWeapontypeid(typeId);
+    // }
 
     @GetMapping
     public List<Weapons> getWeaponsByElement(@RequestParam(value="element") String element) {
