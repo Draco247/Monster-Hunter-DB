@@ -44,7 +44,7 @@ export default function Monsters({ searchQuery }) {
     };
 
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_react_url}/monsters/getAll`)
+        fetch(`${process.env.REACT_APP_react_url}/monsters/getAll`, {mode:'cors'})
             .then(res => res.json())
             .then((result)=> {
             setMonsters(result);
