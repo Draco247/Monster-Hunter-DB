@@ -70,20 +70,20 @@ public class QuestController {
         return new ResponseEntity<>(monsters, HttpStatus.OK);
     }
 
-    // @GetMapping("/{questId}/mini_crown")
-    // public List<Map<String, Object>> getQuestMini_Crown(@PathVariable Long questId) {
-    //     return questService.getQuestMini_Crown(questId);
-    // }
+    @GetMapping("/{questId}/mini_crown")
+    public Map<String, List<Map<String, Object>>> getQuestMini_Crown(@PathVariable Long questId) {
+        return questService.getQuestMini_Crown(questId);
+    }
 
-    // @GetMapping("/{questId}/king_crown")
-    // public List<Map<String, Object>> getQuestKing_Crown(@PathVariable Long questId) {
-    //     return questService.getQuestKing_Crown(questId);
-    // }
+    @GetMapping("/{questId}/king_crown")
+    public Map<String, List<Map<String, Object>>> getQuestKing_Crown(@PathVariable Long questId) {
+        return questService.getQuestKing_Crown(questId);
+    }
 
-    // @GetMapping("/{questId}/rewards")
-    // public List<Map<String, Object>> getQuestRewards(@PathVariable Long questId) {
-    //     return questService.getQuestRewards(questId);
-    // }
+    @GetMapping("/{questId}/rewards")
+    public List<Map<String, Object>> getQuestRewards(@PathVariable Long questId) {
+        return questService.getQuestRewards(questId);
+    }
 
     @GetMapping("/quest_type/{questtypeid}")
     public ResponseEntity<List<QuestDTO>> getAllQuestsByQuestTypeId(@PathVariable Long questtypeid) {

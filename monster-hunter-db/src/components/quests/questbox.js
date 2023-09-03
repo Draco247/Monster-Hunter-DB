@@ -12,6 +12,7 @@ import { getQuestIcon } from './getQuestIcon';
 
 const QuestBox = ({quests, quest_lvl}) => {
     const [hovered, setHovered] = useState(null);
+    const { palette } = useTheme();
 
     const hoverStyle = {
         boxShadow: '0 0 5px 2px #888', // Apply a box shadow when hovered
@@ -33,7 +34,7 @@ const QuestBox = ({quests, quest_lvl}) => {
         const questTypeMatches = questTypeKeywords.filter(keyword =>
             quest.objective.toLowerCase().includes(keyword)
         );
-        console.log(questTypeMatches[0]);
+        // console.log(questTypeMatches[0]);
 
         const isArena = /^arena \d+★/.test(quest.quest_name.toLowerCase()) // check if quest name starts with arena *star to display arena icon
 
@@ -44,11 +45,13 @@ const QuestBox = ({quests, quest_lvl}) => {
                 ? 'Endurance'
                 : questTypeMatches.includes('deliver')
                 ? 'Gathering'
+                : questTypeMatches.includes('deliver')
+                ? 'Gathering'
                 : questTypeMatches.length === 1
                 ? questTypeMatches[0]
-                : 'Other';
+                : 'Hunt';
     
-       console.log(questType);
+    //    console.log(questType);
        return questType;
     };
 
@@ -62,7 +65,7 @@ const QuestBox = ({quests, quest_lvl}) => {
                         <Grid item xs={12} sm={6} md={3} lg={3} key={quest.id}>
                             <Link to={`/quest/${quest.id}`} style={{ color: 'inherit' }}>
                                 <Box height="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" sx={{...(hovered === quest.id && hoverStyle), 
-                                    border: '2px solid black', borderRadius: '5px'}} onMouseEnter={() => handleMouseEnter(quest.id)}
+                                    border: palette.borderColour.Box, borderRadius: '5px'}} onMouseEnter={() => handleMouseEnter(quest.id)}
                                     onMouseLeave={handleMouseLeave}>
                                     <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
                                         {questIcon && (

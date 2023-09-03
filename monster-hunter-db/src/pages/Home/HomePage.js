@@ -110,23 +110,30 @@ function HomePage() {
             <Box m={10}>
                 <Grid container spacing={1}>
                     <Grid item xs={12} sm={6} md={12} lg={12} container justifyContent="center" alignItems="center">
-                        <Button component={Link} to="/monsters" m={8} display="flex"
-                         flexDirection="column" 
-                         alignItems="center" 
-                         justifyContent="center" 
-                         sx={{ width: '50%', border: '2px solid black', borderRadius: '5px','&:hover': hoverStyle}}
-                         onMouseEnter={() => handleMouseEnter("monsters")}
-                         onMouseLeave={handleMouseLeave}
-                         >
-                            <img src={MonsterArt} alt="monsters" style={{width: '70%', height: '50%'}}/>
-                            <h1>Monsters</h1>
+                        <Button
+                            component={Link}
+                            to="/monsters"
+                            m={8}
+                            display="flex"
+                            flexDirection="column"
+                            alignItems="center"
+                            justifyContent="center"
+                            sx={{ width: '50%', border: '2px solid black', borderRadius: '5px', '&:hover': hoverStyle }}
+                            onMouseEnter={() => handleMouseEnter("monsters")}
+                            onMouseLeave={handleMouseLeave}
+                        >
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                <img src={MonsterArt} alt="monsters" style={{ width: '100%', height: '50%' }} />
+                                <h1>Monsters</h1>
+                            </div>
                         </Button>
                     </Grid>
+
 
                     <Grid item xs={12} sm={6} md={3} lg={3}>
                         <Box m={8} display="flex" flexDirection="column" alignItems="center" sx={{ maxWidth: '100%',width: '300px', border: '2px solid black', borderRadius: '5px' }}>
                             <h1>Quests</h1>
-                            <img src={QuestArt} alt="quests" style={{width: '90%' ,height: '40%' }}/>
+                            <img src={QuestArt} alt="quests" style={{width: '90%' ,height: '40%', marginBottom: 10}}/>
                                 {QuestsList.map((item, index) => (
                                     <ul style={{ textDecoration: "none", listStyleType: "none", padding: 0 }}>
                                         <li key={item.id}>
@@ -142,40 +149,28 @@ function HomePage() {
                                 ))}
                         </Box>
                     </Grid>
+
                     <Grid item xs={12} sm={6} md={3} lg={3}>
                         <Box m={8} display="flex" flexDirection="column" alignItems="center" sx={{ maxWidth: '100%',width: '300px', border: '2px solid black', borderRadius: '5px' }}>
                             <h1>Weapons</h1>
-                            <Grid container spacing={2} style={{ flexWrap: 'wrap', padding: '16px'}}>
-                                {WeaponsNav.map((item, index) => (
-                                    <Grid key={index} item xs={12} sm={6} md={3} lg={3}>
-                                        <Link to={item.path} //</Grid>onClick={() => redirect(item.id)}
-                                        >
-                                            <Tooltip title={item.title}>
-                                                {/* <Box
-                                                    component="img"
-                                                    sx={{
-                                                        maxHeight: '100%',
-                                                        maxWidth: '100%',
-                                                        height: '50px',
-                                                        width: '50px',
-                                                        border: '2px solid black',
-                                                        borderRadius: '5px',
-                                                    }}
-                                                    alt={item.title}
-                                                    src={item.icon}
-                                                /> */}
-                                                <Button component={Link} to={item.path} style={{...(hovered === item.title && hoverStyle),border: '2px solid black', borderRadius: '5px'}} 
-                                                onMouseEnter={() => handleMouseEnter(item.title)}
-                                                onMouseLeave={handleMouseLeave} //onClick={() => redirect(item.id)}
-                                                >
-                                                    <img src={item.icon} style={{ marginRight: '5px', verticalAlign: 'middle', height: '40px', width: '40px'}}/>
-                                                </Button>
-                                            </Tooltip>
-                                        </Link>
-                                        
-                                    </Grid>
-                                ))}
-                            </Grid>
+                            <Box m={3} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                <Grid container spacing={2} style={{ width: '100%' }}>
+                                    {WeaponsNav.map((item, index) => (
+                                        <Grid key={index} item xs={12} sm={6} md={4} lg={4}>
+                                            <Link to={item.path}>
+                                                <Tooltip title={item.title}>
+                                                    <Button component={Link} to={item.path} style={{ ...(hovered === item.title && hoverStyle), border: '2px solid black', borderRadius: '5px' }} 
+                                                        onMouseEnter={() => handleMouseEnter(item.title)}
+                                                        onMouseLeave={handleMouseLeave}
+                                                    >
+                                                        <img src={item.icon} style={{ height: '40px', width: '40px' }} />
+                                                    </Button>
+                                                </Tooltip>
+                                            </Link>
+                                        </Grid>
+                                    ))}
+                                </Grid>
+                            </Box>
                         </Box>
                     </Grid>
                 </Grid>

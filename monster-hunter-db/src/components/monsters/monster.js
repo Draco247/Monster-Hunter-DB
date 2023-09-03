@@ -8,11 +8,14 @@ import Water from '../../assets/icons/Element_Water_Icon.webp'
 import Ice from '../../assets/icons/Element_Ice_Icon.webp'
 import Thunder from '../../assets/icons/Element_Thunder_Icon.webp'
 import Dragon from '../../assets/icons/Element_Dragon_Icon.webp'
+import Blast from '../../assets/icons/Element_Icon_Blast.png'
+import Paralysis from '../../assets/icons/Element_Paralysis_Icon.png'
+import Sleep from '../../assets/icons/Element_Icon_Sleep.png'
+import Poison from '../../assets/icons/Element_Poison_Icon.png'
 import {useState, useEffect} from "react";
 import CardMedia from '@mui/material/CardMedia';
 import { Grid,Box } from '@mui/material';
 import {Link, useParams} from "react-router-dom";
-// import { makeStyles } from "@material-ui/core/styles";
 import {DataGrid,GridToolbar} from "@mui/x-data-grid";
 import { v4 as uuidv4 } from 'uuid';
 import Button from "@mui/material/Button";
@@ -21,16 +24,8 @@ import { getWeaponIcon } from '../weapons/getWeaponIcon';
 import { getMonsterIcon } from './getMonsterIcon';
 import { getMonsterIntro } from './getMonsterIntro';
 import { getArmourIcon } from '../armour/getArmourIcon';
-// import ProgressBar from 'react-bootstrap/ProgressBar';
-
-// const useStyles = makeStyles({
-//     centerCell: {
-//         display: "flex",
-//         justifyContent: "center",
-//         alignItems: "center",
-//         height: "100%",
-//     },
-// });
+import { getQuestIcon } from '../quests/getQuestIcon';
+import { useTheme } from "@mui/material";
 
 export default function Monster() {
     const { id } = useParams();
@@ -43,44 +38,76 @@ export default function Monster() {
     const [monsterupgradeweapons, setMonsterUpgradeWeapons] = useState(null);
     const [monsterarmour, setMonsterArmour] = useState(null);
     const [visible, setVisible] = useState(null);
-    // const [visiblesection, setVisibleSection] = useState(null);
+    const { palette } = useTheme();
 
-    const getQuestIcon = (quest_type) => {
-        // Replace underscores (_) with spaces in the image name
-        const formattedImageName = `${quest_type
-            .replace(/(?:^|\s)\S/g, (char) => char.toUpperCase())}.png`
-            .replace(/ /g, '_') // First, replace underscores with spaces
-
-        // console.log(formattedImageName);
-
-        try {
-            // Use require to dynamically import the image
-            return require(`../../assets/icons/${formattedImageName}`);
-        } catch (error) {
-            // Handle the case when the image doesn't exist
-            // console.error(`Image ${formattedImageName} not found.`);
-            return null;
+    const elementIcons = {
+        Fire,
+        Water,
+        Ice,
+        Thunder,
+        Dragon,
+        Blast,
+        Paralysis,
+        Sleep,
+        Poison,
+    };
+    
+    const datagridSx = {
+        border: palette.borderColour.MUIDataGrid,
+        borderRadius: '5px',
+        '.centered-cell': { justifyContent: 'center' },
+        "& .MuiDataGrid-columnHeaders": {
+        backgroundColor: palette.background.MuiDataGridcolumnHeaders,
+        fontSize: 16
+        },
+        "& .MuiDataGrid-row": {
+            backgroundColor: palette.background.MuiDataGridrow
         }
     };
+    // const [visiblesection, setVisibleSection] = useState(null);
+
+    // const getQuestIcon = (quest_type) => {
+    //     // Replace underscores (_) with spaces in the image name
+    //     const formattedImageName = `${quest_type
+    //         .replace(/(?:^|\s)\S/g, (char) => char.toUpperCase())}.png`
+    //         .replace(/ /g, '_') // First, replace underscores with spaces
+
+    //     // console.log(formattedImageName);
+
+    //     try {
+    //         // Use require to dynamically import the image
+    //         return require(`../../assets/icons/${formattedImageName}`);
+    //     } catch (error) {
+    //         // Handle the case when the image doesn't exist
+    //         // console.error(`Image ${formattedImageName} not found.`);
+    //         return null;
+    //     }
+    // };
     
     const questcolumns = [
         { field: 'quest_name', headerName: 'Quest', flex:1, sortable: true, 
         renderCell: (params) => {
-            const questTypeKeywords = ['hunt', 'capture', 'slay']; // Add more keywords as needed
+            const questTypeKeywords = ['hunt all', 'slay all', 'hunt', 'capture', 'slay','deliver']; 
+        
             const questTypeMatches = questTypeKeywords.filter(keyword =>
                 params.row.objective.toLowerCase().includes(keyword)
             );
+            // console.log(questTypeMatches[0]);
 
             const isArena = /^arena \d+★/.test(params.row.quest_name.toLowerCase()) // check if quest name starts with arena *star to display arena icon
 
             const questType =
                 isArena
                     ? 'Arena'
-                    : questTypeMatches.length > 1
+                    : questTypeMatches.includes('hunt all')  || questTypeMatches.includes('slay all')
                     ? 'Endurance'
+                    : questTypeMatches.includes('deliver')
+                    ? 'Gathering'
+                    : questTypeMatches.includes('deliver')
+                    ? 'Gathering'
                     : questTypeMatches.length === 1
                     ? questTypeMatches[0]
-                    : 'Other';
+                    : 'Hunt';
 
             const questIcon = getQuestIcon(questType);
 
@@ -89,7 +116,7 @@ export default function Monster() {
                     {questIcon && (
                         <img src={questIcon} alt={questType} style={{ marginRight: '5px', verticalAlign: 'middle' }} />
                     )}
-                    <a href={`/quests/${params.row.id}`}>{params.row.quest_name}</a>
+                    <a href={`/quest/${params.row.id}`}>{params.row.quest_name}</a>
                 </div>
                 );
             },
@@ -246,7 +273,7 @@ export default function Monster() {
                         alt=""
                         src={params.row['weapon_img_url']}
                     />
-                    <a href={`/weapons/${params.row.weapon_id}/weapons`}>{params.row.weapon_name}</a>
+                    <a href={`/weapon/${params.row.weapon_id}`}>{params.row.weapon_name}</a>
                 </Box>
             ),
             cellClassName: 'centered-cell',
@@ -271,7 +298,24 @@ export default function Monster() {
                 />
         },
         { field: 'attack', headerName: 'Attack', flex:0.1, sortable: true},
-        { field: 'element', headerName: 'Element', flex:0.2, sortable: true},
+        { field: 'element', headerName: 'Element', flex:0.2, sortable: true,
+        renderCell: (params) => {
+            // console.log(params.row.element)
+            const elementIconSrc = elementIcons[params.row.element];
+            // console.log(elementIconSrc);
+            return (
+                elementIconSrc && (
+                    <div>
+                        <img
+                            src={elementIconSrc}
+                            alt={params.row.element}
+                            style={{ width: '40px', height: '40px' }}
+                        />
+                    </div>
+                )
+            );
+            
+        },},
         { field: 'element_val', headerName: 'Ele Val', flex:0.1, sortable: true},
         { field: 'deco_slots', headerName: 'Deco Slots', flex:0.3, sortable: true, renderCell: (params) => {
         const decoSlots = JSON.parse(params.value);
@@ -603,25 +647,6 @@ export default function Monster() {
         // // console.log(visiblesection)
     };
 
-
-    // const getArmourIcon = (piece_type) => {
-    //     // Replace underscores (_) with spaces in the image name
-    //     const formattedImageName = `${piece_type}.png`
-
-    //     // console.log(formattedImageName);
-
-    //     try {
-    //         // Use require to dynamically import the image
-    //         return require(`../../assets/icons/${formattedImageName}`);
-    //     } catch (error) {
-    //         // Handle the case when the image doesn't exist
-    //         console.error(`Image ${formattedImageName} not found.`);
-    //         return null;
-    //     }
-    // };
-
-    
-
     return (
         <div>
             <div className="monster-details">
@@ -691,6 +716,7 @@ export default function Monster() {
                                     getRowId={(row) => row.id}
                                     autoHeight
                                     slots={{ toolbar: GridToolbar }}
+                                    sx={datagridSx}
                                     // pageSize={5}
                                     disableRowSelectionOnClick
                                     initialState={{
@@ -714,6 +740,7 @@ export default function Monster() {
                                 getRowId={(row) => `${row.hitzone}-${generateUniqueID()}`}
                                 autoHeight
                                 slots={{ toolbar: GridToolbar }}
+                                sx={datagridSx}
                                 // disableColumnMenu
                                 pageSize={5}
                                 // checkboxSelection
@@ -742,6 +769,7 @@ export default function Monster() {
                                     autoHeight
                                     sx={{ '.centered-cell': { justifyContent: 'center' } }} // Add this line to center the cell content
                                     slots={{ toolbar: GridToolbar }}
+                                    sx={datagridSx}
                                     // disableColumnMenu
                                     pageSize={5}
                                     // checkboxSelection
@@ -771,6 +799,7 @@ export default function Monster() {
                                     autoHeight
                                     sx={{ '.centered-cell': { justifyContent: 'center' } }} // Add this line to center the cell content
                                     slots={{ toolbar: GridToolbar }}
+                                    sx={datagridSx}
                                     // disableColumnMenu
                                     pageSize={5}
                                     // checkboxSelection
@@ -797,6 +826,7 @@ export default function Monster() {
                                     getRowId={(row) => `${row.weapon_id}-${generateUniqueID()}`}
                                     autoHeight
                                     slots={{ toolbar: GridToolbar }}
+                                    sx={datagridSx}
                                     // disableColumnMenu
                                     pageSize={5}
                                     // checkboxSelection
@@ -814,35 +844,6 @@ export default function Monster() {
                     </div>
                 </div>
                 <div className="monster-armour">
-                    {/* <div className="expand-button">
-                       <Button onClick={() => handleVisibleChange("armour")}>
-                            <h2>Monster Armour</h2>
-                        </Button>
-                    </div>
-                    {visible === "armour" && (
-                        <div className="monster-section monster-armour">
-                            <Box sx={{ height: 400, width: '100%'}}>
-                                <DataGrid
-                                    rows={monsterarmour}
-                                    columns={armourcolumns}
-                                    getRowId={(row) => row.armour_id}
-                                    autoHeight
-                                    // disableColumnMenu
-                                    pageSize={5}
-                                    // checkboxSelection
-                                    disableRowSelectionOnClick
-                                    initialState={{
-                                        sorting: {
-                                            sortModel: [{ field: 'quest_name', sort: 'asc' }],
-                                        },
-                                        pagination: { paginationModel: { pageSize: 5 } },
-                                    }}
-                                    pageSizeOptions={[5, 10, 25]}
-                                    getRowHeight={() => 'auto'}
-                                />
-                            </Box>
-                        </div>
-                        )} */}
                     <h2>Armour</h2>
                     <div className="monster-section monster-armour">
                             <Box>
@@ -852,6 +853,7 @@ export default function Monster() {
                                     getRowId={(row) => row.armour_id}
                                     autoHeight
                                     slots={{ toolbar: GridToolbar }}
+                                    sx={datagridSx}
                                     // disableColumnMenu
                                     pageSize={5}
                                     // checkboxSelection

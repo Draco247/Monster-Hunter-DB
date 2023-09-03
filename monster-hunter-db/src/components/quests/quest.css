@@ -1,10 +1,20 @@
-.quest-details h1{
+.quest-details {
     text-align: center;
+    margin-bottom: 20px;
+}
+
+.quest-rewards, .quest-monsters h2 {
+    text-align: center; /* Center text within the container */
+    color: inherit;
+    /* position: relative; Added position to contain pseudo-element */
+    text-decoration: underline;
+    font-size: 30px;
 }
 
 .quest-section {
-    height: 400px;
+    height: 100%;
     width: 100%;
-    overflow-y: auto; /* Add a scrollbar if the content overflows */
     margin-bottom: 20px; /* Optional: Add some space between each section */
+    display: flex;
+    flex-direction: column;
 }

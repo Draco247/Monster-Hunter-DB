@@ -39,11 +39,18 @@ const getDesignTokens = (mode) => ({
                 // 👇 palette values for light mode
                 // primary: { main: purple[800] },
                 background: {
-                    paper: '#f7a354'
+                    default: '#f2debd',
+                    paper: '#f7a354',
+                    MuiDataGridcolumnHeaders: '#f7a354',
+                    MuiDataGridrow: '#f5b87f',
                 },
                 text: {
                     primary: grey[900]
                 },
+                borderColour: {
+                    MUIDataGrid: '2px solid #cc690c',
+                    Box: '2px solid #cc690c'
+                }
             }
             : {
                 // 👇 palette values for dark mode
@@ -51,10 +58,16 @@ const getDesignTokens = (mode) => ({
                 background: {
                     default: '#2B3142',
                     paper: '#1d284d',
+                    MuiDataGridcolumnHeaders: '#1d284d',
+                    MuiDataGridrow: '#2b344f',
                 },
                 text: {
                     primary: grey[50],
                 },
+                borderColour: {
+                    MUIDataGrid: '2px solid #010924',
+                    Box: '2px solid #010924'
+                }
             }),
     },
 });
@@ -73,20 +86,6 @@ function App() {
           <CssBaseline />
           <Router>
               <NavBar mode={mode} toggleColorMode={toggleColorMode}/>
-              {/* <Switch
-                checked={mode === 'dark'}
-                color='success'
-                onChange={toggleColorMode}
-                /> */}
-                {/* <IconButton onClick={toggleColorMode}>
-                    {mode === 'dark' ? (
-                    <FontAwesomeIcon icon={faMoon} style={{ color: 'white' }} />
-                    ) : (
-                    <FontAwesomeIcon icon={faSun} style={{ color: 'black' }} />
-                    )}
-                </IconButton> */}
-               
-
               <Routes>
                 <Route path='/' element={<HomePage/>}/>
                 <Route path='/monsters' element={<MonstersPage/>}/>

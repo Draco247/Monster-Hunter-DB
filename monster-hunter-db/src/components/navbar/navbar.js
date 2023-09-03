@@ -130,8 +130,8 @@ export default function Navbar({mode, toggleColorMode}) {
                     component="div"
                     sx={{ flexGrow: 1, textAlign: 'center', display: { xs: 'none', sm: 'block' }, color: '#fff' }}
                 >
-                    <img src={Logo} alt="Rise Logo" className="logo" style={{ marginRight: '5px', verticalAlign:'middle', height: '50px', width: '100px' }} />
-                    <img src={SunbreakLogo} alt="Rise Sunbreak Logo" className="logo" style={{ marginRight: '5px', verticalAlign:'middle', height: '50px', width: '100px' }} />
+                    <img src={Logo} alt="Rise Logo" className="logo" style={{ marginRight: '5px', verticalAlign:'middle', height: '60px', width: '120px' }} />
+                    <img src={SunbreakLogo} alt="Rise Sunbreak Logo" className="logo" style={{ marginRight: '5px', verticalAlign:'middle', height: '60px', width: '120px' }} />
                     Monster Hunter DB
                 </Typography>
             </div>

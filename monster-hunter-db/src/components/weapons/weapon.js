@@ -8,6 +8,15 @@ import SharpnessBar from "./SharpnessBar";
 import {DataGrid} from "@mui/x-data-grid";
 import {v4 as uuidv4} from "uuid";
 import {useLocation} from "react-router-dom";
+import Fire from '../../assets/icons/Element_Fire_Icon.webp'
+import Water from '../../assets/icons/Element_Water_Icon.webp'
+import Ice from '../../assets/icons/Element_Ice_Icon.webp'
+import Thunder from '../../assets/icons/Element_Thunder_Icon.webp'
+import Dragon from '../../assets/icons/Element_Dragon_Icon.webp'
+import Blast from '../../assets/icons/Element_Icon_Blast.png'
+import Paralysis from '../../assets/icons/Element_Paralysis_Icon.png'
+import Sleep from '../../assets/icons/Element_Icon_Sleep.png'
+import Poison from '../../assets/icons/Element_Poison_Icon.png'
 
 
 export default function Weapon() {
@@ -17,6 +26,18 @@ export default function Weapon() {
     const [hoveredCard, setHoveredCard] = useState(null);
     const [searchBtn, setSearchBtn] = useState(true);
     const [viewColumnBtn, setViewColumnBtn] = useState(true);
+
+    const elementIcons = {
+        Fire,
+        Water,
+        Ice,
+        Thunder,
+        Dragon,
+        Blast,
+        Paralysis,
+        Sleep,
+        Poison,
+    };
 
     const deco_imgs = {
         "deco1": "https://cdn.kiranico.net/file/kiranico/mhrise-web/images/ui/deco1.png",
@@ -163,7 +184,24 @@ export default function Weapon() {
 
     if (weapon.weapontypeid !== 12 && weapon.weapontypeid !== 13) {
         const elementColumn = {
-            field: 'element', headerName: 'Element', flex:0.3, sortable: true
+            field: 'element', headerName: 'Element', flex:0.3, sortable: true,
+            renderCell: (params) => {
+                // console.log(params.row.element)
+                const elementIconSrc = elementIcons[params.row.element];
+                // console.log(elementIconSrc);
+                return (
+                    elementIconSrc && (
+                        <div>
+                            <img
+                                src={elementIconSrc}
+                                alt={params.row.element}
+                                style={{ width: '40px', height: '40px' }}
+                            />
+                        </div>
+                    )
+                );
+                
+            },
         };
 
         const elementvalColumn = {
@@ -416,7 +454,9 @@ export default function Weapon() {
                             sorting: {
                                 sortModel: [{ field: 'weapon_name', sort: 'asc' }],
                             },
+                            pagination: { paginationModel: { pageSize: 5 } },
                         }}
+                        pageSizeOptions={[5, 10, 25]}
                         getRowHeight={() => 'auto'}
 
                     />
@@ -439,7 +479,9 @@ export default function Weapon() {
                             sorting: {
                                 sortModel: [{ field: 'skill_name', sort: 'asc' }],
                             },
+                            pagination: { paginationModel: { pageSize: 5 } },
                         }}
+                        pageSizeOptions={[5, 10, 25]}
                         getRowHeight={() => 'auto'}
                     />
                 </Box>
