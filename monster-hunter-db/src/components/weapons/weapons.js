@@ -16,6 +16,7 @@ import Blast from '../../assets/icons/Element_Icon_Blast.png'
 import Paralysis from '../../assets/icons/Element_Paralysis_Icon.png'
 import Sleep from '../../assets/icons/Element_Icon_Sleep.png'
 import Poison from '../../assets/icons/Element_Poison_Icon.png'
+import { getWeaponArt } from './getWeaponArt';
 import { useTheme } from "@mui/material";
 
 
@@ -24,6 +25,7 @@ import { useTheme } from "@mui/material";
 export default function Weapons({id}) {
     const [weapons, setWeapons] = useState([])
     const { palette } = useTheme();
+    console.log(id)
     
     const datagridSx = {
         '.centered-cell': { justifyContent: 'center' },
@@ -36,6 +38,7 @@ export default function Weapons({id}) {
             backgroundColor: palette.background.MuiDataGridrow
         }
     };
+
 
     const deco_imgs = {
         "deco1": "https://cdn.kiranico.net/file/kiranico/mhrise-web/images/ui/deco1.png",
@@ -64,7 +67,7 @@ export default function Weapons({id}) {
                 setWeapons(result);
                 console.log(result);
             })}, [id]);
-    console.log(weapons);
+    // console.log(weapons);
 
     let columns = [
         { field: 'weapon_name', headerName: 'Name', flex:0.5, sortable: true, valueGetter: (params) => params.row['weapon_name'], // Use 'weapon_name' directly as the cell value
@@ -168,8 +171,9 @@ export default function Weapons({id}) {
         valueOptions: ["Rare 1", "Rare 2", "Rare 3", "Rare 4", "Rare 5", "Rare 6", "Rare 7", "Rare 8", "Rare 9", "Rare 10"]},
     ];
 
-
-    if (id !== "12" && id !== "13") {
+    
+    // exclude element columns for lbg and hbg
+    if (id !== 12 && id !== 13) {
         const elementColumn = {
             field: 'element', headerName: 'Element', flex:0.3, sortable: true, type: "singleSelect",
             valueOptions: ["Fire", "Water", "Ice", "Thunder", "Dragon", "Poison", "Paralysis", "Blast", "Sleep"],
@@ -200,7 +204,8 @@ export default function Weapons({id}) {
         columns.splice(4, 0, elementvalColumn);
     }
 
-    if (id !== "11" && id !== "12" && id !== "13"){
+    // exclude sharpness column for bow, lbg and hbg
+    if (id !== 11 && id !== 12 && id !== 13){
         const sharpnessColumn = {
             field: 'base_sharpness', headerName: 'Sharpness', flex:0.5, sortable: true,
             renderCell: (params) => {
@@ -229,7 +234,8 @@ export default function Weapons({id}) {
         columns.splice(5, 0, sharpnessColumn);
     }
 
-    if (id === "5") {
+    // song column for hunting horn
+    if (id === 5) {
         const songsColumn = {
             field: 'songs',
             headerName: 'Songs',
@@ -237,6 +243,7 @@ export default function Weapons({id}) {
             sortable: false,
             renderCell: (params) => {
                 const songlist = JSON.parse(params.value);
+                console.log(songlist);
 
                 return (
                     <div style={{ maxHeight: 100, overflowY: 'auto' }}>
@@ -253,7 +260,8 @@ export default function Weapons({id}) {
         columns.splice(8, 0, songsColumn);
     }
 
-    if (id === "7") {
+    // shelling column for gunlance
+    if (id === 7) {
         const shellingColumn = {
             field: 'shelling_type',
             headerName: 'Shelling',
@@ -264,7 +272,8 @@ export default function Weapons({id}) {
         columns.splice(8, 0, shellingColumn);
     }
 
-    if (id === "8" || id === "9") {
+    // phial column for switch axe and charge blade
+    if (id === 8 || id === 9) {
         const phialColumn = {
             field: 'phial_type',
             headerName: 'Phial',
@@ -275,7 +284,8 @@ export default function Weapons({id}) {
         columns.splice(8, 0, phialColumn);
     }
 
-    if (id === "10") {
+    // kinsect level column for insect glaive
+    if (id === 10) {
         const kinsectColumn = {
             field: 'kinsect_lvl',
             headerName: 'Kinsect Lvl',
@@ -286,7 +296,8 @@ export default function Weapons({id}) {
         columns.splice(8, 0, kinsectColumn);
     }
 
-    if (id === "11") {
+    // bow arc shot type, coatings
+    if (id === 11) {
         const arcshottypeColumn = {
             field: 'arc_shot_type',
             headerName: 'Arc Shot Type',
@@ -340,7 +351,8 @@ export default function Weapons({id}) {
         columns.splice(9, 0, coatingsColumn);
     }
 
-    if (id === "12" && id !== "13") {
+    // ammo details, etc for bowguns
+    if (id === 12 && id !== 13) {
         const bowgunstatsColumn = {
             field: 'bowgun_stats',
             headerName: 'Stats',
@@ -412,25 +424,69 @@ export default function Weapons({id}) {
 
   
     return (
-        <Box sx={{ height: 400, width: '100%'}}>
-            <DataGrid
-                rows={weapons}
-                columns={columns}
-                getRowId={(row) => row.id}
-                autoHeight
-                sx={datagridSx}
-                // disableColumnMenu
-                pageSize={5}
-                // checkboxSelection
-                disableRowSelectionOnClick
-                initialState={{
-                    sorting: {
-                        sortModel: [{ field: 'weapon_name', sort: 'asc' }],
-                    },
-                }}
-                getRowHeight={() => 'auto'}
+        <div>
+            <div className="weapon_art" style={{marginBottom: 20}}>
+                <Grid container spacing={2} alignItems="stretch">
+                        <Grid item xs={12} sm={6}>
+                            <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <Box
+                                    component="img"
+                                    sx={{
+                                        maxHeight: '100%',
+                                        maxWidth: '100%',
+                                        height: 'auto',
+                                        border: '2px solid black',
+                                        borderRadius: '5px',
+                                    }}
+                                    alt=""
+                                    src={getWeaponArt(id)[0]}
+                                />
+                            </div>
+                        </Grid>
+                        <Grid item xs={12} sm={6} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                            <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <Box
+                                        component="img"
+                                        sx={{
+                                            maxHeight: '100%',
+                                            maxWidth: '100%',
+                                            height: 'auto',
+                                            border: '2px solid black',
+                                            borderRadius: '5px',
+                                        }}
+                                        alt=""
+                                        src={getWeaponArt(id)[1]}
+                                    />
+                            </div>
+                        </Grid>
+                </Grid>
+            </div>
+            {weapons.length > 0 ? (
+                <div>
+                    <Box sx={{ height: 400, width: '100%'}}>
+                        <DataGrid
+                            rows={weapons}
+                            columns={columns}
+                            getRowId={(row) => row.id}
+                            autoHeight
+                            sx={datagridSx}
+                            // disableColumnMenu
+                            pageSize={5}
+                            // checkboxSelection
+                            disableRowSelectionOnClick
+                            initialState={{
+                                sorting: {
+                                    sortModel: [{ field: 'weapon_name', sort: 'asc' }],
+                                },
+                            }}
+                            getRowHeight={() => 'auto'}
 
-            />
-        </Box>
+                        />
+                    </Box>
+                </div>
+            ) : (
+                <div>Loading weapons data...</div>
+            )}
+        </div>
     );
 }
