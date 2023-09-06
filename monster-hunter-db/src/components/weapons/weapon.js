@@ -17,6 +17,8 @@ import Blast from '../../assets/icons/Element_Icon_Blast.png'
 import Paralysis from '../../assets/icons/Element_Paralysis_Icon.png'
 import Sleep from '../../assets/icons/Element_Icon_Sleep.png'
 import Poison from '../../assets/icons/Element_Poison_Icon.png'
+import { useTheme } from "@mui/material";
+
 
 
 export default function Weapon() {
@@ -26,6 +28,20 @@ export default function Weapon() {
     const [hoveredCard, setHoveredCard] = useState(null);
     const [searchBtn, setSearchBtn] = useState(true);
     const [viewColumnBtn, setViewColumnBtn] = useState(true);
+    const { palette } = useTheme();
+
+    const datagridSx = {
+        border: palette.borderColour.MUIDataGrid,
+        borderRadius: '5px',
+        '.centered-cell': { justifyContent: 'center' },
+        "& .MuiDataGrid-columnHeaders": {
+        backgroundColor: palette.background.MuiDataGridcolumnHeaders,
+        fontSize: 16
+        },
+        "& .MuiDataGrid-row": {
+            backgroundColor: palette.background.MuiDataGridrow
+        }
+    };
 
     const elementIcons = {
         Fire,
@@ -438,76 +454,80 @@ export default function Weapon() {
                     />
                 </Box>
                 <p>{weapon.weapon_description}</p>
-            <div className="weapon-stats" style={{ marginTop: '100px' }}>
-                <Box sx={{ marginBottom: 10, width: '100%'}}>
-                    <DataGrid
-                        rows={[weapon]}
-                        columns={weaponcolumns}
-                        getRowId={(row) => row.id}
-                        autoHeight
-                        sx={{ '.centered-cell': { justifyContent: 'center' } }} // Add this line to center the cell content
-                        // disableColumnMenu
-                        pageSize={5}
-                        // checkboxSelection
-                        disableRowSelectionOnClick
-                        initialState={{
-                            sorting: {
-                                sortModel: [{ field: 'weapon_name', sort: 'asc' }],
-                            },
-                            pagination: { paginationModel: { pageSize: 5 } },
-                        }}
-                        pageSizeOptions={[5, 10, 25]}
-                        getRowHeight={() => 'auto'}
+                <div className="weapon-stats" style={{ marginTop: '100px' }}>
+                    <Box sx={{ marginBottom: 10, width: '100%'}}>
+                        <DataGrid
+                            rows={[weapon]}
+                            columns={weaponcolumns}
+                            getRowId={(row) => row.id}
+                            autoHeight
+                            sx={datagridSx}
+                            // disableColumnMenu
+                            pageSize={5}
+                            // checkboxSelection
+                            disableRowSelectionOnClick
+                            initialState={{
+                                sorting: {
+                                    sortModel: [{ field: 'weapon_name', sort: 'asc' }],
+                                },
+                                pagination: { paginationModel: { pageSize: 5 } },
+                            }}
+                            pageSizeOptions={[5, 10, 25]}
+                            getRowHeight={() => 'auto'}
 
-                    />
-                </Box>
+                        />
+                    </Box>
+                </div>
+                <div>
+                    <h2>Forging Materials</h2>
+                    <Box sx={{  marginBottom: 10,width: '100%'}}>
+                        <DataGrid
+                            rows={forge}
+                            columns={itemcolumns}
+                            autoHeight
+                            getRowId={(row) => `${row.id}-${generateUniqueID()}`}
+                            sx={datagridSx}
+                            // disableColumnMenu
+                            pageSize={5}
+                            checkboxSelection
+                            disableRowSelectionOnClick
+                            initialState={{
+                                sorting: {
+                                    sortModel: [{ field: 'skill_name', sort: 'asc' }],
+                                },
+                                pagination: { paginationModel: { pageSize: 5 } },
+                            }}
+                            pageSizeOptions={[5, 10, 25]}
+                            getRowHeight={() => 'auto'}
+                        />
+                    </Box>
+                    {/*<MUIDataTable title={"Forging Items"} data={forgetableData} columns={columns} options={options} />*/}
+                </div>
+                <div>
+                    <h2>Upgrade Materials</h2>
+                    <Box sx={{  marginBottom: 10,width: '100%'}}>
+                        <DataGrid
+                            rows={upgrades}
+                            columns={itemcolumns}
+                            autoHeight
+                            getRowId={(row) => `${row.id}-${generateUniqueID()}`}
+                            sx={datagridSx}
+                            // disableColumnMenu
+                            pageSize={5}
+                            checkboxSelection
+                            disableRowSelectionOnClick
+                            initialState={{
+                                sorting: {
+                                    sortModel: [{ field: 'skill_name', sort: 'asc' }],
+                                },
+                            }}
+                            getRowHeight={() => 'auto'}
+                        />
+                    </Box>
+                    {/*<MUIDataTable title={"Upgrade Items"} data={upgradetableData} columns={columns} options={options} />*/}
+                </div>
             </div>
-
-            </div>
-            <div>
-                <Box sx={{  marginBottom: 10,width: '100%'}}>
-                    <DataGrid
-                        rows={forge}
-                        columns={itemcolumns}
-                        autoHeight
-                        getRowId={(row) => `${row.id}-${generateUniqueID()}`}
-                        // disableColumnMenu
-                        pageSize={5}
-                        checkboxSelection
-                        disableRowSelectionOnClick
-                        initialState={{
-                            sorting: {
-                                sortModel: [{ field: 'skill_name', sort: 'asc' }],
-                            },
-                            pagination: { paginationModel: { pageSize: 5 } },
-                        }}
-                        pageSizeOptions={[5, 10, 25]}
-                        getRowHeight={() => 'auto'}
-                    />
-                </Box>
-                {/*<MUIDataTable title={"Forging Items"} data={forgetableData} columns={columns} options={options} />*/}
-            </div>
-            <div>
-                <Box sx={{  marginBottom: 10,width: '100%'}}>
-                    <DataGrid
-                        rows={upgrades}
-                        columns={itemcolumns}
-                        autoHeight
-                        getRowId={(row) => `${row.id}-${generateUniqueID()}`}
-                        // disableColumnMenu
-                        pageSize={5}
-                        checkboxSelection
-                        disableRowSelectionOnClick
-                        initialState={{
-                            sorting: {
-                                sortModel: [{ field: 'skill_name', sort: 'asc' }],
-                            },
-                        }}
-                        getRowHeight={() => 'auto'}
-                    />
-                </Box>
-                {/*<MUIDataTable title={"Upgrade Items"} data={upgradetableData} columns={columns} options={options} />*/}
-            </div>
+            
         </div>
 
     );

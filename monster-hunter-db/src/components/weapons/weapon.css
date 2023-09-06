@@ -1,3 +1,5 @@
-/*.weapon-details{*/
-/*    text-align: center;*/
-/*}*/
+.weapon-details h2{
+    text-align: center;
+    text-decoration: underline;
+    font-size: 30px;
+}

@@ -1,4 +1,4 @@
-package com.daniel.monster_hunter.config;
+package com.daniel.monster_hunter.monster_hunter.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

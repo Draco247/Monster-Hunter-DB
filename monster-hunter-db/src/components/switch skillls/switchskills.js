@@ -4,49 +4,23 @@ import {Link} from "react-router-dom";
 import { DataGrid } from '@mui/x-data-grid';
 import {Box} from "@mui/material";
 
-export default function Skills() {
-    const [skills, setSkills] = useState([]);
+export default function SwitchSkills({weapon_type_id}) {
+    const [switchskills, setswitchskills] = useState([]);
 
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_react_url}/skills/getAll`)
+        
+        fetch(`${process.env.REACT_APP_react_url}/switch-skills/${weapon_type_id}/switch-skills`)
             .then(res => res.json())
             .then((result)=> {
-                setSkills(result);
-                console.log(result)
-            })}, []);
+                setswitchskills(result);
+                console.log(result);
+            })
+    }, [weapon_type_id]);
 
-    const columns = [
-        { field: 'skill_name', headerName: 'Skill', flex: 0.6, sortable: true,type: "singleSelect",
-            valueOptions: skills.map(skill => skill.skill_name),
-            renderCell: (params) => {
-                return (
-                    <Link to={`/skills/${params.row.id}`}>{params.row.skill_name}</Link>
-                );
-            },},
-        { field: 'skill_description', headerName: 'Description', flex: 1, renderCell: (params) => <div style={{ whiteSpace: 'pre-wrap' }}>{params.value}</div> },
-        {
-            field: 'skill_levels',
-            headerName: 'Skill Lvls',
-            flex: 1,
-            renderCell: (params) => {
-                const skillLevels = JSON.parse(params.value);
-
-                return (
-                    <div style={{ maxHeight: 100, overflowY: 'auto' }}>
-                        <ul style={{ margin: 0, paddingInlineStart: 20, whiteSpace: 'normal', listStyle: 'none' }}>
-                            {skillLevels.map((level, index) => (
-                                <li key={index}>{level}</li>
-                            ))}
-                        </ul>
-                    </div>
-                );
-            },
-        },
-    ];
 
     return (
         <div>
-            <Box sx={{ height: 400, width: '100%'}}>
+            {/* <Box sx={{ height: 400, width: '100%'}}>
                 <DataGrid
                     rows={skills}
                     columns={columns}
@@ -74,7 +48,7 @@ export default function Skills() {
                         return Math.max(defaultRowHeight, totalHeight);
                     }}
                 />
-            </Box>
+            </Box> */}
         </div>
 
     );

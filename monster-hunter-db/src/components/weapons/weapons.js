@@ -18,12 +18,16 @@ import Sleep from '../../assets/icons/Element_Icon_Sleep.png'
 import Poison from '../../assets/icons/Element_Poison_Icon.png'
 import { getWeaponArt } from './getWeaponArt';
 import { useTheme } from "@mui/material";
+import SwitchSkills from '../switch skillls/switchskills';
+import { getControllerIcon } from '../getControllerIcon';
+import reactStringReplace from 'react-string-replace';
 
 
 
 
 export default function Weapons({id}) {
     const [weapons, setWeapons] = useState([])
+    const [switchskills, setswitchskills] = useState([]);
     const { palette } = useTheme();
     console.log(id)
     
@@ -60,13 +64,33 @@ export default function Weapons({id}) {
     };
 
     useEffect(() => {
-        setWeapons([])
-        fetch(`${process.env.REACT_APP_react_url}/weapons/${id}/weapons`)
-            .then(res => res.json())
-            .then((result)=> {
-                setWeapons(result);
-                console.log(result);
-            })}, [id]);
+        const fetchWeapons = async () => {
+            try {
+                setWeapons([])
+                const response = await fetch(`${process.env.REACT_APP_react_url}/weapons/${id}/weapons`);
+                const data = await response.json();
+                setWeapons(data);
+                console.log(data);
+            } catch (error) {
+                console.error('Error fetching weapons:', error);
+            }
+        };
+
+        const fetchSwitckSkills = async (id) => {
+            try {
+                // setWeapons([])
+                const response = await fetch(`${process.env.REACT_APP_react_url}/switch-skills/${id}/switch-skills`);
+                const data = await response.json();
+                setswitchskills(data);
+                console.log(data);
+            } catch (error) {
+                console.error('Error fetching switch skills:', error);
+            }
+        };
+        
+        fetchWeapons();
+        fetchSwitckSkills(id);
+    }, [id]);
     // console.log(weapons);
 
     let columns = [
@@ -171,7 +195,7 @@ export default function Weapons({id}) {
         valueOptions: ["Rare 1", "Rare 2", "Rare 3", "Rare 4", "Rare 5", "Rare 6", "Rare 7", "Rare 8", "Rare 9", "Rare 10"]},
     ];
 
-    
+   
     // exclude element columns for lbg and hbg
     if (id !== 12 && id !== 13) {
         const elementColumn = {
@@ -242,7 +266,8 @@ export default function Weapons({id}) {
             flex: 1,
             sortable: false,
             renderCell: (params) => {
-                const songlist = JSON.parse(params.value);
+                console.log(params)
+                const songlist = JSON.parse(params.row.songs);
                 console.log(songlist);
 
                 return (
@@ -311,7 +336,7 @@ export default function Weapons({id}) {
                 flex: 0.5,
                 sortable: true,
                 renderCell: (params) => {
-                    const chargeshotlist = JSON.parse(params.value);
+                    const chargeshotlist = JSON.parse(params.row.charge_shot_levels);
 
                     return (
                         <div style={{ maxHeight: 100, overflowY: 'auto' }}>
@@ -331,7 +356,7 @@ export default function Weapons({id}) {
             flex: 0.5,
             sortable: true,
             renderCell: (params) => {
-                const coatingslist = JSON.parse(params.value);
+                const coatingslist = JSON.parse(params.row.coatings);
 
                 return (
                     <div style={{ maxHeight: 100, overflowY: 'auto' }}>
@@ -359,7 +384,7 @@ export default function Weapons({id}) {
             flex: 0.5,
             sortable: true,
             renderCell: (params) => {
-                const statslist = JSON.parse(params.value);
+                const statslist = JSON.parse(params.row.bowgun_stats);
                 console.log(statslist);
 
                 return (
@@ -381,7 +406,7 @@ export default function Weapons({id}) {
             sortable: true,
             renderCell: (params) => {
                 console.log(params.value);
-                const ammolist = JSON.parse(params.value);
+                const ammolist = JSON.parse(params.row.ammo);
                 console.log(ammolist);
 
                 const chunkArray = (array, chunkSize) => {
@@ -422,6 +447,8 @@ export default function Weapons({id}) {
         columns.splice(6, 0, ammoColumn);
     }
 
+    
+
   
     return (
         <div>
@@ -461,6 +488,32 @@ export default function Weapons({id}) {
                         </Grid>
                 </Grid>
             </div>
+            {switchskills.length > 0 ? (
+                <div className="switch-skills">
+                    <h2 style={{textAlign: 'center', textDecoration: 'underline' ,fontSize: 30}}>Switch Skills</h2>
+                    <ul style={{listStyle: 'none'}}>
+                        {switchskills.map((skills) => (
+                        <li key={skills.id}>
+                            <span style={{textDecoration: 'underline'}}>{skills.switch_skill_name}</span>
+                            
+                            <br />
+                            {reactStringReplace(skills.switch_skill_description, /<([^>]+)>/g, (match, i) => (
+                            // Use group (the text inside the angle brackets) to create an image element
+                            <img
+                                src={getControllerIcon(match)} // Use match to determine the image path
+                                alt={`${match}`}
+                                // Add any other attributes you need for the image
+                                key={i} // Add a unique key for each image element
+                                style={{width: 30, height: 30}}
+                            />
+                            ))}
+                        </li>
+                        ))}
+                    </ul>
+                </div>) : (
+                    <div>Loading switch skill data...</div>
+            )}
+
             {weapons.length > 0 ? (
                 <div>
                     <Box sx={{ height: 400, width: '100%'}}>
