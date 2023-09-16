@@ -1,0 +1,11 @@
+server:
+    port: 443
+    ssl:
+        enabled: true
+        key-alias: monster-hunter-db-ssl
+        key-store: classpath:monster-hunter-db-ssl.p12
+        key-store-type: PKCS12
+        key-password: ${key-password}
+        key-store-password: ${key-store-password}
+
+   

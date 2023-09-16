@@ -1,5 +1,6 @@
 package com.daniel.monster_hunter.monster_hunter.controller;
 
+import com.daniel.monster_hunter.monster_hunter.dto.ArmourSetsDTO;
 import com.daniel.monster_hunter.monster_hunter.model.*;
 import com.daniel.monster_hunter.monster_hunter.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +33,12 @@ public class ArmourController {
     }
 
     @GetMapping("/getAllSets")
-    public List<ArmourSets> getAllArmourSets() {
-        return armourSetRepository.findAll();
+    public List<ArmourSetsDTO> getAllArmourSets() {
+        return armourSetRepository.findAllBy();
     }
+    // public List<ArmourSets> getAllArmourSets() {
+    //     return armourSetRepository.findAll();
+    // }
 
     @GetMapping("/{armourId}")
     public Optional<Armour> getArmourById(@PathVariable(value = "armourId") Long armourId) {

@@ -1,8 +1,17 @@
 import React, {useState} from 'react';
 import Items from "../../components/items/items";
 import {Box, TextField} from "@mui/material";
+import { useParams } from "react-router-dom";
+import { Sidebar } from "../../components/navbar/sidebar";
 
 function ItemsPage() {
+    const { item_type } = useParams();
+    console.log(item_type)
+
+    // stupid name but couldn't think of better one
+    // const itemItem = Sidebar[2].subNav.find(item => item.path === `/items/${item_type}`);
+    // const id = itemItem ? itemItem.id : null;
+
     const [searchValue, setSearchValue] = useState('');
 
     const handleInputChange = (event) => {
@@ -34,7 +43,7 @@ function ItemsPage() {
                 </Box>
             </Box>
             <Box m={10}>
-                <Items searchQuery={searchValue}/>
+                <Items searchQuery={searchValue} item_type={item_type}/>
             </Box>
         </div>
     )

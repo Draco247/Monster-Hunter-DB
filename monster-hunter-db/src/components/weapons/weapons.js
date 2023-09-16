@@ -377,7 +377,7 @@ export default function Weapons({id}) {
     }
 
     // ammo details, etc for bowguns
-    if (id === 12 && id !== 13) {
+    if (id === 12 || id == 13) {
         const bowgunstatsColumn = {
             field: 'bowgun_stats',
             headerName: 'Stats',

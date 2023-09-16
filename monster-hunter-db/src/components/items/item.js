@@ -13,6 +13,8 @@ import * as React from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
+import { getItemIcon } from "./getItemIcon";
+import { getMonsterIcon } from "../monsters/getMonsterIcon";
 
 export default function Item() {
     const { id } = useParams();
@@ -101,7 +103,7 @@ export default function Item() {
                     <Box ml={2}>
                         <CardMedia
                             component="img"
-                            image={item.item_img}
+                            image={getItemIcon(item.item_name)}
                             title={item.item_name}
                             style={itemimageStyle}
                         />
@@ -126,7 +128,7 @@ export default function Item() {
                                             <Box m={4}>
                                                 <CardMedia
                                                     component="img"
-                                                    image={monster.image_link}
+                                                    image={getMonsterIcon(monster.name)}
                                                     title={monster.name}
                                                     style={imageStyle}
                                                 />

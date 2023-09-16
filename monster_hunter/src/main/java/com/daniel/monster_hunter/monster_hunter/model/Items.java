@@ -29,6 +29,8 @@ public class Items {
     private String item_description;
     private String item_url;
     private String item_img;
+    @Column(name = "item_type")
+    private String itemtype;
 
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {

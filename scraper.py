@@ -3,7 +3,7 @@ import urllib.request
 # from PIL import Image
 from bs4 import BeautifulSoup
 import requests
-import Levenshtein
+# import Levenshtein
 # from requests_html import HTMLSession
 # import pandas as pd
 from io import BytesIO
@@ -48,6 +48,25 @@ class Scraper(object):
         self.headers = headers
         self.base_url = base_url
         self.mydb = mydb
+
+    # def download_image(image_url, name, type):
+    #     if type == "armour":
+    #         save_path = f"monster-hunter-db\\src\\assets\\armour images\\{name}.png"
+    #     try:
+    #         # Send an HTTP GET request to the URL
+    #         response = requests.get(image_url)
+            
+    #         # Check if the request was successful (status code 200)
+    #         if response.status_code == 200:
+    #             # Open the file for binary write
+    #             with open(save_path, 'wb') as file:
+    #                 # Write the content of the response to the file
+    #                 file.write(response.content)
+    #             print(f"Image downloaded and saved as {save_path}")
+    #         else:
+    #             print(f"Failed to download image. Status code: {response.status_code}")
+    #     except Exception as e:
+    #         print(f"An error occurred: {str(e)}")
 
     class Monsters:
         def get_monsters(self):
@@ -993,6 +1012,118 @@ class Scraper(object):
             return weapon_description, detailed_weapon_img_url, rampage_augments, forging_materials, upgrade_materials
 
     class Items:
+
+        def download_image(self,image_url, name):
+            save_path = f"monster-hunter-db\\src\\assets\\item images\\{name}.png"
+            try:
+                # Check if the file already exists
+                if os.path.exists(save_path):
+                    print(f"Image already exists at {save_path}")
+                    return
+                
+                # Send an HTTP GET request to the URL
+                response = requests.get(image_url)
+                
+                # Check if the request was successful (status code 200)
+                if response.status_code == 200:
+                    # Open the file for binary write
+                    with open(save_path, 'wb') as file:
+                        # Write the content of the response to the file
+                        file.write(response.content)
+                    print(f"Image downloaded and saved as {save_path}")
+                else:
+                    print(f"Failed to download image. Status code: {response.status_code}")
+            except Exception as e:
+                print(f"An error occurred: {str(e)}")
+
+        # async def process_armour_sets(self, session, idx, item):
+        #     if not item.text:
+        #         item_text = "Base Commander Set"
+        #     else:
+        #         item_text = item.text
+
+        #     async with session.get(fx_url + item["href"], headers=headers) as r:
+        #         # print(fx_url + item["href"])
+        #         # print(item_text)
+        #         soup = BeautifulSoup(await r.text(), "html.parser")
+        #         set_img = soup.select("#infobox > div > table > tbody > tr:nth-child(2) > td > h4 > img")
+        #         if not set_img:
+        #             set_img = soup.select(
+        #                 "#infobox > div.table-responsive > table > tbody > tr:nth-child(2) > td > img")
+        #         elif not set_img:
+        #             set_img = soup.select(
+        #                 "wiki-content-block > div.row > div > div > table > tbody > tr:nth-child(1) > td:nth-child(1) > h4 > img")
+        #         # print(set_img)
+        #         try:
+        #             set_img = fx_url + set_img[0]["src"]
+        #         except IndexError:
+        #             print("img not found")
+        #             set_img = ""
+        #         print(set_img)
+
+        #         # save armour set image to assets folder
+        #         self.download_image(set_img, item_text)
+        #         tables = soup.select("tbody")
+        #         # print(len(tables))
+
+        #         find_pieces = []
+        #         if len(tables) > 1:
+        #             table = tables[1]
+        #             rows = table.find_all("tr")
+        #             for row in rows:
+        #                 first_td = row.find("td")
+        #                 if first_td is not None:
+        #                     find_pieces.append(first_td)
+        #         else:
+        #             print("Table not found or index out of range.")
+        #         pieces = []
+        #         piece_types = {0:"Head", 1:"Chest", 2:"Arms" ,3:"Waist" ,4:"Legs"}
+        #         for index,p in enumerate(find_pieces):
+        #             piece_type = piece_types[index]
+        #             if p.find("img") is not None:
+        #                 piece_img = fx_url + p.find("img")["src"]
+        #             else:
+        #                 piece_img = ""
+        #             pieces.append({p.text.strip(): [piece_img, piece_type]})
+        #         return {'id': idx, 'item': item_text, 'img': set_img, 'pieces': pieces}
+
+        # async def get_all_items(self):
+
+        #     url = f"{fx_url}/Armor+Sets"
+
+        #     async with aiohttp.ClientSession() as session:
+        #         async with session.get(url, headers=headers) as r:
+        #             soup = BeautifulSoup(await r.text(), "html.parser")
+        #             div_elements = soup.select("div.col-xs-4") + soup.select("div.col-sm-4")
+        #             find_all_armour_sets = [element.find("a", attrs={"class": "wiki_link"}) for element in div_elements
+        #                                     if element.find("a", attrs={"class": "wiki_link"}) is not None]
+        #             tasks = []
+        #             for idx, item in enumerate(find_all_armour_sets, start=1):
+        #                 task = asyncio.create_task(self.process_armour_sets(session, idx, item))
+        #                 tasks.append(task)
+
+        #             all_armour_sets = await asyncio.gather(*tasks)
+        #             print(all_armour_sets)
+        #             mycursor = mydb.cursor(buffered=True)
+
+        #             for armour in all_armour_sets:
+        #                 set_id = armour["id"]
+        #                 set_name = armour["item"]
+        #                 set_img = armour["img"]
+        #                 armour_pieces = json.dumps(armour["pieces"])
+
+        #                 mycursor.execute("SELECT COUNT(*) FROM armour_sets WHERE set_id = %s",
+        #                                  [set_id])
+        #                 exists = mycursor.fetchall()[0][0]
+        #                 print(exists)
+        #                 if exists == 0:
+        #                     sql = "INSERT INTO armour_sets (set_id, set_name, set_img, armour_pieces) VALUES (%s, %s, %s, %s)"
+
+        #                     mycursor.execute(sql, (set_id, set_name, set_img, armour_pieces))
+        #             mydb.commit()
+        #             return all_armour_sets
+
+
         def get_all_items(self):
             consumables = self.get_consumables()
             materials = self.get_materials()
@@ -1000,26 +1131,22 @@ class Scraper(object):
             ammos = self.get_ammo()
             account_items = self.get_account_items()
             room_items = self.get_room_items()
-            # print(consumables)
-            # print(materials)
-            # print(scraps)
-            # print(ammos)
-            # print(account_items)
-            # print(room_items)
             items = consumables + materials + scraps + ammos + room_items + account_items
             print(items)
+
             mycursor = mydb.cursor()
             for item in items:
                 mycursor.execute("SELECT COUNT(*) FROM items WHERE item_id = %s", [item[0]])
                 exists = mycursor.fetchall()[0][0]
                 print(exists)
                 if exists == 0:
-                    sql = "INSERT INTO items (item_id, item_name,item_url,item_img,item_description) VALUES (%s, %s, %s, %s, %s)"
+                    sql = "INSERT INTO items (item_id, item_name,item_url,item_img,item_description, item_type) VALUES (%s, %s, %s, %s, %s, %s)"
                     mycursor.execute(sql, item)
                 else:
                     sql = "UPDATE items SET item_name = %s, item_url = %s, item_img = %s, item_description = %s WHERE item_id = %s"
                     mycursor.execute(sql, [item[1], item[2], item[3], item[4], item[0]])
             mydb.commit()
+            # self.get_crafting_list()
             # sql = "INSERT INTO items (item_id, item_name,item_url,item_img,item_description) VALUES (%s, %s, %s, %s, %s)"
             # mycursor.executemany(sql, items)
 
@@ -1037,6 +1164,10 @@ class Scraper(object):
                 item_name = consumable.find("p", attrs={
                     "class": "text-sm font-medium text-sky-500 dark:text-sky-400 group-hover:text-sky-900 dark:group-hover:text-sky-300"}).text
                 item_img = consumable.find('img')["src"]
+
+                # save item image
+                self.download_image(item_img, item_name)
+
                 item_url = consumable.find('a')['href']
                 item_id = item_url.split("items/")[1]
                 session = requests.Session()
@@ -1046,7 +1177,7 @@ class Scraper(object):
                 print(item_name)
                 print(item_description)
                 print(item_id)
-                consumables.append((item_id, item_name, item_url, item_img, item_description))
+                consumables.append((item_id, item_name, item_url, item_img, item_description, "Consumables"))
             return consumables
 
         def get_materials(self):
@@ -1063,6 +1194,8 @@ class Scraper(object):
                 item_name = material.find("p", attrs={
                     "class": "text-sm font-medium text-sky-500 dark:text-sky-400 group-hover:text-sky-900 dark:group-hover:text-sky-300"}).text
                 item_img = material.find('img')["src"]
+                # save item image
+                self.download_image(item_img, item_name)
                 item_url = material.find('a')['href']
                 item_id = item_url.split("items/")[1]
                 session = requests.Session()
@@ -1072,21 +1205,8 @@ class Scraper(object):
                 print(item_name)
                 print(item_description)
                 print(item_id)
-                materials.append((item_id, item_name, item_url, item_img, item_description))
+                materials.append((item_id, item_name, item_url, item_img, item_description, "Materials"))
             return materials
-            # print(item_page.find("div", attrs={"basis-1/2"}))
-            # if item_page.find("div", attrs={"basis-1/2"}) is not None:
-            #     for section in item_page.find_all("div", attrs={"basis-1/2"}):
-            #         if section.find("h2").text.strip() == "Locale":
-            #             print("rrhehr")
-            #             rows = section.find_all("tr")
-            #             for row in rows:
-            #                 map = row.find_all("td")[0].text.strip()
-            #                 quest_level = row.find_all("td")[1].text.strip()
-            #                 quantity = row.find_all("td")[2].text.strip()
-            #                 chance = row.find_all("td")[3].text.strip()
-            #
-            #                 print(map, quest_level, quantity, chance)
 
         def get_scraps(self):
             scraps_url = f"{base_url}data/items?view=scrap"
@@ -1102,6 +1222,8 @@ class Scraper(object):
                 item_name = scrap.find("p", attrs={
                     "class": "text-sm font-medium text-sky-500 dark:text-sky-400 group-hover:text-sky-900 dark:group-hover:text-sky-300"}).text
                 item_img = scrap.find('img')["src"]
+                # save item image
+                self.download_image(item_img, item_name)
                 item_url = scrap.find('a')['href']
                 item_id = item_url.split("items/")[1]
                 session = requests.Session()
@@ -1111,7 +1233,7 @@ class Scraper(object):
                 print(item_name)
                 print(item_description)
                 print(item_id)
-                scraps.append((item_id, item_name, item_url, item_img, item_description))
+                scraps.append((item_id, item_name, item_url, item_img, item_description, "Scraps"))
             return scraps
 
         def get_ammo(self):
@@ -1128,6 +1250,8 @@ class Scraper(object):
                 item_name = ammo.find("p", attrs={
                     "class": "text-sm font-medium text-sky-500 dark:text-sky-400 group-hover:text-sky-900 dark:group-hover:text-sky-300"}).text
                 item_img = ammo.find('img')["src"]
+                # save item image
+                self.download_image(item_img, item_name)
                 item_url = ammo.find('a')['href']
                 item_id = item_url.split("items/")[1]
                 session = requests.Session()
@@ -1137,7 +1261,7 @@ class Scraper(object):
                 print(item_name)
                 print(item_description)
                 print(item_id)
-                ammos.append((item_id, item_name, item_url, item_img, item_description))
+                ammos.append((item_id, item_name, item_url, item_img, item_description, "Ammo"))
             return ammos
 
         def get_account_items(self):
@@ -1153,6 +1277,8 @@ class Scraper(object):
                 item_name = item.find("p", attrs={
                     "class": "text-sm font-medium text-sky-500 dark:text-sky-400 group-hover:text-sky-900 dark:group-hover:text-sky-300"}).text
                 item_img = item.find('img')["src"]
+                # save item image
+                self.download_image(item_img, item_name)
                 item_url = item.find('a')['href']
                 item_id = item_url.split("items/")[1]
                 session = requests.Session()
@@ -1162,7 +1288,7 @@ class Scraper(object):
                 print(item_name)
                 print(item_description)
                 print(item_id)
-                account_items.append((item_id, item_name, item_url, item_img, item_description))
+                account_items.append((item_id, item_name, item_url, item_img, item_description, "Account Items"))
             return account_items
 
         def get_room_items(self):
@@ -1178,6 +1304,8 @@ class Scraper(object):
                 item_name = item.find("p", attrs={
                     "class": "text-sm font-medium text-sky-500 dark:text-sky-400 group-hover:text-sky-900 dark:group-hover:text-sky-300"}).text
                 item_img = item.find('img')["src"]
+                # save item image
+                self.download_image(item_img, item_name)
                 item_url = item.find('a')['href']
                 item_id = item_url.split("items/")[1]
                 session = requests.Session()
@@ -1187,7 +1315,7 @@ class Scraper(object):
                 print(item_name)
                 print(item_description)
                 print(item_id)
-                room_items.append((item_id, item_name, item_url, item_img, item_description))
+                room_items.append((item_id, item_name, item_url, item_img, item_description, "Room Items"))
             return room_items
 
         def get_crafting_list(self):
@@ -1561,6 +1689,29 @@ class Scraper(object):
             mydb.commit()
 
     class Armour:
+        def download_image(self, image_url, name):
+            save_path = f"monster-hunter-db\\src\\assets\\armour images\\{name}.png"
+            try:
+
+                # Check if the file already exists
+                if os.path.exists(save_path):
+                    print(f"Image already exists at {save_path}")
+                    return
+                
+                # Send an HTTP GET request to the URL
+                response = requests.get(image_url)
+                
+                # Check if the request was successful (status code 200)
+                if response.status_code == 200:
+                    # Open the file for binary write
+                    with open(save_path, 'wb') as file:
+                        # Write the content of the response to the file
+                        file.write(response.content)
+                    print(f"Image downloaded and saved as {save_path}")
+                else:
+                    print(f"Failed to download image. Status code: {response.status_code}")
+            except Exception as e:
+                print(f"An error occurred: {str(e)}")
 
         async def process_armour_sets(self, session, idx, item):
             if not item.text:
@@ -1586,8 +1737,11 @@ class Scraper(object):
                     print("img not found")
                     set_img = ""
                 print(set_img)
+
+                # save armour set image to assets folder
+                self.download_image(set_img, item_text)
                 tables = soup.select("tbody")
-                print(len(tables))
+                # print(len(tables))
 
                 find_pieces = []
                 if len(tables) > 1:
@@ -1608,7 +1762,7 @@ class Scraper(object):
                     else:
                         piece_img = ""
                     pieces.append({p.text.strip(): [piece_img, piece_type]})
-                return {'id': idx, 'item': item_text, 'img': set_img, 'pieces': pieces}
+                return {'id': idx, 'item': item_text.strip(), 'img': set_img, 'pieces': pieces}
 
         async def get_armour_sets(self):
 
@@ -1779,20 +1933,6 @@ class Scraper(object):
 
         def save_armour(self, armours):
             print(armours)
-            # mycursor = mydb.cursor(buffered=True)
-            #
-            # for armour in armours:
-            #     mycursor.execute("SELECT COUNT(*) FROM armour WHERE armour_id = %s",
-            #                      [armour[0]])
-            #     exists = mycursor.fetchall()[0][0]
-            #     print(exists)
-            #     if exists == 0:
-            #         sql = "INSERT INTO armour (armour_id, armour_name, armour_url, m_armour_img_url, f_armour_img_url, deco_slots, defense," \
-            #               " fire_res, water_res, ice_res, thunder_res, dragon_res, armour_skills, armour_description, forging_materials, rarity, set_id, set_name) VALUES " \
-            #               "(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-            #
-            #         mycursor.execute(sql, armour)
-            # mydb.commit()
 
             mycursor = mydb.cursor(buffered=True)
             batch_size = 100  # Adjust the batch size according to your needs
@@ -2731,8 +2871,8 @@ webscrape = Scraper(headers, base_url, mydb)
 # loop = asyncio.get_event_loop()
 # quests = loop.run_until_complete(webscrape.Quests().get_all_quests())
 # webscrape.Monsters().get_monsters()
-# webscrape.Items().get_all_items()
-webscrape.Weapons().get_all_weapons()
+webscrape.Items().get_all_items()
+# webscrape.Weapons().get_all_weapons()
 # webscrape.Skills().get_skills()
 # webscrape.Armour().get_all_armour()
 

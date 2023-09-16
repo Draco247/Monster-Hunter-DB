@@ -58,6 +58,7 @@ export default function Quests({id}) {
 
 
     useEffect(() => {
+        setQuests([])
         fetch(`${process.env.REACT_APP_react_url}/quests/quest_type/${id}`)
             .then(res => res.json())
             .then((result)=> {

@@ -43,6 +43,11 @@ public class ItemController {
         return itemRepository.findById(itemId);
     }
 
+    @GetMapping("/item_type/{itemtype}")
+    public List<Items> getItemByItemtype(@PathVariable(value = "itemtype") String itemtype) {
+        return itemRepository.findItemsByItemtype(itemtype);
+    }
+
     @GetMapping("/{itemId}/monsters")
     public ResponseEntity<List<Monsters>> getAllMonstersByItemId(@PathVariable(value = "itemId") Long itemId) {
 //        if (!questRepository.existsById(questId)) {

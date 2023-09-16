@@ -29,7 +29,7 @@ import { useTheme } from "@mui/material";
 
 export default function Monster() {
     const { id } = useParams();
-    console.log(id);
+    // console.log(id);
     const [monster, setMonster] = useState(null);
     const [monsterquests, setMonsterQuests] = useState(null);
     const [monsterhitzones, setMonsterHitzones] = useState(null);
@@ -39,6 +39,20 @@ export default function Monster() {
     const [monsterarmour, setMonsterArmour] = useState(null);
     const [visible, setVisible] = useState(null);
     const { palette } = useTheme();
+    const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+
+    // Update screenWidth state when the window is resized
+    useEffect(() => {
+        function handleResize() {
+        setScreenWidth(window.innerWidth);
+        }
+    
+        window.addEventListener('resize', handleResize);
+    
+        return () => {
+        window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
     const elementIcons = {
         Fire,
@@ -64,27 +78,50 @@ export default function Monster() {
             backgroundColor: palette.background.MuiDataGridrow
         }
     };
-    // const [visiblesection, setVisibleSection] = useState(null);
-
-    // const getQuestIcon = (quest_type) => {
-    //     // Replace underscores (_) with spaces in the image name
-    //     const formattedImageName = `${quest_type
-    //         .replace(/(?:^|\s)\S/g, (char) => char.toUpperCase())}.png`
-    //         .replace(/ /g, '_') // First, replace underscores with spaces
-
-    //     // console.log(formattedImageName);
-
-    //     try {
-    //         // Use require to dynamically import the image
-    //         return require(`../../assets/icons/${formattedImageName}`);
-    //     } catch (error) {
-    //         // Handle the case when the image doesn't exist
-    //         // console.error(`Image ${formattedImageName} not found.`);
-    //         return null;
-    //     }
-    // };
     
-    const questcolumns = [
+    
+    // const questcolumns = [
+    //     { field: 'quest_name', headerName: 'Quest', flex:1, sortable: true, 
+    //     renderCell: (params) => {
+    //         const questTypeKeywords = ['hunt all', 'slay all', 'hunt', 'capture', 'slay','deliver']; 
+        
+    //         const questTypeMatches = questTypeKeywords.filter(keyword =>
+    //             params.row.objective.toLowerCase().includes(keyword)
+    //         );
+    //         // console.log(questTypeMatches[0]);
+
+    //         const isArena = /^arena \d+★/.test(params.row.quest_name.toLowerCase()) // check if quest name starts with arena *star to display arena icon
+
+    //         const questType =
+    //             isArena
+    //                 ? 'Arena'
+    //                 : questTypeMatches.includes('hunt all')  || questTypeMatches.includes('slay all')
+    //                 ? 'Endurance'
+    //                 : questTypeMatches.includes('deliver')
+    //                 ? 'Gathering'
+    //                 : questTypeMatches.includes('deliver')
+    //                 ? 'Gathering'
+    //                 : questTypeMatches.length === 1
+    //                 ? questTypeMatches[0]
+    //                 : 'Hunt';
+
+    //         const questIcon = getQuestIcon(questType);
+
+    //         return (
+    //             <div>
+    //                 {questIcon && (
+    //                     <img src={questIcon} alt={questType} style={{ marginRight: '5px', verticalAlign: 'middle' }} />
+    //                 )}
+    //                 <a href={`/quest/${params.row.id}`}>{params.row.quest_name}</a>
+    //             </div>
+    //             );
+    //         },
+    //     },
+    //     { field: 'objective', headerName: 'Objective', flex: 1},
+    //     { field: 'hrp', headerName: 'HRP', flex:0.2, sortable: true},
+    //     { field: 'mrp', headerName: 'MRP', flex:0.2, sortable: true}
+    // ];
+    const [questcolumns, setQuestColumns] = useState([
         { field: 'quest_name', headerName: 'Quest', flex:1, sortable: true, 
         renderCell: (params) => {
             const questTypeKeywords = ['hunt all', 'slay all', 'hunt', 'capture', 'slay','deliver']; 
@@ -124,135 +161,21 @@ export default function Monster() {
         { field: 'objective', headerName: 'Objective', flex: 1},
         { field: 'hrp', headerName: 'HRP', flex:0.2, sortable: true},
         { field: 'mrp', headerName: 'MRP', flex:0.2, sortable: true}
-    ];
-
-    const hitzonecolumns = [
-        { field: 'hitzone', headerName: 'Hitzone', flex:1, sortable: true},
-        { field: 'state', headerName: 'State', flex:1, sortable: true},
-        {
-            field: 'blade hitzone',
-            headerName: 'Blade',
-            flex: 1,
-            sortable: true,
-            renderHeader: (params: GridColumnHeaderParams) => (
-                <Box
-                    component="img"
-                    sx={{
-                        height: 40,
-                        width: 40,
-                        marginRight: '8px',
-                    }}
-                    alt="Blade"
-                    src={Blade}
-                />
-            ),
-        },
-        { field: 'blunt hitzone', headerName: 'Blunt', flex:1, sortable: true,
-            renderHeader: (params: GridColumnHeaderParams) => (
-                <Box
-                    component="img"
-                    sx={{
-                        height: 40,
-                        width: 40,
-                        marginRight: '8px',
-                    }}
-                    alt="Blunt"
-                    src={Blunt}
-                />
-            ),},
-        { field: 'gunner hitzone', headerName: 'Gunner', flex:1, sortable: true,
-            renderHeader: (params: GridColumnHeaderParams) => (
-                <Box
-                    component="img"
-                    sx={{
-                        height: 40,
-                        width: 40,
-                        marginRight: '8px',
-                    }}
-                    alt="Gunner"
-                    src={Gunner}
-                />
-            ),},
-        { field: 'fire hitzone', headerName: 'Fire', flex:1, sortable: true,
-            renderHeader: (params: GridColumnHeaderParams) => (
-                <Box
-                    component="img"
-                    sx={{
-                        height: 40,
-                        width: 40,
-                        marginRight: '8px',
-                    }}
-                    alt="Fire"
-                    src={Fire}
-                />
-            ),},
-        { field: 'water hitzone', headerName: 'Water', flex:1, sortable: true,
-            renderHeader: (params: GridColumnHeaderParams) => (
-                <Box
-                    component="img"
-                    sx={{
-                        height: 40,
-                        width: 40,
-                        marginRight: '8px',
-                    }}
-                    alt="Water"
-                    src={Water}
-                />
-            ),},
-        { field: 'ice hitzone', headerName: 'Ice', flex:1, sortable: true,
-            renderHeader: (params: GridColumnHeaderParams) => (
-                <Box
-                    component="img"
-                    sx={{
-                        height: 40,
-                        width: 40,
-                        marginRight: '8px',
-                    }}
-                    alt="Ice"
-                    src={Ice}
-                />
-            ),},
-        { field: 'thunder hitzone', headerName: 'Thunder', flex:1, sortable: true,
-            renderHeader: (params: GridColumnHeaderParams) => (
-                <Box
-                    component="img"
-                    sx={{
-                        height: 40,
-                        width: 40,
-                        marginRight: '8px',
-                    }}
-                    alt="Thunder"
-                    src={Thunder}
-                />
-            ),},
-        { field: 'dragon hitzone', headerName: 'Dragon', flex:1, sortable: true,
-            renderHeader: (params: GridColumnHeaderParams) => (
-                <Box
-                    component="img"
-                    sx={{
-                        height: 40,
-                        width: 40,
-                        marginRight: '8px',
-                    }}
-                    alt="Dragon"
-                    src={Dragon}
-                />
-            ),}
-    ];
-
-    const dropscolumns = [
+    ]); 
+    
+    const [dropscolumns, setDropsColumns] = useState([
         { field: 'Item', headerName: 'Item', flex:1, sortable: true, valueGetter: (params) => params.row['Item'], // Use 'Item' directly as the cell value
             renderCell: (params) => (
-                <a href={`/items/${params.row['Item id']}`}>{params.row['Item']}</a>
+                <a href={`/item/${params.row['Item id']}`}>{params.row['Item']}</a>
             )},
         { field: 'Drop Area', headerName: 'Area', flex:1, sortable: true},
         { field: 'Drop Method', headerName: 'Method', flex:1, sortable: true},
         { field: 'Drop Rate', headerName: 'Rate', flex:1, sortable: true},
         { field: 'Item Rank', headerName: 'Rank', flex:1, sortable: true},
         { field: 'Quantity', headerName: 'Quantity', flex:1, sortable: true}
-    ];
+    ]);
 
-    const weaponcolumns = [
+    const [weaponcolumns, setWeaponColumns] = useState([
         { field: 'weapon_name', headerName: 'Name', flex:0.3, sortable: true, valueGetter: (params) => params.row['weapon_name'], // Use 'weapon_name' directly as the cell value
             renderCell: (params) => (
                 <Box
@@ -368,7 +291,354 @@ export default function Monster() {
             },
         },
         { field: 'rarity', headerName: 'Rarity', flex:0.3, sortable: true},
+    ]);
+
+    useEffect(() => {
+        if (screenWidth < 960) {
+          // If screen width is less than 960px, show only 'quest_name' and 'objective' columns
+          setQuestColumns([
+            { field: 'quest_name', headerName: 'Quest', flex:1, sortable: true, 
+            renderCell: (params) => {
+                const questTypeKeywords = ['hunt all', 'slay all', 'hunt', 'capture', 'slay','deliver']; 
+            
+                const questTypeMatches = questTypeKeywords.filter(keyword =>
+                    params.row.objective.toLowerCase().includes(keyword)
+                );
+                // console.log(questTypeMatches[0]);
+    
+                const isArena = /^arena \d+★/.test(params.row.quest_name.toLowerCase()) // check if quest name starts with arena *star to display arena icon
+    
+                const questType =
+                    isArena
+                        ? 'Arena'
+                        : questTypeMatches.includes('hunt all')  || questTypeMatches.includes('slay all')
+                        ? 'Endurance'
+                        : questTypeMatches.includes('deliver')
+                        ? 'Gathering'
+                        : questTypeMatches.includes('deliver')
+                        ? 'Gathering'
+                        : questTypeMatches.length === 1
+                        ? questTypeMatches[0]
+                        : 'Hunt';
+    
+                const questIcon = getQuestIcon(questType);
+    
+                return (
+                    <div>
+                        {questIcon && (
+                            <img src={questIcon} alt={questType} style={{ marginRight: '5px', verticalAlign: 'middle' }} />
+                        )}
+                        <a href={`/quest/${params.row.id}`}>{params.row.quest_name}</a>
+                    </div>
+                    );
+                },
+            },
+            { field: 'objective', headerName: 'Objective', flex: 1 },
+          ]);
+
+          setDropsColumns([
+            { field: 'Item', headerName: 'Item', flex:1, sortable: true, valueGetter: (params) => params.row['Item'], // Use 'Item' directly as the cell value
+                renderCell: (params) => (
+                    <a href={`/item/${params.row['Item id']}`}>{params.row['Item']}</a>
+                )},
+            { field: 'Drop Area', headerName: 'Area', flex:1, sortable: true},
+            { field: 'Drop Method', headerName: 'Method', flex:1, sortable: true},
+            { field: 'Drop Rate', headerName: 'Rate', flex:1, sortable: true},
+        ]);
+
+        setWeaponColumns([
+            { field: 'weapon_name', headerName: 'Name', flex:0.2, sortable: true, valueGetter: (params) => params.row['weapon_name'], // Use 'weapon_name' directly as the cell value
+                renderCell: (params) => (
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            gap: '5px',
+                        }}
+                    >
+                        <Box
+                            component="img"
+                            sx={{
+                                height: 100,
+                                width: 100,
+                                border: '2px solid black',
+                            }}
+                            alt=""
+                            src={params.row['weapon_img_url']}
+                        />
+                        <a href={`/weapon/${params.row.weapon_id}`}>{params.row.weapon_name}</a>
+                    </Box>
+                ),
+                cellClassName: 'centered-cell',
+            },
+            {
+                field: 'weapon_type_name',
+                headerName: '',
+                flex: 0.1,
+                sortable: true,
+                // type: "singleSelect",
+                // valueOptions: ["sns"],
+                renderCell: (params) =>
+                    <Box
+                        component="img"
+                        sx={{
+                            height: 40,
+                            width: 40,
+                            marginRight: '8px',
+                        }}
+                        alt={params.row['weapon_type_name']}
+                        src={getWeaponIcon(params.row['weapon_type_name'])}
+                    />
+            },
+            { field: 'attack', headerName: 'Attack', flex:0.1, sortable: true},
+            { field: 'element', headerName: 'Element', flex:0.1, sortable: true,
+            renderCell: (params) => {
+                // console.log(params.row.element)
+                const elementIconSrc = elementIcons[params.row.element];
+                // console.log(elementIconSrc);
+                return (
+                    elementIconSrc && (
+                        <div>
+                            <img
+                                src={elementIconSrc}
+                                alt={params.row.element}
+                                style={{ width: '40px', height: '40px' }}
+                            />
+                        </div>
+                    )
+                );
+                
+            },},
+            { field: 'element_val', headerName: 'Ele Val', flex:0.1, sortable: true},
+        ]);
+        } 
+        if (screenWidth < 700) {
+            // If screen width is less than 960px, show only 'quest_name' and 'objective' columns
+            setQuestColumns([
+              { field: 'quest_name', headerName: 'Quest', flex:1, sortable: true, 
+              renderCell: (params) => {
+                  const questTypeKeywords = ['hunt all', 'slay all', 'hunt', 'capture', 'slay','deliver']; 
+              
+                  const questTypeMatches = questTypeKeywords.filter(keyword =>
+                      params.row.objective.toLowerCase().includes(keyword)
+                  );
+                  // console.log(questTypeMatches[0]);
+      
+                  const isArena = /^arena \d+★/.test(params.row.quest_name.toLowerCase()) // check if quest name starts with arena *star to display arena icon
+      
+                  const questType =
+                      isArena
+                          ? 'Arena'
+                          : questTypeMatches.includes('hunt all')  || questTypeMatches.includes('slay all')
+                          ? 'Endurance'
+                          : questTypeMatches.includes('deliver')
+                          ? 'Gathering'
+                          : questTypeMatches.includes('deliver')
+                          ? 'Gathering'
+                          : questTypeMatches.length === 1
+                          ? questTypeMatches[0]
+                          : 'Hunt';
+      
+                  const questIcon = getQuestIcon(questType);
+      
+                  return (
+                      <div>
+                          {questIcon && (
+                              <img src={questIcon} alt={questType} style={{ marginRight: '5px', verticalAlign: 'middle' }} />
+                          )}
+                          <a href={`/quest/${params.row.id}`}>{params.row.quest_name}</a>
+                      </div>
+                      );
+                  },
+              },
+            ]);
+
+            setDropsColumns([
+                { field: 'Item', headerName: 'Item', flex:1, sortable: true, valueGetter: (params) => params.row['Item'], // Use 'Item' directly as the cell value
+                    renderCell: (params) => (
+                        <a href={`/item/${params.row['Item id']}`}>{params.row['Item']}</a>
+                    )},
+                { field: 'Drop Area', headerName: 'Area', flex:1, sortable: true},
+                { field: 'Drop Method', headerName: 'Method', flex:1, sortable: true},
+            ]);
+          }
+        else {
+          // If screen width is 960px or more, show all columns
+          setQuestColumns([
+            { field: 'quest_name', headerName: 'Quest', flex:1, sortable: true, 
+        renderCell: (params) => {
+            const questTypeKeywords = ['hunt all', 'slay all', 'hunt', 'capture', 'slay','deliver']; 
+        
+            const questTypeMatches = questTypeKeywords.filter(keyword =>
+                params.row.objective.toLowerCase().includes(keyword)
+            );
+            // console.log(questTypeMatches[0]);
+
+            const isArena = /^arena \d+★/.test(params.row.quest_name.toLowerCase()) // check if quest name starts with arena *star to display arena icon
+
+            const questType =
+                isArena
+                    ? 'Arena'
+                    : questTypeMatches.includes('hunt all')  || questTypeMatches.includes('slay all')
+                    ? 'Endurance'
+                    : questTypeMatches.includes('deliver')
+                    ? 'Gathering'
+                    : questTypeMatches.includes('deliver')
+                    ? 'Gathering'
+                    : questTypeMatches.length === 1
+                    ? questTypeMatches[0]
+                    : 'Hunt';
+
+            const questIcon = getQuestIcon(questType);
+
+            return (
+                <div>
+                    {questIcon && (
+                        <img src={questIcon} alt={questType} style={{ marginRight: '5px', verticalAlign: 'middle' }} />
+                    )}
+                    <a href={`/quest/${params.row.id}`}>{params.row.quest_name}</a>
+                </div>
+                );
+            },
+            },
+            { field: 'objective', headerName: 'Objective', flex: 1 },
+            { field: 'hrp', headerName: 'HRP', flex: 0.2, sortable: true },
+            { field: 'mrp', headerName: 'MRP', flex: 0.2, sortable: true },
+          ]);
+
+          setDropsColumns([
+            { field: 'Item', headerName: 'Item', flex:1, sortable: true, valueGetter: (params) => params.row['Item'], // Use 'Item' directly as the cell value
+                renderCell: (params) => (
+                    <a href={`/item/${params.row['Item id']}`}>{params.row['Item']}</a>
+                )},
+            { field: 'Drop Area', headerName: 'Area', flex:1, sortable: true},
+            { field: 'Drop Method', headerName: 'Method', flex:1, sortable: true},
+            { field: 'Drop Rate', headerName: 'Rate', flex:1, sortable: true},
+            { field: 'Item Rank', headerName: 'Rank', flex:1, sortable: true},
+            { field: 'Quantity', headerName: 'Quantity', flex:1, sortable: true}
+        ]);
+
+        }
+        console.log(questcolumns)
+      }, [screenWidth]);
+
+    const hitzonecolumns = [
+        { field: 'hitzone', headerName: 'Hitzone', flex:1, sortable: true},
+        { field: 'state', headerName: 'State', flex:1, sortable: true},
+        {
+            field: 'blade hitzone',
+            headerName: 'Blade',
+            flex: 1,
+            sortable: true,
+            renderHeader: (params: GridColumnHeaderParams) => (
+                <Box
+                    component="img"
+                    sx={{
+                        height: 40,
+                        width: 40,
+                        marginRight: '8px',
+                    }}
+                    alt="Blade"
+                    src={Blade}
+                />
+            ),
+        },
+        { field: 'blunt hitzone', headerName: 'Blunt', flex:1, sortable: true,
+            renderHeader: (params: GridColumnHeaderParams) => (
+                <Box
+                    component="img"
+                    sx={{
+                        height: 40,
+                        width: 40,
+                        marginRight: '8px',
+                    }}
+                    alt="Blunt"
+                    src={Blunt}
+                />
+            ),},
+        { field: 'gunner hitzone', headerName: 'Gunner', flex:1, sortable: true,
+            renderHeader: (params: GridColumnHeaderParams) => (
+                <Box
+                    component="img"
+                    sx={{
+                        height: 40,
+                        width: 40,
+                        marginRight: '8px',
+                    }}
+                    alt="Gunner"
+                    src={Gunner}
+                />
+            ),},
+        { field: 'fire hitzone', headerName: 'Fire', flex:1, sortable: true,
+            renderHeader: (params: GridColumnHeaderParams) => (
+                <Box
+                    component="img"
+                    sx={{
+                        height: 40,
+                        width: 40,
+                        marginRight: '8px',
+                    }}
+                    alt="Fire"
+                    src={Fire}
+                />
+            ),},
+        { field: 'water hitzone', headerName: 'Water', flex:1, sortable: true,
+            renderHeader: (params: GridColumnHeaderParams) => (
+                <Box
+                    component="img"
+                    sx={{
+                        height: 40,
+                        width: 40,
+                        marginRight: '8px',
+                    }}
+                    alt="Water"
+                    src={Water}
+                />
+            ),},
+        { field: 'ice hitzone', headerName: 'Ice', flex:1, sortable: true,
+            renderHeader: (params: GridColumnHeaderParams) => (
+                <Box
+                    component="img"
+                    sx={{
+                        height: 40,
+                        width: 40,
+                        marginRight: '8px',
+                    }}
+                    alt="Ice"
+                    src={Ice}
+                />
+            ),},
+        { field: 'thunder hitzone', headerName: 'Thunder', flex:1, sortable: true,
+            renderHeader: (params: GridColumnHeaderParams) => (
+                <Box
+                    component="img"
+                    sx={{
+                        height: 40,
+                        width: 40,
+                        marginRight: '8px',
+                    }}
+                    alt="Thunder"
+                    src={Thunder}
+                />
+            ),},
+        { field: 'dragon hitzone', headerName: 'Dragon', flex:1, sortable: true,
+            renderHeader: (params: GridColumnHeaderParams) => (
+                <Box
+                    component="img"
+                    sx={{
+                        height: 40,
+                        width: 40,
+                        marginRight: '8px',
+                    }}
+                    alt="Dragon"
+                    src={Dragon}
+                />
+            ),}
     ];
+
+
+
 
     const armourcolumns = [
         { field: 'armour_name', headerName: 'Name', flex:0.3, sortable: true, valueGetter: (params) => params.row.armour_name,

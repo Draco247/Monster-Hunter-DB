@@ -8,6 +8,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { Grid,Box } from '@mui/material';
 import { Link } from "react-router-dom";
+import { getArmourSetImage } from './getArmourSetImage';
 
 export default function ArmourSets({ searchQuery }) {
     const [armoursets, setArmourSets] = useState([]);
@@ -27,7 +28,7 @@ export default function ArmourSets({ searchQuery }) {
 
     const cardStyle = {
         height: '100%',
-        maxWidth: 345,
+        maxWidth: '100%',
         // transition: 'box-shadow 0.9s', // Add a smooth transition effect
     };
 
@@ -60,10 +61,10 @@ export default function ArmourSets({ searchQuery }) {
         <Box m={8} display="flex" justifyContent="center" alignItems="center">
             <Grid container spacing={2} style={{ justifyContent: armoursets.length === 2 ? 'flex-start' : 'space-between', flexWrap: 'wrap' }}>
                 {filteredArmourSets.map(armourset => (
-                    <Grid item xs={12} sm={6} md={4} key={armourset.id}>
-                        <Box height="100%" alignItems="center" justifyContent="center" style={{ border: '2px solid black' }}>
-                            <Link to={`/armour/armourSets/${armourset.id}`} state={{ armour_pieces: armourset.pieces, armours: armourset.armours }}>
-                                <Card sx={{ height: '100%', maxWidth: 345 }} style={{
+                    <Grid item xs={12} sm={6} md={3} lg={3} key={armourset.id}>
+                        <Box height="100%" alignItems="center" justifyContent="center">
+                             <Link to={`/armour/armourSets/${armourset.id}`}> 
+                                <Card style={{
                                     ...cardStyle,
                                     ...(hoveredCard === armourset.id && hoverStyle),
                                 }}
@@ -72,7 +73,7 @@ export default function ArmourSets({ searchQuery }) {
                                     <Box m={4}>
                                         <CardMedia
                                             component="img"
-                                            image={armourset.set_img}
+                                            image={getArmourSetImage(armourset.set_name)}
                                             title={armourset.set_name}
                                             style={imageStyle}
                                         />
@@ -87,6 +88,11 @@ export default function ArmourSets({ searchQuery }) {
                         </Box>
                     </Grid>
                 ))}
+                {filteredArmourSets.length === 2 ||filteredArmourSets.length === 3 && (
+                        <Grid item xs={12} sm={6} md={3} lg={3} style={{ visibility: 'hidden' }}>
+                            {/* Invisible spacer item */}
+                        </Grid>
+                    )}
             </Grid>
         </Box>
     );

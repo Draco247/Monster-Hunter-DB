@@ -1,5 +1,6 @@
 package com.daniel.monster_hunter.monster_hunter.controller;
 
+import com.daniel.monster_hunter.monster_hunter.dto.SkillsDTO;
 import com.daniel.monster_hunter.monster_hunter.model.SkillDecorations;
 import com.daniel.monster_hunter.monster_hunter.model.Skills;
 import com.daniel.monster_hunter.monster_hunter.repository.SkillDecorationRepository;
@@ -25,9 +26,12 @@ public class SkillController {
     private SkillDecorationRepository skillDecorationRepository;
 
     @GetMapping("/getAll")
-    public List<Skills> getAllSkills() {
-        return skillRepository.findAll();
+    public List<SkillsDTO> getAllSkills() {
+        return skillRepository.findAllBy();
     }
+    // public List<Skills> getAllSkills() {
+    //     return skillRepository.findAll();
+    // }
 
     @GetMapping("/{skillId}")
     public Optional<Skills> getSkillById(@PathVariable(value = "skillId") Long skillId) {

@@ -96,8 +96,8 @@ function App() {
                 <Route path="/weapons" element={<SelectWeaponsPage/>}/>
                 <Route path="/weapons/:weapon_type" element={<WeaponsPage/>}/>
                 <Route path="/weapon/:id" element={<WeaponPage/>}/>
-                <Route path="/items" element={<ItemsPage/>}/>
-                <Route path="/items/:id" element={<ItemPage/>}/>
+                <Route path="/items/:item_type" element={<ItemsPage/>}/>
+                <Route path="/item/:id" element={<ItemPage/>}/>
                 <Route path="/armour" element={<ArmoursPage/>}/>
                 <Route path="/armour/:id" element={<ArmourPage/>}/>
                 <Route path="/armour/armourSets/:id" element={<ArmourSetPage/>}/>

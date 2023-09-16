@@ -9,6 +9,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { Grid,Box } from '@mui/material';
 import { Link } from "react-router-dom";
+import { getMonsterIcon } from './getMonsterIcon';
 
 export default function Monsters({ searchQuery }) {
     const [monsters, setMonsters] = useState([]);
@@ -83,7 +84,6 @@ export default function Monsters({ searchQuery }) {
                                 <Box height="100%" display="flex" alignItems="center" justifyContent="center">                  
                                     <Link to={`/monsters/${monster.id}`}>
                                         <Card
-                                            // sx={{ height: '100%', maxWidth: 345 }}
                                             style={{
                                                 ...cardStyle,
                                                 ...(hoveredCard === monster.id && hoverStyle),
@@ -94,7 +94,7 @@ export default function Monsters({ searchQuery }) {
                                             <Box m={4}>
                                                 <CardMedia
                                                     component="img"
-                                                    image={getMonsterIcons(monster.name)}
+                                                    image={getMonsterIcon(monster.name)}
                                                     title={monster.name}
                                                     style={imageStyle}
                                                 />
@@ -137,7 +137,7 @@ export default function Monsters({ searchQuery }) {
                                             <Box m={4}>
                                                 <CardMedia
                                                     component="img"
-                                                    image={getMonsterIcons(monster.name)}
+                                                    image={getMonsterIcon(monster.name)}
                                                     title={monster.name}
                                                     style={imageStyle}
                                                 />

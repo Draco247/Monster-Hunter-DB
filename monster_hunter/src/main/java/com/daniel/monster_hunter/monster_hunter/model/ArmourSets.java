@@ -21,8 +21,8 @@ public class ArmourSets {
     private Long id;
     private String set_name;
     private String set_img;
-    @Column(name = "armour_pieces", columnDefinition = "json")
-    private String pieces;
+    // @Column(name = "armour_pieces", columnDefinition = "json")
+    // private String pieces;
 
     @OneToMany(mappedBy = "armourSet", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Armour> armours = new HashSet<>();

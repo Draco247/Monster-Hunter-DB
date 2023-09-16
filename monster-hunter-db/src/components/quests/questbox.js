@@ -11,6 +11,8 @@ import { getQuestIcon } from './getQuestIcon';
 
 
 const QuestBox = ({quests, quest_lvl}) => {
+    console.log(quests)
+    console.log(quest_lvl)
     const [hovered, setHovered] = useState(null);
     const { palette } = useTheme();
 

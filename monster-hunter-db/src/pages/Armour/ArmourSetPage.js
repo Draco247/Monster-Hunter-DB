@@ -8,13 +8,13 @@ import ArmourSet from "../../components/armour/armourSet";
 
 
 function ArmourSetPage() {
-    const location = useLocation()
-    // console.log(location)
-    let { armour_pieces } = location.state
-    const { armours } = location.state
-    console.log(armours)
-    armour_pieces = JSON.parse(armour_pieces)
-    console.log(armour_pieces)
+    // const location = useLocation()
+    // // console.log(location)
+    // let { armour_pieces } = location.state
+    // const { armours } = location.state
+    // console.log(armours)
+    // armour_pieces = JSON.parse(armour_pieces)
+    // console.log(armour_pieces)
 
 
     // const handleInputChange = (event) => {
@@ -30,7 +30,7 @@ function ArmourSetPage() {
         <div className="armour-set">
             <h1>Armour Set</h1>
             <Box m={10}>
-                <ArmourSet armour_pieces={armour_pieces} armours={armours}/>
+                <ArmourSet/>
             </Box>
 
             {/*<Box sx={{ display: 'flex', justifyContent: 'center' }}>*/}
