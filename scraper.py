@@ -26,6 +26,7 @@ headers = ({'User-Agent':
 base_url = "https://mhrise.kiranico.com/"
 fx_url = "https://monsterhunterrise.wiki.fextralife.com"
 game8_url = "https://game8.co"
+fandom_wiki_url = "https://monsterhunter.fandom.com/wiki"
 mydb = mysql.connector.connect(
     host=os.getenv('DEV_MYSQL_HOST'),
     user=os.getenv('DEV_MYSQL_USER'),
@@ -69,25 +70,54 @@ class Scraper(object):
     #         print(f"An error occurred: {str(e)}")
 
     class Monsters:
-        def get_monsters(self):
-            self.get_large_monster()
-            # self.get_small_monster()
+        def get_monster_types(self):
+            url = f"{fandom_wiki_url}/Monster_Classes"
+            session = requests.Session()
+            r = session.get(url, headers=headers)
+            soup = BeautifulSoup(r.content, "html.parser")
+            monster_type_tables = soup.find("div", attrs={"class": "mw-parser-output"}).find_all("table")[:19]
+            monster_types = {}
+            for table in monster_type_tables:
+                monster_type_name = table.find("h2").text.split(":")[1].rsplit("/", 1)[0].strip()
+                # for monster_table in table.find_all("td", attrs={"bgcolor": "#abcdef"}):
+                #     for monster in monster_table.find_all("a"):
+                #         print(monster.text)
+                #         print("-------------------------------")
+                monsters = [monster.text for monster_table in table.find_all("td", attrs={"bgcolor": "#abcdef"}) for monster in monster_table.find_all("a")]
+                # print(monster_type_name)
+                # monsters = [monster.text for monster_table in table.find_all("td", attrs={"bgcolor": "#abcdef"}) for monster in monster_table if monster.text != ", " and monster.text != "\n"]
+                # print(monsters)
+                monster_types[monster_type_name] = monsters
+            return monster_types
 
-        def get_large_monster(self):
+
+        def get_monsters(self):
+            monster_types = self.get_monster_types()
+            # for monster_type,monsters in monster_types.items():
+            #     print(monster_type)
+            #     print(monsters)
+            #     for i in monsters:
+            #         print(i)
+            #         print("***************")
+            #     print("------------------------------")
+            self.get_large_monster(monster_types)
+            self.get_small_monster(monster_types)
+
+        def get_large_monster(self, monster_types):
             url = f"{base_url}data/monsters?view=lg"
             session = requests.Session()
             r = session.get(url, headers=headers)
             soup = BeautifulSoup(r.content, "html.parser")
-            self.get_monster_pages(soup, monster_type="large")
+            self.get_monster_pages(soup, "large", monster_types)
 
-        def get_small_monster(self):
+        def get_small_monster(self, monster_types):
             url = f"{base_url}data/monsters?view=sm"
             session = requests.Session()
             r = session.get(url, headers=headers)
             soup = BeautifulSoup(r.content, "html.parser")
-            self.get_monster_pages(soup, monster_type="small")
+            self.get_monster_pages(soup, "small", monster_types)
 
-        def get_monster_pages(self, soup, monster_type):
+        def get_monster_pages(self, soup, monster_size, monster_types):
             all_monsters = soup.find_all("div", attrs={
                 "class": "group relative p-4 border-r border-b border-gray-200 dark:border-gray-800 sm:p-6"})
             for monster in all_monsters:
@@ -96,181 +126,191 @@ class Scraper(object):
                 monster_img = monster.find('img')["src"]
                 link = monster.find('a')['href']
                 monster_id = link.split("monsters/")[1]
+                monster_type = ""
                 
+                for mtype, monsters in monster_types.items():
+                    # print(monster_name)
+                    # print(monsters[0])
+                    # print("-----------------------")
+                    if monster_name in monsters:
+                        print(monster_name)
+                        print(mtype) 
+                        monster_type = mtype
+                        break
 
                 session = requests.Session()
                 r = session.get(link, headers=headers)
                 soup = BeautifulSoup(r.content, "html.parser")
                 monster_description = soup.find("header", attrs={"class": "mb-9 space-y-1"}).find_all("p")[1].text
                 mycursor = mydb.cursor()
-                mycursor.execute("SELECT COUNT(*) from monsters WHERE monster_id = %s", [monster_id])
+                mycursor.execute("SELECT COUNT(*) from monsters2 WHERE monster_id = %s", [monster_id])
                 exists = mycursor.fetchall()
                 if exists[0][0] == 0:
-                    sql = "INSERT INTO monsters (name, link, image_link, monster_id, description, monster_size) VALUES (%s,%s,%s,%s,%s,%s)"
-                    val = ([monster_name, link, monster_img, monster_id, monster_description, monster_type])
+                    sql = "INSERT INTO monsters2 (name, link, image_link, monster_id, description, monster_size, monster_type) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+                    val = ([monster_name, link, monster_img, monster_id, monster_description, monster_size, monster_type])
                     mycursor = mydb.cursor()
                     mycursor.execute(sql, val)
-                    print(self.get_monster_details(soup, monster_id, monster_type, monster_name))
+                    self.get_monster_details(soup, monster_id)
 
                 else:
-                    print(self.get_monster_details(soup, monster_id, monster_type, monster_name))
+                    self.get_monster_details(soup, monster_id)
             mydb.commit()
 
-        def get_monster_details(self, soup, monster_id, monster_type, monster_name):
+        def get_monster_details(self, soup, monster_id):
             # hitzones = []
-            # self.get_monster_physiology(soup, monster_id)
-            print(self.get_monster_physiology(monster_name, monster_id))
+            self.get_monster_physiology(soup, monster_id)
+            # print(self.get_monster_physiology(monster_name, monster_id))
             # drops = []
-            # self.get_monster_drops(soup, monster_id)
+            self.get_monster_drops(soup, monster_id)
 
             # quests = []
             # self.get_monster_quests(soup, monster_id)
 
-        # def get_monster_physiology(self, soup, monster_id):
-        #     hitzones = []
-        #     monster_hitzones = soup.find_all('table')[0]  # find monster phys table on page
-        #     rows = monster_hitzones.find_all('tr')
-        #     for row in rows:  # extract all important details from the table such as hitzone values for the different weapon types
-        #         hitzone = row.find_all('td')[0].text
-        #         hitzone_state = row.find_all('td')[1].text
-        #         blade_hitzone_value = row.find_all('td')[2].text
-        #         blunt_hitzone_value = row.find_all('td')[3].text
-        #         gunner_hitzone_value = row.find_all('td')[4].text
-        #         fire_hitzone_value = row.find_all('td')[5].text
-        #         water_hitzone_value = row.find_all('td')[6].text
-        #         ice_hitzone_value = row.find_all('td')[7].text
-        #         thunder_hitzone_value = row.find_all('td')[8].text
-        #         dragon_hitzone_value = row.find_all('td')[9].text
-        #         stun_hitzone_value = row.find_all('td')[10].text
-        #         hitzones.append({'hitzone': hitzone, 'state': hitzone_state, 'blade hitzone': blade_hitzone_value,
-        #                          'blunt hitzone': blunt_hitzone_value,
-        #                          'gunner hitzone': gunner_hitzone_value, 'fire hitzone': fire_hitzone_value,
-        #                          'water hitzone': water_hitzone_value,
-        #                          'ice hitzone': ice_hitzone_value, 'thunder hitzone': thunder_hitzone_value,
-        #                          'dragon hitzone': dragon_hitzone_value,
-        #                          'stun': stun_hitzone_value})
-        #     hitzones = json.dumps(hitzones)
-        #     mycursor = mydb.cursor()
-        #     mycursor.execute("UPDATE monsters SET hitzones = %s WHERE monster_id = %s", [hitzones, monster_id])
-        #     # return hitzones
-        #     # return monster_hitzones
-        def get_monster_physiology_and_render(self, monster_name, monster_id):
+        def get_monster_physiology(self, soup, monster_id):
             hitzones = []
-            url = f"{fx_url}/"
-            # words = monster_name.split(" ")
-            url += "+".join(monster_name.split(" "))
-            session = requests.Session()
-            r = session.get(url, headers=headers)
-            soup = BeautifulSoup(r.content, "html.parser")
-            # print(soup.find_all("table", attrs={"class":"wiki_table"})[0])
-            monster_info_table = soup.find_all("table", attrs={"class": "wiki_table"})[0].find_all("tr")
-            # print(monster_info_table)
-            monster_render = fx_url + monster_info_table[1].find("img")["src"]
-            print(monster_render)
-            monster_species_type = ""
-            monster_threat_level = ""
-            monster_locations = []
-            for row in monster_info_table:
-                # print(row)
-                tds = row.find_all("td")
-                # print(tds)
-
-                if len(tds) > 0 and ("Species" in tds[0] or "Class" in tds[0]):
-                    monster_species_type = tds[1].text
-                    # print(monster_species_type)
-                if len(tds) > 0 and "Threat Level" in tds[0]:
-                    star = [i for i in tds[1].text]
-                    num = [i for i in tds[1].text if i.isdigit()]
-                    if num:
-                        monster_threat_level = "".join(num)
-                    else:
-                        monster_threat_level = len(star)
-                    # print(monster_threat_level)
-                if len(tds) > 0 and ("Location(s)" in tds[0] or "Locations" in tds[0]):
-                    monster_locations = [location.text for location in tds[1] if
-                                         len(location) != 0 and "\xa0" not in location]
-                    # for location in tds[1]:
-                    #     print(location.text)
-                    # print
-                    # print(monster_locations)
-
-            monster_phys_hitzones_table = soup.find_all("table", attrs={"class": "wiki_table"})[1].find_all("tr")
-            phys_hitzones = []
-            for row in monster_phys_hitzones_table[1:]:
-                hitzone = row.find("th").text
-                # print(hitzone)
-                blade_hitzone = row.find_all("td")[0].text
-                # print(blade_hitzone)
-                blunt_hitzone = row.find_all("td")[1].text
-                # print(blunt_hitzone)
-                gunner_hitzone = row.find_all("td")[2].text
-                # print(gunner_hitzone)
-                phys_hitzones.append({'hitzone': hitzone, 'blade_hitzone': blade_hitzone,
-                                      'blunt_hitzone': blunt_hitzone, 'gunner_hitzone': gunner_hitzone})
-
-            monster_ele_hitzones_table = soup.find_all("table", attrs={"class": "wiki_table"})[2].find_all("tr")
-            ele_hitzones = []
-            for row in monster_ele_hitzones_table[1:]:
-                hitzone = row.find("th").text
-                # print(hitzone)
-                fire_hitzone = row.find_all("td")[0].text
-                # print(fire_hitzone)
-                water_hitzone = row.find_all("td")[1].text
-                # print(water_hitzone)
-                thunder_hitzone = row.find_all("td")[2].text
-                # print(thunder_hitzone)
-                ice_hitzone = row.find_all("td")[3].text
-                # print(ice_hitzone)
-                dragon_hitzone = row.find_all("td")[4].text
-                # print(dragon_hitzone)
-                ele_hitzones.append({'hitzone': hitzone, 'fire_hitzone': fire_hitzone, 'water_hitzone': water_hitzone,
-                                     'ice_hitzone': ice_hitzone, 'thunder_hitzone': thunder_hitzone,
-                                     'dragon_hitzone': dragon_hitzone, })
-            # print(monster_phys_hitzones_table)
-            # print(phys_hitzones)
-            # print(ele_hitzones)
-
-            hitzones = [phys_hitzones[i] | ele_hitzones[i] for i in range(0, len(phys_hitzones))]
+            monster_hitzones = soup.find_all('table')[0]  # find monster phys table on page
+            rows = monster_hitzones.find_all('tr')
+            for row in rows:  # extract all important details from the table such as hitzone values for the different weapon types
+                hitzone = row.find_all('td')[0].text
+                hitzone_state = row.find_all('td')[1].text
+                blade_hitzone_value = row.find_all('td')[2].text
+                blunt_hitzone_value = row.find_all('td')[3].text
+                gunner_hitzone_value = row.find_all('td')[4].text
+                fire_hitzone_value = row.find_all('td')[5].text
+                water_hitzone_value = row.find_all('td')[6].text
+                ice_hitzone_value = row.find_all('td')[7].text
+                thunder_hitzone_value = row.find_all('td')[8].text
+                dragon_hitzone_value = row.find_all('td')[9].text
+                stun_hitzone_value = row.find_all('td')[10].text
+                hitzones.append({'hitzone': hitzone, 'state': hitzone_state, 'blade hitzone': blade_hitzone_value,
+                                 'blunt hitzone': blunt_hitzone_value,
+                                 'gunner hitzone': gunner_hitzone_value, 'fire hitzone': fire_hitzone_value,
+                                 'water hitzone': water_hitzone_value,
+                                 'ice hitzone': ice_hitzone_value, 'thunder hitzone': thunder_hitzone_value,
+                                 'dragon hitzone': dragon_hitzone_value,
+                                 'stun': stun_hitzone_value})
             hitzones = json.dumps(hitzones)
-            # mycursor = mydb.cursor()
-            # mycursor.execute("UPDATE monsters SET hitzones = %s WHERE monster_id = %s", [hitzones, monster_id])
-            # print(mycursor)
-            mydb.commit()
-            return monster_render, hitzones
-
-            # return monster_name, monster_species_type, monster_threat_level, monster_locations
-            # print(monster_locations)
-            # monster_species_type = monster_info_table.find_all("tr")[3].find("a").text
-            # print(monster_species_type)
-            # monster_threat_level = monster_info_table.find_all("tr")[4].find_all("td")[1].text
-            # print(monster_threat_level)
-
-            # monster_hitzones = soup.find_all('table')[0]  # find monster phys table on page
-            # rows = monster_hitzones.find_all('tr')
-            # for row in rows:  # extract all important details from the table such as hitzone values for the different weapon types
-            #     hitzone = row.find_all('td')[0].text
-            #     hitzone_state = row.find_all('td')[1].text
-            #     blade_hitzone_value = row.find_all('td')[2].text
-            #     blunt_hitzone_value = row.find_all('td')[3].text
-            #     gunner_hitzone_value = row.find_all('td')[4].text
-            #     fire_hitzone_value = row.find_all('td')[5].text
-            #     water_hitzone_value = row.find_all('td')[6].text
-            #     ice_hitzone_value = row.find_all('td')[7].text
-            #     thunder_hitzone_value = row.find_all('td')[8].text
-            #     dragon_hitzone_value = row.find_all('td')[9].text
-            #     stun_hitzone_value = row.find_all('td')[10].text
-            #     hitzones.append({'hitzone': hitzone, 'state': hitzone_state, 'blade hitzone': blade_hitzone_value,
-            #                      'blunt hitzone': blunt_hitzone_value,
-            #                      'gunner hitzone': gunner_hitzone_value, 'fire hitzone': fire_hitzone_value,
-            #                      'water hitzone': water_hitzone_value,
-            #                      'ice hitzone': ice_hitzone_value, 'thunder hitzone': thunder_hitzone_value,
-            #                      'dragon hitzone': dragon_hitzone_value,
-            #                      'stun': stun_hitzone_value})
-            # hitzones = json.dumps(hitzones)
-            # mycursor = mydb.cursor()
-            # mycursor.execute("UPDATE monsters SET hitzones = %s WHERE monster_id = %s", [hitzones, monster_id])
+            mycursor = mydb.cursor()
+            mycursor.execute("UPDATE monsters2 SET hitzones = %s WHERE monster_id = %s", [hitzones, monster_id])
             # return hitzones
             # return monster_hitzones
+        # def get_monster_physiology_and_render(self, monster_name, monster_id):
+        #     hitzones = []
+        #     url = f"{fx_url}/"
+        #     # words = monster_name.split(" ")
+        #     url += "+".join(monster_name.split(" "))
+        #     session = requests.Session()
+        #     r = session.get(url, headers=headers)
+        #     soup = BeautifulSoup(r.content, "html.parser")
+        #     # print(soup.find_all("table", attrs={"class":"wiki_table"})[0])
+        #     monster_info_table = soup.find_all("table", attrs={"class": "wiki_table"})[0].find_all("tr")
+        #     # print(monster_info_table)
+        #     monster_render = fx_url + monster_info_table[1].find("img")["src"]
+        #     print(monster_render)
+        #     monster_species_type = ""
+        #     monster_threat_level = ""
+        #     monster_locations = []
+        #     for row in monster_info_table:
+        #         # print(row)
+        #         tds = row.find_all("td")
+        #         # print(tds)
+
+        #         if len(tds) > 0 and ("Species" in tds[0] or "Class" in tds[0]):
+        #             monster_species_type = tds[1].text
+        #             # print(monster_species_type)
+        #         if len(tds) > 0 and "Threat Level" in tds[0]:
+        #             star = [i for i in tds[1].text]
+        #             num = [i for i in tds[1].text if i.isdigit()]
+        #             if num:
+        #                 monster_threat_level = "".join(num)
+        #             else:
+        #                 monster_threat_level = len(star)
+        #             # print(monster_threat_level)
+        #         if len(tds) > 0 and ("Location(s)" in tds[0] or "Locations" in tds[0]):
+        #             monster_locations = [location.text for location in tds[1] if
+        #                                  len(location) != 0 and "\xa0" not in location]
+        #             # for location in tds[1]:
+        #             #     print(location.text)
+        #             # print
+        #             # print(monster_locations)
+
+        #     monster_phys_hitzones_table = soup.find_all("table", attrs={"class": "wiki_table"})[1].find_all("tr")
+        #     phys_hitzones = []
+        #     for row in monster_phys_hitzones_table[1:]:
+        #         hitzone = row.find("th").text
+        #         # print(hitzone)
+        #         blade_hitzone = row.find_all("td")[0].text
+        #         # print(blade_hitzone)
+        #         blunt_hitzone = row.find_all("td")[1].text
+        #         # print(blunt_hitzone)
+        #         gunner_hitzone = row.find_all("td")[2].text
+        #         # print(gunner_hitzone)
+        #         phys_hitzones.append({'hitzone': hitzone, 'blade_hitzone': blade_hitzone,
+        #                               'blunt_hitzone': blunt_hitzone, 'gunner_hitzone': gunner_hitzone})
+
+        #     monster_ele_hitzones_table = soup.find_all("table", attrs={"class": "wiki_table"})[2].find_all("tr")
+        #     ele_hitzones = []
+        #     for row in monster_ele_hitzones_table[1:]:
+        #         hitzone = row.find("th").text
+        #         # print(hitzone)
+        #         fire_hitzone = row.find_all("td")[0].text
+        #         # print(fire_hitzone)
+        #         water_hitzone = row.find_all("td")[1].text
+        #         # print(water_hitzone)
+        #         thunder_hitzone = row.find_all("td")[2].text
+        #         # print(thunder_hitzone)
+        #         ice_hitzone = row.find_all("td")[3].text
+        #         # print(ice_hitzone)
+        #         dragon_hitzone = row.find_all("td")[4].text
+        #         # print(dragon_hitzone)
+        #         ele_hitzones.append({'hitzone': hitzone, 'fire_hitzone': fire_hitzone, 'water_hitzone': water_hitzone,
+        #                              'ice_hitzone': ice_hitzone, 'thunder_hitzone': thunder_hitzone,
+        #                              'dragon_hitzone': dragon_hitzone, })
+        #     # print(monster_phys_hitzones_table)
+        #     # print(phys_hitzones)
+        #     # print(ele_hitzones)
+
+        #     hitzones = [phys_hitzones[i] | ele_hitzones[i] for i in range(0, len(phys_hitzones))]
+        #     hitzones = json.dumps(hitzones)
+        #     # mycursor = mydb.cursor()
+        #     # mycursor.execute("UPDATE monsters SET hitzones = %s WHERE monster_id = %s", [hitzones, monster_id])
+        #     # print(mycursor)
+        #     mydb.commit()
+        #     return monster_render, hitzones
+
+        #     # return monster_name, monster_species_type, monster_threat_level, monster_locations
+        #     # print(monster_locations)
+        #     # monster_species_type = monster_info_table.find_all("tr")[3].find("a").text
+        #     # print(monster_species_type)
+        #     # monster_threat_level = monster_info_table.find_all("tr")[4].find_all("td")[1].text
+        #     # print(monster_threat_level)
+
+        #     # monster_hitzones = soup.find_all('table')[0]  # find monster phys table on page
+        #     # rows = monster_hitzones.find_all('tr')
+        #     # for row in rows:  # extract all important details from the table such as hitzone values for the different weapon types
+        #     #     hitzone = row.find_all('td')[0].text
+        #     #     hitzone_state = row.find_all('td')[1].text
+        #     #     blade_hitzone_value = row.find_all('td')[2].text
+        #     #     blunt_hitzone_value = row.find_all('td')[3].text
+        #     #     gunner_hitzone_value = row.find_all('td')[4].text
+        #     #     fire_hitzone_value = row.find_all('td')[5].text
+        #     #     water_hitzone_value = row.find_all('td')[6].text
+        #     #     ice_hitzone_value = row.find_all('td')[7].text
+        #     #     thunder_hitzone_value = row.find_all('td')[8].text
+        #     #     dragon_hitzone_value = row.find_all('td')[9].text
+        #     #     stun_hitzone_value = row.find_all('td')[10].text
+        #     #     hitzones.append({'hitzone': hitzone, 'state': hitzone_state, 'blade hitzone': blade_hitzone_value,
+        #     #                      'blunt hitzone': blunt_hitzone_value,
+        #     #                      'gunner hitzone': gunner_hitzone_value, 'fire hitzone': fire_hitzone_value,
+        #     #                      'water hitzone': water_hitzone_value,
+        #     #                      'ice hitzone': ice_hitzone_value, 'thunder hitzone': thunder_hitzone_value,
+        #     #                      'dragon hitzone': dragon_hitzone_value,
+        #     #                      'stun': stun_hitzone_value})
+        #     # hitzones = json.dumps(hitzones)
+        #     # mycursor = mydb.cursor()
+        #     # mycursor.execute("UPDATE monsters SET hitzones = %s WHERE monster_id = %s", [hitzones, monster_id])
+        #     # return hitzones
+        #     # return monster_hitzones
 
         def get_monster_drops(self, soup, monster_id):
             drops = []
@@ -319,128 +359,8 @@ class Scraper(object):
 
             drops = json.dumps(drops)
 
-            mycursor.execute("UPDATE monsters SET drops = %s WHERE monster_id = %s", [drops, monster_id])
+            mycursor.execute("UPDATE monsters2 SET drops = %s WHERE monster_id = %s", [drops, monster_id])
 
-        # def get_monster_quests(self, soup, monster_id):
-        #     quests = []
-        #     quest_table = soup.find_all("table")[4]
-        #     rows = quest_table.find_all("tr")
-        #     print(f"Num Quests = {len(rows)}")
-        #     # count = 1
-        #     for row in rows:
-        #         Quest_Name = row.find("a").text
-        #         quest_link = row.find('a')['href']
-        #         Quest_ID = quest_link.split("quests/")[1]
-
-        #         session = requests.Session()
-        #         r = session.get(quest_link, headers=headers)
-        #         soup = BeautifulSoup(r.content, "html.parser")
-        #         Quest_Objective = \
-        #             soup.find_all("div", attrs={"class": "px-4 py-5 sm:p-6"})[0].text.split("Objective")[1].split("(")[
-        #                 0].strip()
-        #         # print(Quest_Objective)
-        #         hunter_rank_points = \
-        #             soup.find_all("div", attrs={"class": "px-4 py-5 sm:p-6"})[0].text.split("Objective")[1].split(
-        #                 "HRP:")[
-        #                 1].split("pts")[0].strip()
-        #         # print(hunter_rank_points)
-        #         master_rank_points = \
-        #             soup.find_all("div", attrs={"class": "px-4 py-5 sm:p-6"})[0].text.split("Objective")[1].split(
-        #                 "MRP:")[
-        #                 1].split("pts")[0].strip()
-        #         # print(master_rank_points)
-        #         failure_conditions = \
-        #             soup.find_all("div", attrs={"class": "px-4 py-5 sm:p-6"})[1].text.split("Conditions")[
-        #                 1].strip()
-        #         # print(failure_conditions)
-
-        #         # sizes_table = soup.find_all("div", attrs={"class": "basis-1/5"})
-        #         sizes_table = soup.find(lambda tag: tag.name == "div" and
-        #                                             "basis-1/5" in tag.get("class", []) and
-        #                                             tag.find("a", href=lambda href: monster_id in href)).find("table")
-
-        #         # print(sizes_table)
-        #         mini_crown_chances = []
-        #         king_crown_chances = []
-        #         mini_crowns = sizes_table.select(f'tr:has(img[src*="crown_mini"])')
-        #         # print(mini_crowns)
-        #         for mini_crown in mini_crowns:
-        #             size = mini_crown.text.strip().split(" ")[0].replace("\n", "")
-        #             chance = mini_crown.text.strip().split(" ")[-1].replace("\n", "")
-        #             mini_crown_chances.append({size: chance})
-        #         mini_crown_chances = json.dumps(mini_crown_chances)
-        #         print(mini_crown_chances)
-        #         king_crowns = sizes_table.select(f'tr:has(img[src*="crown_king"])')
-        #         for king_crown in king_crowns:
-        #             size = king_crown.text.strip().split(" ")[0].replace("\n", "")
-        #             chance = king_crown.text.strip().split(" ")[-1].replace("\n", "")
-        #             king_crown_chances.append({size: chance})
-        #         king_crown_chances = json.dumps(king_crown_chances)
-        #         print(king_crown_chances)
-
-        #         quest_rewards_table = soup.find(lambda tag: tag.name == "div" and
-        #                                                     "basis-1/2" in tag.get("class", [])).find("table")
-        #         # print(quest_rewards_table)
-
-        #         rewards_rows = quest_rewards_table.find_all("tr")
-        #         rewards = []
-        #         for reward_row in rewards_rows:
-        #             # print(reward_row)
-        #             item_name = reward_row.find("a").text
-        #             print(item_name)
-        #             item_id = reward_row.find("a")["href"].split("items/")[1]
-        #             print(item_id)
-        #             quantity = reward_row.find_all("td")[2].text
-        #             print(quantity)
-        #             reward_chance = reward_row.find_all("td")[3].text
-        #             print(reward_chance)
-        #             rewards.append(
-        #                 {"Item": item_name, "Item id": item_id, "Quantity": quantity, "Chance": reward_chance})
-
-        #         rewards = json.dumps(rewards)
-        #         print(rewards)
-        #         quest_details = {"Quest_Name": Quest_Name, "Quest_Url": quest_link, "Quest_ID": Quest_ID,
-        #                          "Objective": Quest_Objective,
-        #                          "HRP": hunter_rank_points, "MRP": master_rank_points,
-        #                          "failure conditions": failure_conditions}
-        #         print(quest_details)
-        #         # sql =
-        #         # val = (Quest_ID,)
-        #         self.save_monster_quests(monster_id, Quest_ID, quest_details, Quest_Name, quest_link, Quest_Objective,
-        #                                  hunter_rank_points, master_rank_points,
-        #                                  failure_conditions, mini_crown_chances, king_crown_chances, rewards)
-
-            # return quests
-
-        # def save_monster_quests(self, monster_id, Quest_ID, quest_details, Quest_Name, quest_link, Quest_Objective,
-        #                         hunter_rank_points, master_rank_points,
-        #                         failure_conditions, mini_crown_chances, king_crown_chances, rewards):
-        #     mycursor = mydb.cursor(buffered=True)
-        #     mycursor.execute("SELECT COUNT(*) from quests WHERE Quest_ID = %s", [Quest_ID])
-        #     exists = mycursor.fetchall()
-        #     if exists[0][0] == 0:
-        #         sql = "INSERT INTO quests (Quest_ID, Quest_Name, Quest_Url, Objective, HRP, MRP, failure_conditions, mini_crown, king_crown, rewards) VALUES (%s,%s,%s,%s,%s,%s,%s,%s, %s, %s)"
-        #         val = ([Quest_ID, Quest_Name, quest_link, Quest_Objective, hunter_rank_points, master_rank_points,
-        #                 failure_conditions, mini_crown_chances, king_crown_chances, rewards])
-        #         # mycursor = mydb.cursor(buffered=True)
-        #         mycursor.execute(sql, val)
-        #         sql = "INSERT INTO quest_monsters (Quest_ID, monster_id) VALUES (%s,%s)"
-        #         val = ([Quest_ID, monster_id])
-        #         # mycursor = mydb.cursor()
-        #         mycursor.execute(sql, val)
-        #         # print(mycursor)
-        #     else:
-        #         # mycursor = mydb.cursor(buffered=True)
-
-        #         mycursor.execute("SELECT COUNT(*) from quest_monsters WHERE Quest_ID = %s and monster_id = %s",
-        #                          [Quest_ID, monster_id])
-        #         exists = mycursor.fetchall()
-        #         if exists[0][0] == 0:
-        #             sql = "INSERT INTO quest_monsters (Quest_ID, monster_id) VALUES (%s,%s)"
-        #             val = ([Quest_ID, monster_id])
-        #             # mycursor = mydb.cursor()
-        #             mycursor.execute(sql, val)
-        #             # print(mycursor)
 
     class Weapons:
 
@@ -2870,8 +2790,8 @@ webscrape = Scraper(headers, base_url, mydb)
 # webscrape.Quests().get_all_quests()
 # loop = asyncio.get_event_loop()
 # quests = loop.run_until_complete(webscrape.Quests().get_all_quests())
-# webscrape.Monsters().get_monsters()
-webscrape.Items().get_all_items()
+webscrape.Monsters().get_monsters()
+# webscrape.Items().get_all_items()
 # webscrape.Weapons().get_all_weapons()
 # webscrape.Skills().get_skills()
 # webscrape.Armour().get_all_armour()

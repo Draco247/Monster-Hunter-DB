@@ -34,9 +34,9 @@ function ArmoursPage() {
                     />
                 </Box>
             </Box>
-            <Box m={10}>
+            {/* <Box m={10}> */}
                 <ArmourSets searchQuery={searchValue}/>
-            </Box>
+            {/* </Box> */}
         </div>
     )
 }

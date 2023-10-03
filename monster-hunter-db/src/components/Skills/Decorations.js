@@ -59,7 +59,7 @@ export default function Decorations() {
     ];
 
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_react_url}/skills/skillDecorations/getAll`)
+        fetch(`https://localhost:443/api/v1/skills/skillDecorations/getAll`)
             .then(res => res.json())
             .then((result)=> {
                 setDecorations(result);
@@ -67,7 +67,7 @@ export default function Decorations() {
     console.log(decorations);
     return (
         <div className="decorations-table">
-            <Box sx={{ height: 400, width: '100%'}}>
+            {/* <Box sx={{ height: 400, width: '100%'}}> */}
                 <DataGrid
                     rows={decorations}
                     columns={columns}
@@ -86,7 +86,7 @@ export default function Decorations() {
                     //     items: [{ columnField: "Decoration", operatorValue: "isAnyOf", value: ["1","2"] }],
                     // }}
                 />
-            </Box>
+            {/* </Box> */}
         </div>
 
     );

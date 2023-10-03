@@ -8,7 +8,7 @@ export default function Skills() {
     const [skills, setSkills] = useState([]);
 
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_react_url}/skills/getAll`)
+        fetch(`https://localhost:443/api/v1/skills/getAll`)
             .then(res => res.json())
             .then((result)=> {
                 setSkills(result);
@@ -46,7 +46,7 @@ export default function Skills() {
 
     return (
         <div>
-            <Box sx={{ height: 400, width: '100%'}}>
+            {/* <Box sx={{ height: 400, width: '100%'}}> */}
                 <DataGrid
                     rows={skills}
                     columns={columns}
@@ -74,7 +74,7 @@ export default function Skills() {
                         return Math.max(defaultRowHeight, totalHeight);
                     }}
                 />
-            </Box>
+            {/* </Box> */}
         </div>
 
     );

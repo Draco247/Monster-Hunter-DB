@@ -74,7 +74,7 @@ export default function Weapon() {
     useEffect(() => {
         const fetchWeapon = async () => {
             try {
-                const response = await fetch(`${process.env.REACT_APP_react_url}/weapons/${id}/weapon`);
+                const response = await fetch(`https://localhost:443/api/v1/weapons/${id}/weapon`);
                 const data = await response.json();
                 setWeapon(data);
                 console.log(data);

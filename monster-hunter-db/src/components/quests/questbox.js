@@ -1,7 +1,5 @@
-import { Grid,Box } from '@mui/material';
 import { Link } from 'react-router-dom'
 import { useState } from 'react';
-import Tooltip from '@mui/material/Tooltip';
 import { useTheme } from '@mui/material/styles';
 import { getMonsterIcon } from '../monsters/getMonsterIcon'
 import { getQuestIcon } from './getQuestIcon';
@@ -16,18 +14,6 @@ const QuestBox = ({quests, quest_lvl}) => {
     const [hovered, setHovered] = useState(null);
     const { palette } = useTheme();
 
-    const hoverStyle = {
-        boxShadow: '0 0 5px 2px #888', // Apply a box shadow when hovered
-        background: 'light' === useTheme().palette.mode ? '#fcdfb2' : '#03204d'
-    };
-
-    const handleMouseEnter = (id) => {
-        setHovered(id);
-    };
-
-    const handleMouseLeave = () => {
-        setHovered(null);
-    };
 
     const getQuestType = (quest) => {
         // will add rampage once i can find the icon
@@ -59,55 +45,34 @@ const QuestBox = ({quests, quest_lvl}) => {
 
     const questIcon = (quest) => getQuestIcon(getQuestType(quest));
     return (
-        <Box m={3} display="flex" justifyContent="center" alignItems="center">
-            <Grid container spacing={2} style={{ flexWrap: 'wrap' }}>
-                {quests
-                    .filter(quest => quest.quest_lvl === quest_lvl)
-                    .map(quest => (
-                        <Grid item xs={12} sm={6} md={3} lg={3} key={quest.id}>
-                            <Link to={`/quest/${quest.id}`} style={{ color: 'inherit' }}>
-                                <Box height="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" sx={{...(hovered === quest.id && hoverStyle), 
-                                    border: palette.borderColour.Box, borderRadius: '5px'}} onMouseEnter={() => handleMouseEnter(quest.id)}
-                                    onMouseLeave={handleMouseLeave}>
-                                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
-                                        {questIcon && (
-                                            <img
-                                                src={getQuestIcon(getQuestType(quest))}
-                                                alt={getQuestType(quest)}
-                                                style={{ marginRight: '5px', verticalAlign: 'middle', width: '40px', height: '40px'}}
-                                            />
-                                        )}
-                                        <h5 key={quest.id}>{quest.quest_name}</h5>
+            <div class="p-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full">
+                {quests.filter(quest => quest.quest_lvl === quest_lvl).map(quest => (
+                        <div key={quest.id} className="text-center">
+                            <Link to={`/quest/${quest.id}`}>
+                                <div class="max-w-sm bg-gray-300 border-3 border-black rounded-lg shadow dark:bg-slate-900 dark:border-gray-700 h-full flex flex-col group hover:bg-slate-700 dark:hover:bg-slate-600">
+                                    <img class="mx-auto" src={getQuestIcon(getQuestType(quest))} alt="" />
+                                    <div class="px-5 flex-grow">
+                                        <h5 class="mb-3 text-slate-950 font-bold dark:text-gray-400">{quest.quest_name}</h5>
                                     </div>
-                                    <Box m={2} display="flex"  sx={{ width: '100%'}}>
-                                        <Grid container spacing={2} style={{ flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
-                                            {quest.monsters.map(monster => (
-                                                <Grid item xs={12} sm='auto' md='auto' lg='auto' key={monster.id}>
-                                                     <Tooltip title={monster.name}>
-                                                        <Box
-                                                            component="img"
-                                                            sx={{
-                                                                height: 60,
-                                                                width: 60,
-                                                                // marginRight: '8px',
-                                                                border: '2px solid black', 
-                                                                borderRadius: '5px'
-                                                            }}
-                                                            alt={monster.name}
-                                                            src={getMonsterIcon(monster.name)}
-                                                        />
-                                                     </Tooltip>
-                                                </Grid>
-                                            ))}
-                                        </Grid>
-                                    </Box>
-                                </Box>
+                                    
+                                    <div className={`grid gap-4 m-4 ${
+                                        quest.monsters.length === 1
+                                        ? 'grid-cols-1'
+                                        : quest.monsters.length === 2
+                                        ? 'grid-cols-2'
+                                        : 'grid-cols-3'
+                                    }`} >
+                                        {quest.monsters.map(monster => (
+                                            <img className="mx-auto border-2 border-black rounded-lg h-16 w-16" src={getMonsterIcon(monster.name)} alt="" />
+                                        ))}
+                                    </div>
+                                </div>
                             </Link>
-                            
-                        </Grid>
-                    ))}
-            </Grid>
-        </Box>
+                        </div>
+                        ))}
+            </div>
+        
+            
     )
 
 }

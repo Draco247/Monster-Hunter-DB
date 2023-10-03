@@ -9,7 +9,7 @@ export default function SwitchSkills({weapon_type_id}) {
 
     useEffect(() => {
         
-        fetch(`${process.env.REACT_APP_react_url}/switch-skills/${weapon_type_id}/switch-skills`)
+        fetch(`https://localhost:443/api/v1/switch-skills/${weapon_type_id}/switch-skills`)
             .then(res => res.json())
             .then((result)=> {
                 setswitchskills(result);

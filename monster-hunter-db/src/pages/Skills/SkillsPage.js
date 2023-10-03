@@ -33,9 +33,9 @@ function SkillsPage() {
             {/*        />*/}
             {/*    </Box>*/}
             {/*</Box>*/}
-            <Box m={10}>
+            {/* <Box m={10}> */}
                 <Skills searchQuery={searchValue}/>
-            </Box>
+            {/* </Box> */}
         </div>
     )
 }

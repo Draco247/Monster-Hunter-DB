@@ -11,13 +11,13 @@ import { useTheme } from "@mui/material";
 import {DataGrid,GridToolbar} from "@mui/x-data-grid";
 import { getArmourIcon } from './getArmourIcon';
 import MUIDataTable from "mui-datatables";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
+// import Table from "@material-ui/core/Table";
+// import TableBody from "@material-ui/core/TableBody";
+// import TableCell from "@material-ui/core/TableCell";
+// import TableContainer from "@material-ui/core/TableContainer";
+// import TableHead from "@material-ui/core/TableHead";
+// import TableRow from "@material-ui/core/TableRow";
+// import Paper from "@material-ui/core/Paper";
 
 
 
@@ -67,7 +67,7 @@ export default function ArmourSet() {
     useEffect(() => {
         const fetchArmourSet = async () => {
             try {
-                const response = await fetch(`${process.env.REACT_APP_react_url}/armour/armourSets/${id}`);
+                const response = await fetch(`https://localhost:443/api/v1/armour/armourSets/${id}`);
                 const data = await response.json();
                 setArmourSet(data);
                 setArmourpieces(data.armours.sort((a, b) => sortOrder[a.piece_type] - sortOrder[b.piece_type]))

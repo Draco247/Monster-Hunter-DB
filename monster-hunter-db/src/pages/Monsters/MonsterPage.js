@@ -5,9 +5,12 @@ import React from "react";
 function MonsterPage() {
     return (
         <div className="monster">
-            <Box m={10}>
+            {/* <Box m={10}> */}
+            <div className="h-full">
                 <Monster/>
-            </Box>
+            </div>
+                
+            {/* </Box> */}
         </div>
     )
 }

@@ -16,10 +16,10 @@ function WeaponsPage() {
     return(
         <div className="weapons">
             {/* <h1>Weapons</h1> */}
-            <Box m={10}>
+            {/* <Box m={10}> */}
                 {/* <Weapons weaponType={weaponType}/> */}
                 <Weapons id={id}/>
-            </Box>
+            {/* </Box> */}
         </div>
     )
 }

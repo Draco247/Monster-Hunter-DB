@@ -33,9 +33,9 @@ function DecorationsPage() {
             {/*        />*/}
             {/*    </Box>*/}
             {/*</Box>*/}
-            <Box m={10}>
+            {/* <Box m={10}> */}
                 <Decorations searchQuery={searchValue}/>
-            </Box>
+            {/* </Box> */}
         </div>
     )
 }

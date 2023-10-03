@@ -6,7 +6,7 @@ import ProgressBar from "react-bootstrap/ProgressBar";
 import LinearProgress from '@mui/material/LinearProgress';
 import SharpnessBar from "./SharpnessBar";
 import {Link, useNavigate} from "react-router-dom";
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 import Fire from '../../assets/icons/Element_Fire_Icon.webp'
 import Water from '../../assets/icons/Element_Water_Icon.webp'
 import Ice from '../../assets/icons/Element_Ice_Icon.webp'
@@ -39,8 +39,12 @@ export default function Weapons({id}) {
         fontSize: 16
         },
         "& .MuiDataGrid-row": {
+            backgroundColor: palette.background.MuiDataGridrow,
+            transition: 'background-color 0.3s ease',
+        },
+        '& .MuiDataGrid-row:hover': {
             backgroundColor: palette.background.MuiDataGridrow
-        }
+          },
     };
 
 
@@ -67,7 +71,7 @@ export default function Weapons({id}) {
         const fetchWeapons = async () => {
             try {
                 setWeapons([])
-                const response = await fetch(`${process.env.REACT_APP_react_url}/weapons/${id}/weapons`);
+                const response = await fetch(`https://localhost:443/api/v1/weapons/${id}/weapons`);
                 const data = await response.json();
                 setWeapons(data);
                 console.log(data);
@@ -79,7 +83,7 @@ export default function Weapons({id}) {
         const fetchSwitckSkills = async (id) => {
             try {
                 // setWeapons([])
-                const response = await fetch(`${process.env.REACT_APP_react_url}/switch-skills/${id}/switch-skills`);
+                const response = await fetch(`https://localhost:443/api/v1/switch-skills/${id}/switch-skills`);
                 const data = await response.json();
                 setswitchskills(data);
                 console.log(data);
@@ -451,8 +455,16 @@ export default function Weapons({id}) {
 
   
     return (
-        <div>
-            <div className="weapon_art" style={{marginBottom: 20}}>
+        <div className="p-10">
+            <div class="grid grid-cols-4 gap-4 mb-3">
+                <div class="col-span-2">
+                    <img src={getWeaponArt(id)[0]} class="mx-auto border-3 border-black rounded-lg" />
+                </div>
+                <div class="col-span-2">
+                    <img src={getWeaponArt(id)[1]} class="mx-auto border-3 border-black rounded-lg" />
+                </div>
+            </div>
+            {/* <div className="weapon_art" style={{marginBottom: 20}}>
                 <Grid container spacing={2} alignItems="stretch">
                         <Grid item xs={12} sm={6}>
                             <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -487,36 +499,46 @@ export default function Weapons({id}) {
                             </div>
                         </Grid>
                 </Grid>
-            </div>
+            </div> */}
             {switchskills.length > 0 ? (
-                <div className="switch-skills">
-                    <h2 style={{textAlign: 'center', textDecoration: 'underline' ,fontSize: 30}}>Switch Skills</h2>
-                    <ul style={{listStyle: 'none'}}>
-                        {switchskills.map((skills) => (
-                        <li key={skills.id}>
-                            <span style={{textDecoration: 'underline'}}>{skills.switch_skill_name}</span>
-                            
-                            <br />
-                            {reactStringReplace(skills.switch_skill_description, /<([^>]+)>/g, (match, i) => (
-                            // Use group (the text inside the angle brackets) to create an image element
-                            <img
-                                src={getControllerIcon(match)} // Use match to determine the image path
-                                alt={`${match}`}
-                                // Add any other attributes you need for the image
-                                key={i} // Add a unique key for each image element
-                                style={{width: 30, height: 30}}
-                            />
+                <div className="rounded-lg border-3 border-black overflow-hidden mb-3">
+                     <table className="border-collapse table-auto w-full text-sm ">
+                        <thead className="bg-slate-400 dark:bg-slate-900"> 
+                            <tr>
+                                <th className="border-b border-slate-950 dark:border-slate-600 font-semibold p-4 text-slate-950 dark:text-slate-200 text-left">Switch Skill</th>
+                                <th className="border-b border-slate-950 dark:border-slate-600 font-semibold p-4 text-slate-950 dark:text-slate-200 text-left">Description</th>
+                            </tr>
+                        </thead>
+
+                        <tbody className=" bg-slate-200 dark:bg-slate-800">
+                            {switchskills.map((skills) => (
+                                <tr>
+                                    <td className="border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-slate-800 dark:text-slate-500 dark:text-slate-400">{skills.switch_skill_name}</td>
+                                    <td className="border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-slate-800 dark:text-slate-500 dark:text-slate-400">
+                                        {reactStringReplace(skills.switch_skill_description, /<([^>]+)>/g, (match, i) => (
+                                        // Use group (the text inside the angle brackets) to create an image element
+                                        <img
+                                            src={getControllerIcon(match)} // Use match to determine the image path
+                                            alt={`${match}`}
+                                            // Add any other attributes you need for the image
+                                            key={i} // Add a unique key for each image element
+                                            style={{width: 30, height: 30, display: 'inline-block'}}
+                                            // className="w-30 h-30 inline-block"
+                                        />
+                                        ))}
+                                    </td>
+                                </tr>
                             ))}
-                        </li>
-                        ))}
-                    </ul>
-                </div>) : (
+                        </tbody>
+                    </table>
+                </div>
+                ) : (
                     <div>Loading switch skill data...</div>
             )}
 
             {weapons.length > 0 ? (
                 <div>
-                    <Box sx={{ height: 400, width: '100%'}}>
+                    {/* <Box sx={{ height: 400, width: '100%'}}> */}
                         <DataGrid
                             rows={weapons}
                             columns={columns}
@@ -535,7 +557,7 @@ export default function Weapons({id}) {
                             getRowHeight={() => 'auto'}
 
                         />
-                    </Box>
+                    {/* </Box> */}
                 </div>
             ) : (
                 <div>Loading weapons data...</div>

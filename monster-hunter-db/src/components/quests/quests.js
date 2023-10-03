@@ -3,7 +3,7 @@ import './quests.css';
 import {useState, useEffect} from "react";
 import { Grid,Box } from '@mui/material';
 import {DataGrid, GridToolbar} from "@mui/x-data-grid";
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom'
 import QuestBox from './questbox'
 import { getQuestIcon } from './getQuestIcon';
@@ -59,7 +59,7 @@ export default function Quests({id}) {
 
     useEffect(() => {
         setQuests([])
-        fetch(`${process.env.REACT_APP_react_url}/quests/quest_type/${id}`)
+        fetch(`https://localhost:443/api/v1/quests/quest_type/${id}`)
             .then(res => res.json())
             .then((result)=> {
                 setQuests(result);
@@ -68,10 +68,10 @@ export default function Quests({id}) {
 
     
     return (
-        <div>
+        <div className="p-10">
             {id === 6 && (
                 <div className="quests">
-                    <h1>Village</h1>
+                    <h1 className="text-4xl font-bold text-center">Village</h1>
                     <div className="★1 Quests">
                         <h2>★1 Quests</h2>
                         <QuestBox quests={quests} quest_lvl="★1"/>

@@ -49,6 +49,11 @@ public class MonsterController {
     public List<MonsterDTO> getAllMonsters() {
         return monsterRepository.findAllBy();
     }
+
+    @GetMapping("/getAll/{monsterType}")
+    public List<MonsterDTO> getAllMonstersByType(@PathVariable(value = "monsterType") String monstertype) {
+        return monsterRepository.findAllByMonstertype(monstertype);
+    }
     // public List<Monsters> getAllMonsters() {
     //     return monsterRepository.findAll();
     // }

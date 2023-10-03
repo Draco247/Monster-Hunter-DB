@@ -3,7 +3,6 @@ import React, {useState} from 'react';
 import ArmourSets from "../../components/armour/armourSets";
 import {Box, TextField} from "@mui/material";
 import {useLocation} from "react-router-dom";
-import MUIDataTable from "mui-datatables";
 import ArmourSet from "../../components/armour/armourSet";
 
 
@@ -29,9 +28,9 @@ function ArmourSetPage() {
     return (
         <div className="armour-set">
             <h1>Armour Set</h1>
-            <Box m={10}>
+            {/* <Box m={10}> */}
                 <ArmourSet/>
-            </Box>
+            {/* </Box> */}
 
             {/*<Box sx={{ display: 'flex', justifyContent: 'center' }}>*/}
             {/*    <Box sx={{ width: 500, maxWidth: '100%' }}>*/}

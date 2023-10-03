@@ -49,7 +49,7 @@ export default function ArmourSets({ searchQuery }) {
 
     useEffect(() => {
         console.log(process.env.REACT_APP_react_url)
-        fetch(`${process.env.REACT_APP_react_url}/armour/getAllSets`)
+        fetch(`https://localhost:443/api/v1/armour/getAllSets`)
             .then(res => res.json())
             .then((result)=> {
                 setArmourSets(result);
@@ -58,7 +58,7 @@ export default function ArmourSets({ searchQuery }) {
             })}, []);
     console.log(armoursets);
     return (
-        <Box m={8} display="flex" justifyContent="center" alignItems="center">
+        <Box p={8} display="flex" justifyContent="center" alignItems="center">
             <Grid container spacing={2} style={{ justifyContent: armoursets.length === 2 ? 'flex-start' : 'space-between', flexWrap: 'wrap' }}>
                 {filteredArmourSets.map(armourset => (
                     <Grid item xs={12} sm={6} md={3} lg={3} key={armourset.id}>

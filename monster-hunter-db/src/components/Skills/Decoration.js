@@ -85,7 +85,7 @@ export default function Quest() {
     useEffect(() => {
         const fetchDecoration = async () => {
             try {
-                const response = await fetch(`${process.env.REACT_APP_react_url}/skills/skillDecorations/${id}`);
+                const response = await fetch(`https://localhost:443/api/v1/skills/skillDecorations/${id}`);
                 const data = await response.json();
                 setDecoration(data);
                 console.log(data);
@@ -121,48 +121,6 @@ export default function Quest() {
                 {/*<p>Hunter Rank Points: {quest.hrp}</p>*/}
                 {/*<p>Master Rank Points: {quest.mrp}</p>*/}
             </div>
-        {/*    <div className="quest-rewards">*/}
-        {/*        <h2>Quest Rewards</h2>*/}
-        {/*        <MUIDataTable title={"Quests"} data={tableData} columns={columns} options={options} />*/}
-        {/*    </div>*/}
-        {/*    <div className="quest-monsters">*/}
-        {/*        <h2>Monsters</h2>*/}
-        {/*        <Box display="flex" justifyContent="center">*/}
-        {/*            <Grid container justifyContent={quest.monsters.length === 2 ? "flex-start" : "space-between"}>*/}
-        {/*                {quest.monsters.map(monster => (*/}
-        {/*                    <Grid item xs={12} sm={6} md={4} key={monster.id}>*/}
-        {/*                        <Box height="100%">*/}
-        {/*                            <Link to={`/monsters/${monster.id}`}>*/}
-        {/*                                <Card*/}
-        {/*                                    sx={{ height: '100%', maxWidth: 345 }}*/}
-        {/*                                    style={{*/}
-        {/*                                        ...cardStyle,*/}
-        {/*                                        ...(hoveredCard === monster.id && hoverStyle),*/}
-        {/*                                    }}*/}
-        {/*                                    onMouseEnter={() => handleCardMouseEnter(monster.id)}*/}
-        {/*                                    onMouseLeave={handleCardMouseLeave}*/}
-        {/*                                >*/}
-        {/*                                    <Box m={4}>*/}
-        {/*                                        <CardMedia*/}
-        {/*                                            component="img"*/}
-        {/*                                            image={monster.image_link}*/}
-        {/*                                            title={monster.name}*/}
-        {/*                                            style={imageStyle}*/}
-        {/*                                        />*/}
-        {/*                                    </Box>*/}
-        {/*                                    <CardContent>*/}
-        {/*                                        <Typography gutterBottom variant="h5" component="div" textAlign="center">*/}
-        {/*                                            {monster.name}*/}
-        {/*                                        </Typography>*/}
-        {/*                                    </CardContent>*/}
-        {/*                                </Card>*/}
-        {/*                            </Link>*/}
-        {/*                        </Box>*/}
-        {/*                    </Grid>*/}
-        {/*                ))}*/}
-        {/*            </Grid>*/}
-        {/*        </Box>*/}
-        {/*    </div>*/}
         </div>
 
     );

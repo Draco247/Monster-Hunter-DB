@@ -43,6 +43,9 @@ public class Monsters {
     @JsonIgnore
     private Set<Quests> quests = new HashSet<>();
 
+    @Column(name = "monster_type")
+    private String monstertype;
+
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {
                     CascadeType.PERSIST,

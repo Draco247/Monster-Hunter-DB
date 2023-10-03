@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import Items from "../../components/items/items";
 import {Box, TextField} from "@mui/material";
 import { useParams } from "react-router-dom";
-import { Sidebar } from "../../components/navbar/sidebar";
 
 function ItemsPage() {
     const { item_type } = useParams();
@@ -42,9 +41,9 @@ function ItemsPage() {
                     />
                 </Box>
             </Box>
-            <Box m={10}>
+            {/* <Box m={10}> */}
                 <Items searchQuery={searchValue} item_type={item_type}/>
-            </Box>
+            {/* </Box> */}
         </div>
     )
 }

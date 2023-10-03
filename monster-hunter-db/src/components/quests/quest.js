@@ -1,21 +1,12 @@
 import * as React from 'react';
 import './quest.css';
 import {useState, useEffect} from "react";
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import { Grid,Box } from '@mui/material';
 import {Link, useParams} from "react-router-dom";
-import {DataGrid, GridToolbar} from "@mui/x-data-grid";
-import { getMonsterIcon } from '../monsters/getMonsterIcon';
 import { getLocationImage } from './getLocationImage';
 import { v4 as uuidv4 } from 'uuid';
-import CrownMini from "../../assets/icons/crown_mini.png"
-import CrownKing from "../../assets/icons/crown_king.png"
 import { useTheme } from "@mui/material";
+import { QuestRewardColumns } from './questrewardscolumns';
+import { QuestMonsterCard } from './questmonstercard';
 
 
 
@@ -44,59 +35,18 @@ export default function Quest() {
         fontSize: 16
         },
         "& .MuiDataGrid-row": {
-            backgroundColor: palette.background.MuiDataGridrow
-        }
-    };
-    
-    
-    const columns = [
-        { field: 'Item', headerName: 'Item', flex:1, sortable: true,
-        renderCell: (params) => {
-
-            return (
-                <div>
-                    {/* {questIcon && (
-                        <img src={questIcon} alt={questType} style={{ marginRight: '5px', verticalAlign: 'middle' }} />
-                    )} */}
-                    <Link to={`/items/${params.row["Item id"]}`}>
-                        {params.row.Item}
-                    </Link>
-                </div>
-                );
-            },
+            backgroundColor: palette.background.MuiDataGridrow,
+            transition: 'background-color 0.3s ease',
         },
-        { field: 'Chance', headerName: 'Chance', flex: 1},
-        { field: 'Quantity', headerName: 'Quantity', flex:0.3, sortable: true}
-    ];
-
-    const handleCardMouseEnter = (id) => {
-        setHoveredCard(id);
-    };
-
-    const handleCardMouseLeave = () => {
-        setHoveredCard(null);
-    };
-
-    const cardStyle = {
-        height: '100%',
-        maxWidth: 345,
-        // transition: 'box-shadow 0.9s', // Add a smooth transition effect
-    };
-
-    const hoverStyle = {
-        boxShadow: '0 0 5px 2px #888', // Apply a box shadow when hovered
-    };
-
-    const imageStyle = {
-        border: '2px solid black',
-        borderRadius: '10%', // Make the border curved
-        backgroundColor: 'black'
+        '& .MuiDataGrid-row:hover': {
+            backgroundColor: palette.background.MuiDataGridrow
+          },
     };
 
     useEffect(() => {
         const fetchQuest = async () => {
             try {
-                const response = await fetch(`${process.env.REACT_APP_react_url}/quests/${id}`);
+                const response = await fetch(`https://localhost:443/api/v1/quests/${id}`);
                 const data = await response.json();
                 setQuest(data);
                 console.log(data);
@@ -107,7 +57,7 @@ export default function Quest() {
 
         const fetchQuestRewards = async () => {
             try {
-                const response = await fetch(`${process.env.REACT_APP_react_url}/quests/${id}/rewards`);
+                const response = await fetch(`https://localhost:443/api/v1/quests/${id}/rewards`);
                 const data = await response.json();
                 setQuestrewards(data);
                 console.log(data);
@@ -118,7 +68,7 @@ export default function Quest() {
 
         const fetchQuestMiniCrowns = async () => {
             try {
-                const response = await fetch(`${process.env.REACT_APP_react_url}/quests/${id}/mini_crown`);
+                const response = await fetch(`https://localhost:443/api/v1/quests/${id}/mini_crown`);
                 const data = await response.json();
                 setQuestminicrowns(data);
                 console.log(data);
@@ -129,7 +79,7 @@ export default function Quest() {
 
         const fetchQuestKingCrowns = async () => {
             try {
-                const response = await fetch(`${process.env.REACT_APP_react_url}/quests/${id}/king_crown`);
+                const response = await fetch(`https://localhost:443/api/v1/quests/${id}/king_crown`);
                 const data = await response.json();
                 setQuestkingcrowns(data);
                 console.log(data);
@@ -159,153 +109,48 @@ export default function Quest() {
 
     return (
         <div>
-            <div className="quest-details">
-                <h1 style={{ textDecoration: 'underline' }}>{quest.quest_name}</h1>
+            <div className="flex justify-center">
+                <h1 className="text-4xl pt-5 font-bold mb-4 border-b-4 border-slate-950 text-center text-slate-950 dark:text-slate-50 dark:border-slate-50 w-128">{quest.quest_name}</h1>
                 <br/>
-                <Grid container spacing={2} alignItems="stretch">
-                    <Grid item xs={12} sm={7}>
-                        <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <Box
-                                component="img"
-                                sx={{
-                                    maxHeight: '100%',
-                                    maxWidth: '100%',
-                                    height: 'auto',
-                                    border: '2px solid black',
-                                    borderRadius: '5px',
-                                }}
-                                alt={quest.quest_location}
-                                src={getLocationImage(quest.quest_location)}
-                            />
+            </div>
+            <div className={`flex justify-center`}>
+                <div className="mx-auto p-5">
+                    {/* <h2>Large Monsters</h2> */}
+                    <br/>
+                    <div className="grid grid-cols-4 gap-4">
+                        <div className={`col-span-3`}>
+                            <img src={getLocationImage(quest.quest_location)} class="mx-auto border-3 border-black rounded-lg" /> 
                         </div>
-                    </Grid>
-                    <Grid item xs={12} sm={5} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                        <div>
-                            <div style={{ flex: '1 0 50%', display: 'flex', alignItems: 'flex-end' }}>
-                                {/* Empty space to move the second image down */}
+                        <div className="flex items-center justify-center">
+                            <div className="text-center font-bold text-slate-950 dark:text-slate-50">
+                                <p>Quest Objective: {quest.objective}</p>
+                                <p>Failure Conditions: {quest.failure_conditions}</p>
+                                <p>Hunter Rank Points: {quest.hrp}</p>
+                                <p>Master Rank Points: {quest.mrp}</p>
                             </div>
-                            <p>Quest Objective: {quest.objective}</p>
-                            <p>Failure Conditions: {quest.failure_conditions}</p>
-                            <p>Hunter Rank Points: {quest.hrp}</p>
-                            <p>Master Rank Points: {quest.mrp}</p>
                         </div>
-                    </Grid>
-                </Grid>
+                    </div>
+                    <br/>
+                </div>
             </div>
             <div className="quest-rewards">
                 <h2>Quest Rewards</h2>
-                <div className='quest-section quest-rewards'>
-                    <Box>
-                        <DataGrid
-                            rows={questrewards}
-                            columns={columns}
-                            getRowId={(row) => `${row["Item id"]}-${generateUniqueID()}`}
-                            autoHeight
-                            slots={{ toolbar: GridToolbar }}
-                            sx={datagridSx}
-                            // disableColumnMenu
-                            pageSize={5}
-                            // checkboxSelection
-                            disableRowSelectionOnClick
-                            initialState={{
-                                sorting: {
-                                    sortModel: [{ field: 'quest_name', sort: 'asc' }],
-                                },
-                                pagination: { paginationModel: { pageSize: 5 } },
-                            }}
-                            pageSizeOptions={[5, 10, 25]}
-                        />
-                    </Box>
+                <div className='p-10'>
+                    <QuestRewardColumns questrewards={questrewards}/>
                 </div>
                 {/* <MUIDataTable title={"Quests"} data={tableData} columns={columns} options={options} /> */}
             </div>
             <div className="quest-monsters">
                 <h2>Monsters</h2>
-                <div className='quest-section quest-monsters'>
-                    <Box display="flex" justifyContent="center" alignItems="center">
-                        <Grid container spacing={2} style={{ flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
-                            {quest.monsters.map(monster => (
-                                <Grid item xs={12} sm={6} md={3} lg={3} key={monster.id}>
-                                    <Box height="100%" display="flex" alignItems="center" justifyContent="center">                  
-                                        <Link to={`/monsters/${monster.id}`}>
-                                            <Card
-                                                // sx={{ height: '100%', maxWidth: 345 }}
-                                                style={{
-                                                    ...cardStyle,
-                                                    ...(hoveredCard === monster.id && hoverStyle),
-                                                }}
-                                                onMouseEnter={() => handleCardMouseEnter(monster.id)}
-                                                onMouseLeave={handleCardMouseLeave}
-                                            >
-                                                <Box m={4}>
-                                                    <CardMedia
-                                                        component="img"
-                                                        image={getMonsterIcon(monster.name)}
-                                                        title={monster.name}
-                                                        style={imageStyle}
-                                                    />
-                                                </Box>
-                                                <CardContent >
-                                                    <Typography gutterBottom variant="h5" component="div" textAlign="center">
-                                                        {monster.name}
-                                                    </Typography>
-                                                    <div>
-                                                    {questminicrowns[monster.id] && questminicrowns[monster.id].length > 0 && (
-                                                            <div>
-                                                                <hr style={{ width: '100%' }} /> {/* Separator */}
-                                                                <Typography gutterBottom variant="p" component="div" style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                                                    <img src={CrownMini} alt="mini crown" style={{ width: 30, height: 30, marginRight: '10px' }} />
-                                                                    <ul style={{ listStyleType: 'none', padding: 0 }}>
-                                                                        {questminicrowns[monster.id].map((item, index) => (
-                                                                            <li key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                                                                                {Object.entries(item).map(([key, value]) => (
-                                                                                    <p key={key}>
-                                                                                        {key}: {value}
-                                                                                    </p>
-                                                                                ))}
-                                                                            </li>
-                                                                        ))}
-                                                                    </ul>
-                                                                </Typography>
-                                                            </div>
-                                                        )}
-                                                    {questkingcrowns[monster.id] && questkingcrowns[monster.id].length > 0 && (
-                                                        <div>
-                                                            <hr style={{ width: '100%' }} /> {/* Separator */}
-                                                            <Typography gutterBottom variant="p" component="div" style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                                                <img src={CrownKing} alt="king crown" style={{ width: 30, height: 30, marginRight: '10px' }} />
-                                                                <ul style={{ listStyleType: 'none', padding: 0 }}>
-                                                                {questkingcrowns[monster.id] &&
-                                                                    questkingcrowns[monster.id].map((item, index) => (
-                                                                    <li key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                                                                        {Object.entries(item).map(([key, value]) => (
-                                                                        <p key={key}>
-                                                                            {key}: {value}
-                                                                        </p>
-                                                                        ))}
-                                                                    </li>
-                                                                    ))}
-                                                                </ul>
-                                                            </Typography>
-                                                        </div>
-                                                        )}
-                                                    </div>
-                                                </CardContent>
-                                            </Card>
-                                        </Link>
-                                    </Box>
-                                </Grid>
-                            ))}
-                            {quest.monsters.length === 2 && (
-                                <Grid item xs={12} sm={6} md={3} lg={3} style={{ visibility: 'hidden' }}>
-                                    {/* Invisible spacer item */}
-                                </Grid>
-                            )}
-                        </Grid>
-                    </Box>
+                <div className='p-10'>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+                        {quest.monsters.map(monster => (
+                            <QuestMonsterCard questminicrowns={questminicrowns} questkingcrowns={questkingcrowns} monster={monster}/>
+                        ))}
+                    </div>
                 </div>
             </div>
-    </div>
+        </div>
 
     );
 };

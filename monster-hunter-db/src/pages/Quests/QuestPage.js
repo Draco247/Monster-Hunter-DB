@@ -5,9 +5,9 @@ import { Box } from "@mui/material";
 function QuestPage() {
     return (
         <div className="quest">
-            <Box m={10}>
+            {/* <Box m={10}> */}
                 <Quest />
-            </Box>
+            {/* </Box> */}
         </div>
     );
 }

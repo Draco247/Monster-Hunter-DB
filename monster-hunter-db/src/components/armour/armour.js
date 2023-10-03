@@ -1,20 +1,20 @@
 import * as React from 'react';
 import {useState, useEffect} from "react";
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
+// import Card from '@mui/material/Card';
+// import CardActions from '@mui/material/CardActions';
+// import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+// import Button from '@mui/material/Button';
+// import Typography from '@mui/material/Typography';
 import { Grid,Box } from '@mui/material';
 import {Link, useParams} from "react-router-dom";
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import TableCell from "@mui/material/TableCell";
-import TableBody from "@mui/material/TableBody";
-import TableContainer from "@mui/material/TableContainer";
+// import Paper from "@mui/material/Paper";
+// import Table from "@mui/material/Table";
+// import TableHead from "@mui/material/TableHead";
+// import TableRow from "@mui/material/TableRow";
+// import TableCell from "@mui/material/TableCell";
+// import TableBody from "@mui/material/TableBody";
+// import TableContainer from "@mui/material/TableContainer";
 
 export default function Armour() {
     const { id } = useParams();
@@ -60,7 +60,7 @@ export default function Armour() {
     useEffect(() => {
         const fetchArmour = async () => {
             try {
-                const response = await fetch(`${process.env.REACT_APP_react_url}/armour/${id}`);
+                const response = await fetch(`https://localhost:443/api/v1/armour/${id}`);
                 const data = await response.json();
                 setArmour(data);
                 console.log(data);
@@ -71,7 +71,7 @@ export default function Armour() {
 
         // const fetchQuestRewards = async () => {
         //     try {
-        //         const response = await fetch(`${process.env.REACT_APP_react_url}/quests/${id}/rewards`);
+        //         const response = await fetch(`https://localhost:443/api/v1/quests/${id}/rewards`);
         //         const data = await response.json();
         //         setQuestrewards(data);
         //         console.log(data);

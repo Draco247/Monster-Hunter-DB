@@ -63,7 +63,7 @@ export default function Item() {
         const fetchItem = async () => {
             try {
                 console.log(process.env.REACT_APP_react_url)
-                const response = await fetch(`${process.env.REACT_APP_react_url}/items/${id}`);
+                const response = await fetch(`https://localhost:443/api/v1/items/${id}`);
                 const data = await response.json();
                 setItem(data);
                 console.log(data);
@@ -74,7 +74,7 @@ export default function Item() {
 
         const fetchItemMonsters = async () => {
             try {
-                const response = await fetch(`${process.env.REACT_APP_react_url}/items/${id}/monsters`);
+                const response = await fetch(`https://localhost:443/api/v1/items/${id}/monsters`);
                 const data = await response.json();
                 setItemMonsters(data);
                 console.log(data);

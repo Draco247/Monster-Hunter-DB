@@ -48,7 +48,7 @@ export default function Armours({ searchQuery }) {
 
     useEffect(() => {
         console.log(process.env.REACT_APP_react_url)
-        fetch(`${process.env.REACT_APP_react_url}/armour/getAll`)
+        fetch(`https://localhost:443/api/v1/armour/getAll`)
             .then(res => res.json())
             .then((result)=> {
                 setArmours(result);
