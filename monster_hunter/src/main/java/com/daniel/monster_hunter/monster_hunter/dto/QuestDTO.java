@@ -24,5 +24,6 @@ public class QuestDTO {
     private Long questtypeid;
     private String quest_lvl;
     private String objective;
-    
+    private String Follower;
+    private String weapons;
 }

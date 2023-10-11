@@ -13,11 +13,12 @@ export const MonsterCard = ({monster}) => {
                     src={getMonsterIcon(monster.name)}
                     alt=""
                 />
-                <div className="p-5 flex-grow">
-                    <h5 className="mb-3 font-bold text-gray-950 dark:text-gray-400">
-                    {monster.name}
+                <div className="p-5 flex-grow items-center flex flex-col justify-center">
+                    <h5 className="mb-3 font-bold text-gray-950 dark:text-gray-400 text-center">
+                        {monster.name}
                     </h5>
                 </div>
+
                 </div>
             </Link>
         </div>

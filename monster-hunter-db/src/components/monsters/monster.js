@@ -34,6 +34,9 @@ export default function Monster() {
     const [screenWidth, setScreenWidth] = useState(window.innerWidth);
     const [loaded, setLoaded] = useState(false);
     const [fade, setFade] = useState(true);
+    // setTimeout(() => {
+    //     setFade(false);
+    //   }, 100);
     
     // Update screenWidth state when the window is resized
     useEffect(() => {
@@ -50,6 +53,8 @@ export default function Monster() {
 
     
     useEffect(() => {
+        setLoaded(false);
+        setFade(true);
         const fetchMonster = async () => {
             try {
                 const response = await fetch(`https://localhost:443/api/v1/monsters/${id}`);
@@ -149,6 +154,7 @@ export default function Monster() {
     }, [monster, monsterquests, monsterhitzones, monsterdrops, monsterupgradeweapons, monsterforgingweapons, monsterarmour]);
 
     useLayoutEffect(() => {
+        console.log(loaded)
         if (loaded) {
             setTimeout(() => {
                 setFade(false);
@@ -208,20 +214,20 @@ export default function Monster() {
             }
             <div className="monster-tables">
                 <div className={`p-10`}>
-                    <h2 className="text-4xl font-bold text-center text-slate-950 dark:text-slate-50 dark:border-slate-50">Quests</h2>
+                    <h2 className="text-4xl font-bold text-center text-slate-950 dark:text-slate-50 dark:border-slate-50 text-decoration-line: underline">Quests</h2>
                     <div>
                          <QuestColumns monsterquests={monsterquests} screenWidth={screenWidth}/>
                     </div>
                 </div>
                 <div className={`p-10 `}>
-                    <h2 className="text-4xl font-bold text-center text-slate-950 dark:text-slate-50 dark:border-slate-50">Hitzones</h2>
+                    <h2 className="text-4xl font-bold text-center text-slate-950 dark:text-slate-50 dark:border-slate-50 text-decoration-line: underline">Hitzones</h2>
                     <div>
                         <HitzoneColumns monsterhitzones={monsterhitzones} screenWidth={screenWidth}/>
                     </div>
                 </div>
                 {/* {need to fix the filter for drops table} */}
                 <div className={`p-10 `}>
-                    <h2 className="text-4xl font-bold text-center text-slate-950 dark:text-slate-50 dark:border-slate-50">Drops</h2>
+                    <h2 className="text-4xl font-bold text-center text-slate-950 dark:text-slate-50 dark:border-slate-50 text-decoration-line: underline">Drops</h2>
                     <div>
                         <DropColumns monsterdrops={monsterdrops} screenWidth={screenWidth}/>
                     </div>
@@ -229,19 +235,19 @@ export default function Monster() {
                 {/* {might need to change heights of these tables since it looks weird
                 when their heights are inconsistent} */}
                <div className={`p-10 `}>
-                    <h2 className="text-4xl font-bold text-center text-slate-950 dark:text-slate-50 dark:border-slate-50">Weapon Forging</h2>
+                    <h2 className="text-4xl font-bold text-center text-slate-950 dark:text-slate-50 dark:border-slate-50 text-decoration-line: underline">Weapon Forging</h2>
                     <div>
                         <WeaponColumns monsterweapons={monsterforgingweapons} screenWidth={screenWidth}/>
                     </div>
                 </div>
                 <div className={`p-10 `}>
-                    <h2 className="text-4xl font-bold text-center text-slate-950 dark:text-slate-50 dark:border-slate-50">Weapon Upgrades</h2>
+                    <h2 className="text-4xl font-bold text-center text-slate-950 dark:text-slate-50 dark:border-slate-50 text-decoration-line: underline">Weapon Upgrades</h2>
                     <div>
                         <WeaponColumns monsterweapons={monsterupgradeweapons} screenWidth={screenWidth}/>
                     </div>
                 </div>
                 <div className={`p-10 `}>
-                    <h2 className="text-4xl font-bold text-center text-slate-950 dark:text-slate-50 dark:border-slate-50">Armour</h2>
+                    <h2 className="text-4xl font-bold text-center text-slate-950 dark:text-slate-50 dark:border-slate-50 text-decoration-line: underline">Armour</h2>
                     <div>
                         <ArmourColumns monsterarmour={monsterarmour} screenWidth={screenWidth}/>
                     </div>

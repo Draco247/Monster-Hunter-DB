@@ -141,7 +141,7 @@ export const navItems = [
                 cName: "submenu-item",
             },
             {
-                title: "Longsword",
+                title: "Long Sword",
                 path: "/weapons/ls",
                 id: 3,
                 icon: <img src={getWeaponIcon("ls")} alt="ls" style={{ verticalAlign: 'middle', height: '30px', width: '30px' }} />,

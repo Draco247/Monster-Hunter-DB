@@ -1,26 +1,9 @@
 import * as React from 'react';
-import {useState, useEffect} from "react";
-import { Grid,Box } from '@mui/material';
-import {DataGrid} from "@mui/x-data-grid";
-import ProgressBar from "react-bootstrap/ProgressBar";
-import LinearProgress from '@mui/material/LinearProgress';
-import SharpnessBar from "./SharpnessBar";
-import {Link, useNavigate} from "react-router-dom";
-// import { useSelector } from 'react-redux';
-import Fire from '../../assets/icons/Element_Fire_Icon.webp'
-import Water from '../../assets/icons/Element_Water_Icon.webp'
-import Ice from '../../assets/icons/Element_Ice_Icon.webp'
-import Thunder from '../../assets/icons/Element_Thunder_Icon.webp'
-import Dragon from '../../assets/icons/Element_Dragon_Icon.webp'
-import Blast from '../../assets/icons/Element_Icon_Blast.png'
-import Paralysis from '../../assets/icons/Element_Paralysis_Icon.png'
-import Sleep from '../../assets/icons/Element_Icon_Sleep.png'
-import Poison from '../../assets/icons/Element_Poison_Icon.png'
+import {useState, useEffect, useLayoutEffect} from "react";
 import { getWeaponArt } from './getWeaponArt';
-import { useTheme } from "@mui/material";
-import SwitchSkills from '../switch skillls/switchskills';
 import { getControllerIcon } from '../getControllerIcon';
 import reactStringReplace from 'react-string-replace';
+import { WeaponColumns } from './weaponcolumns';
 
 
 
@@ -28,46 +11,11 @@ import reactStringReplace from 'react-string-replace';
 export default function Weapons({id}) {
     const [weapons, setWeapons] = useState([])
     const [switchskills, setswitchskills] = useState([]);
-    const { palette } = useTheme();
-    console.log(id)
+    const [loaded, setLoaded] = useState(false);
+    const [fade, setFade] = useState(true);
     
-    const datagridSx = {
-        '.centered-cell': { justifyContent: 'center' },
-        "& .MuiDataGrid-main": { borderRadius: 2 },
-        "& .MuiDataGrid-columnHeaders": {
-        backgroundColor: palette.background.MuiDataGridcolumnHeaders,
-        fontSize: 16
-        },
-        "& .MuiDataGrid-row": {
-            backgroundColor: palette.background.MuiDataGridrow,
-            transition: 'background-color 0.3s ease',
-        },
-        '& .MuiDataGrid-row:hover': {
-            backgroundColor: palette.background.MuiDataGridrow
-          },
-    };
-
-
-    const deco_imgs = {
-        "deco1": "https://cdn.kiranico.net/file/kiranico/mhrise-web/images/ui/deco1.png",
-        "deco2": "https://cdn.kiranico.net/file/kiranico/mhrise-web/images/ui/deco2.png",
-        "deco3": "https://cdn.kiranico.net/file/kiranico/mhrise-web/images/ui/deco3.png",
-        "deco4": "https://cdn.kiranico.net/file/kiranico/mhrise-web/images/ui/deco4.png"
-    }
-
-    const elementIcons = {
-        Fire,
-        Water,
-        Ice,
-        Thunder,
-        Dragon,
-        Blast,
-        Paralysis,
-        Sleep,
-        Poison,
-    };
-
     useEffect(() => {
+        console.log(id);
         const fetchWeapons = async () => {
             try {
                 setWeapons([])
@@ -97,365 +45,46 @@ export default function Weapons({id}) {
     }, [id]);
     // console.log(weapons);
 
-    let columns = [
-        { field: 'weapon_name', headerName: 'Name', flex:0.5, sortable: true, valueGetter: (params) => params.row['weapon_name'], // Use 'weapon_name' directly as the cell value
-            renderCell: (params) => (
-                <Link to={`/weapon/${params.row.id}`} style={{ textDecoration: 'none' }}>
-                    <Box
-                        sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        gap: '5px',
-                        }}
-                    >
-                        <Box
-                        component="img"
-                        sx={{
-                            height: 100,
-                            width: 100,
-                            border: '2px solid black',
-                        }}
-                        alt=""
-                        src={params.row['weapon_img_url']}
-                        />
-                        {params.row.weapon_name}
-                    </Box>
-                </Link>
-            ),
-            cellClassName: 'centered-cell',
-        },
-        { field: 'attack', headerName: 'Attack', flex:0.4, sortable: true},
-        { field: 'additional_property', headerName: 'Additional', flex:0.4, sortable: true, renderCell: (params) => {
-            const text = params.row.additional_property;
-            if (text === null) {
-                return <div>{text}</div>; // Render null as is
-            }
-            const isPositive = text.includes('+');
-            const isNegative = text.includes('-');
-    
-            const textStyle = {
-                color: isPositive ? '#07fa3c' : isNegative ? '#f72f2f' : 'black',
-                fontWeight: 'bold'
-            };
-    
-            return (
-                <div style={textStyle}>
-                    {text}
-                </div>
-            );
-        },
-        },
-        { field: 'deco_slots', headerName: 'Deco Slots', flex:0.5, sortable: true, renderCell: (params) => {
-                // console.log(params);
-                const decoSlots = JSON.parse(params.row.decoSlots);
+    useEffect(() => {
+        // Check if all required data objects are available
+        if (weapons && switchskills) {
+            // If all data is available, set loaded to true
+            setLoaded(false);
+            // setFade(true);
+            // setLoaded(true);
+            setTimeout(() => {
+                // setFade(false);
+                setLoaded(true);
+              }, 100);
 
-                return (
-                    <div>
-                        {decoSlots &&
-                            decoSlots.map((decoration, index) => (
-                                <span key={index}>
-                            <Box
-                                component="img"
-                                sx={{
-                                    height: 40,
-                                    width: 40,
-                                    marginRight: '8px',
-                                }}
-                                alt={decoration}
-                                src={deco_imgs[decoration]}
-                            />
-                        </span>
-                            ))}
-                    </div>
-                );
-            },
-        },
-        { field: 'rampage_deco_slots', headerName: 'Rampage Deco Slots', flex:0.5, sortable: true, renderCell: (params) => {
-                const rampagedecoSlots = JSON.parse(params.row.rampagedecoSlots);
+        }
+    }, [weapons, switchskills]);
 
-                return (
-                    <div>
-                        {rampagedecoSlots &&
-                            rampagedecoSlots.map((decoration, index) => (
-                                <span key={index}>
-                                    <Box
-                                        component="img"
-                                        sx={{
-                                            height: 40,
-                                            width: 40,
-                                            marginRight: '8px',
-                                        }}
-                                        alt={decoration}
-                                        src={deco_imgs[decoration]}
-                                    />
-                                </span>
-                            ))}
-                    </div>
-                );
-            },
-        },
-        { field: 'rarity', headerName: 'Rarity', flex:0.3, sortable: true, type: "singleSelect",
-        valueOptions: ["Rare 1", "Rare 2", "Rare 3", "Rare 4", "Rare 5", "Rare 6", "Rare 7", "Rare 8", "Rare 9", "Rare 10"]},
-    ];
+    useLayoutEffect(() => {
+        setFade(true);
+        if (loaded) {
+            setTimeout(() => {
+                setFade(false);
+              }, 500);
+        }
+    }, [loaded]);
 
    
-    // exclude element columns for lbg and hbg
-    if (id !== 12 && id !== 13) {
-        const elementColumn = {
-            field: 'element', headerName: 'Element', flex:0.3, sortable: true, type: "singleSelect",
-            valueOptions: ["Fire", "Water", "Ice", "Thunder", "Dragon", "Poison", "Paralysis", "Blast", "Sleep"],
-            renderCell: (params) => {
-                // console.log(params.row.element)
-                const elementIconSrc = elementIcons[params.row.element];
-                // console.log(elementIconSrc);
-                return (
-                    elementIconSrc && (
-                        <div>
-                            <img
-                                src={elementIconSrc}
-                                alt={params.row.element}
-                                style={{ width: '40px', height: '40px' }}
-                            />
-                        </div>
-                    )
-                );
-                
-            },
-        };
-
-        const elementvalColumn = {
-            field: 'elementval', headerName: 'Ele Val', flex:0.3, sortable: true
-        }
-        // Insert the "Songs" column at index 2 (before the last column)
-        columns.splice(3, 0, elementColumn);
-        columns.splice(4, 0, elementvalColumn);
+    if (!loaded) {
+        // Render a loading message or return null
+        return <div className="h-screen flex justify-center items-center" role="status">
+                <svg aria-hidden="true" class="inline w-64 h-64 mr-2 text-slate-950 animate-spin dark:text-slate-50 fill-violet-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                    <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+                </svg>
+                <span class="sr-only">Loading...</span>
+            </div>;
     }
+    // console.log()
 
-    // exclude sharpness column for bow, lbg and hbg
-    if (id !== 11 && id !== 12 && id !== 13){
-        const sharpnessColumn = {
-            field: 'base_sharpness', headerName: 'Sharpness', flex:0.5, sortable: true,
-            renderCell: (params) => {
-                const sharpness = JSON.parse(params.row.base_sharpness);
-                const max_sharpness = JSON.parse(params.row.max_sharpness);
 
-                return (
-                    <Box
-                        sx={{
-                            width: '100%',
-                        }}
-                    >
-                        <Grid container spacing={2}>
-                            <Grid item xs={12}>
-                                <SharpnessBar sharpness={sharpness} />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <SharpnessBar sharpness={max_sharpness} />
-                            </Grid>
-                        </Grid>
-                    </Box>
-
-                );
-            },
-        };
-        columns.splice(5, 0, sharpnessColumn);
-    }
-
-    // song column for hunting horn
-    if (id === 5) {
-        const songsColumn = {
-            field: 'songs',
-            headerName: 'Songs',
-            flex: 1,
-            sortable: false,
-            renderCell: (params) => {
-                console.log(params)
-                const songlist = JSON.parse(params.row.songs);
-                console.log(songlist);
-
-                return (
-                    <div style={{ maxHeight: 100, overflowY: 'auto' }}>
-                        <ul style={{ margin: 0, paddingInlineStart: 20, whiteSpace: 'normal', listStyle: 'none' }}>
-                            {songlist.map((level, index) => (
-                                <li key={index}>{level}</li>
-                            ))}
-                        </ul>
-                    </div>
-                );
-            },
-        };
-        // Insert the "Songs" column at index 2 (before the last column)
-        columns.splice(8, 0, songsColumn);
-    }
-
-    // shelling column for gunlance
-    if (id === 7) {
-        const shellingColumn = {
-            field: 'shelling_type',
-            headerName: 'Shelling',
-            flex: 0.5,
-            sortable: false,
-        };
-        // Insert the "Songs" column at index 2 (before the last column)
-        columns.splice(8, 0, shellingColumn);
-    }
-
-    // phial column for switch axe and charge blade
-    if (id === 8 || id === 9) {
-        const phialColumn = {
-            field: 'phial_type',
-            headerName: 'Phial',
-            flex: 1,
-            sortable: false,
-        };
-        // Insert the "Songs" column at index 2 (before the last column)
-        columns.splice(8, 0, phialColumn);
-    }
-
-    // kinsect level column for insect glaive
-    if (id === 10) {
-        const kinsectColumn = {
-            field: 'kinsect_lvl',
-            headerName: 'Kinsect Lvl',
-            flex: 1,
-            sortable: false,
-        };
-        // Insert the "Songs" column at index 2 (before the last column)
-        columns.splice(8, 0, kinsectColumn);
-    }
-
-    // bow arc shot type, coatings
-    if (id === 11) {
-        const arcshottypeColumn = {
-            field: 'arc_shot_type',
-            headerName: 'Arc Shot Type',
-            flex: 0.5,
-            sortable: true,
-        }
-
-        const chargeshotlevelsColumn = {
-                field: 'charge_shot_levels',
-                headerName: 'Charge Shot Levels',
-                flex: 0.5,
-                sortable: true,
-                renderCell: (params) => {
-                    const chargeshotlist = JSON.parse(params.row.charge_shot_levels);
-
-                    return (
-                        <div style={{ maxHeight: 100, overflowY: 'auto' }}>
-                            <ul style={{ margin: 0, paddingInlineStart: 20, whiteSpace: 'normal', listStyle: 'none' }}>
-                                {chargeshotlist.map((level, index) => (
-                                    <li key={index}>{level}</li>
-                                ))}
-                            </ul>
-                        </div>
-                    );
-                },
-            }
-
-        const coatingsColumn = {
-            field: 'coatings',
-            headerName: 'Coatings',
-            flex: 0.5,
-            sortable: true,
-            renderCell: (params) => {
-                const coatingslist = JSON.parse(params.row.coatings);
-
-                return (
-                    <div style={{ maxHeight: 100, overflowY: 'auto' }}>
-                        <ul style={{ margin: 0, paddingInlineStart: 20, whiteSpace: 'normal', listStyle: 'none' }}>
-                            {coatingslist.map((level, index) => (
-                                <li key={index}>{level}</li>
-                            ))}
-                        </ul>
-                    </div>
-                );
-            },
-        }
-
-        // Insert the "Songs" column at index 2 (before the last column)
-        columns.splice(7, 0, arcshottypeColumn);
-        columns.splice(8, 0, chargeshotlevelsColumn);
-        columns.splice(9, 0, coatingsColumn);
-    }
-
-    // ammo details, etc for bowguns
-    if (id === 12 || id == 13) {
-        const bowgunstatsColumn = {
-            field: 'bowgun_stats',
-            headerName: 'Stats',
-            flex: 0.5,
-            sortable: true,
-            renderCell: (params) => {
-                const statslist = JSON.parse(params.row.bowgun_stats);
-                console.log(statslist);
-
-                return (
-                    <div style={{ maxHeight: 100, overflowY: 'auto' }}>
-                        <ul style={{ margin: 0, paddingInlineStart: 20, whiteSpace: 'normal', listStyle: 'none' }}>
-                            {statslist.map((stat, index) => (
-                                <li key={index}>{Object.entries(stat)[0].join(': ')}</li>
-                            ))}
-                        </ul>
-                    </div>
-                );
-            },
-        }
-
-        const ammoColumn = {
-            field: 'ammo',
-            headerName: 'Ammo',
-            flex: 1,
-            sortable: true,
-            renderCell: (params) => {
-                console.log(params.value);
-                const ammolist = JSON.parse(params.row.ammo);
-                console.log(ammolist);
-
-                const chunkArray = (array, chunkSize) => {
-                    const chunks = [];
-                    for (let i = 0; i < array.length; i += chunkSize) {
-                        chunks.push(array.slice(i, i + chunkSize));
-                    }
-                    return chunks;
-                };
-
-                // Split the ammolist into chunks of 5 entries each
-                const ammoChunks = chunkArray(ammolist, 4);
-
-                return (
-                    <div style={{ display: 'flex', overflowX: 'auto' }}>
-                        {ammoChunks.map((chunk, chunkIndex) => (
-                            <div
-                                key={chunkIndex}
-                                style={{
-                                    width: '200px', // Set a fixed width for each list container
-                                    marginRight: '10px', // Adjust the margin-right to set the desired spacing between lists
-                                }}
-                            >
-                                <ul style={{ margin: 0, paddingInlineStart: 20, whiteSpace: 'normal', listStyle: 'none' }}>
-                                    {chunk.map((ammo, index) => (
-                                        <li key={index}>{Object.entries(ammo)[0].join(': ')}</li>
-                                    ))}
-                                </ul>
-                            </div>
-                        ))}
-                    </div>
-                );
-            },
-        }
-
-        // Insert the "Songs" column at index 2 (before the last column)
-        columns.splice(5, 0, bowgunstatsColumn);
-        columns.splice(6, 0, ammoColumn);
-    }
-
-    
-
-  
     return (
-        <div className="p-10">
+        <div className={` p-10 ${fade === false ? "transition duration-150 ease-in opacity-100" : "opacity-0"}`}>
             <div class="grid grid-cols-4 gap-4 mb-3">
                 <div class="col-span-2">
                     <img src={getWeaponArt(id)[0]} class="mx-auto border-3 border-black rounded-lg" />
@@ -538,26 +167,7 @@ export default function Weapons({id}) {
 
             {weapons.length > 0 ? (
                 <div>
-                    {/* <Box sx={{ height: 400, width: '100%'}}> */}
-                        <DataGrid
-                            rows={weapons}
-                            columns={columns}
-                            getRowId={(row) => row.id}
-                            autoHeight
-                            sx={datagridSx}
-                            // disableColumnMenu
-                            pageSize={5}
-                            // checkboxSelection
-                            disableRowSelectionOnClick
-                            initialState={{
-                                sorting: {
-                                    sortModel: [{ field: 'weapon_name', sort: 'asc' }],
-                                },
-                            }}
-                            getRowHeight={() => 'auto'}
-
-                        />
-                    {/* </Box> */}
+                    <WeaponColumns weapons={weapons} id={id}/>
                 </div>
             ) : (
                 <div>Loading weapons data...</div>

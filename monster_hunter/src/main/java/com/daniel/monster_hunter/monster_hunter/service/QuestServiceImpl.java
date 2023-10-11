@@ -44,6 +44,8 @@ public class QuestServiceImpl implements QuestService {
         questDTO.setQuesttypeid(quest.getQuesttypeid());
         questDTO.setQuest_lvl(quest.getQuest_lvl());
         questDTO.setObjective(quest.getObjective());
+        questDTO.setFollower(quest.getFollower());
+        questDTO.setWeapons(quest.getWeapons());
 
         Set<MonsterDTO> monsterDTOs = quest.getMonsters().stream()
                 .map(monster -> {
@@ -115,5 +117,11 @@ public class QuestServiceImpl implements QuestService {
         }
         return null;
     }
+
+    // public List<Quests> getAllArenaQuests(){
+    //     Quests quests = questRepository.findAllQuestsByQuestTypeId
+    //     return null;
+        
+    // }
 
 }

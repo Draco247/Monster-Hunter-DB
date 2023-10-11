@@ -1,5 +1,7 @@
 
 export const getWeaponIcon = (weapon_type) => {
+    // console.log(weapon_type)
+    
     // Replace underscores (_) with spaces in the image name
     const formattedImageName = `${weapon_type.toUpperCase()}.png`
 

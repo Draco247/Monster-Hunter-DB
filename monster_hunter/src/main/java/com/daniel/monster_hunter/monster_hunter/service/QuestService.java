@@ -15,6 +15,7 @@ public interface QuestService {
     public List<QuestDTO> getAllQuestsByQuestTypeId(Long questtypeid);
     // public QuestDTO getQuest(Long questId);
     // public List<Quests> getQuests();
+    // public List<Quests> getAllArenaQuests();
     public Map<String, List<Map<String, Object>>> getQuestMini_Crown(Long questId);
     public Map<String, List<Map<String, Object>>> getQuestKing_Crown(Long questId);
     public List<Map<String, Object>> getQuestRewards(Long questId);

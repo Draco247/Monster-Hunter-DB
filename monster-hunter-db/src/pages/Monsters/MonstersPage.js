@@ -9,6 +9,7 @@ import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
+
 function MonstersPage() {
     const [searchValue, setSearchValue] = useState('');
     const [displayMonsters, setDisplayMonsters] = useState(true);
@@ -40,9 +41,7 @@ function MonstersPage() {
          // Toggle the fade state
     };
 
-    const handleNavButtonClick = (buttonValue) => {
-        // ... your existing code
-    
+    const handleNavButtonClick = () => {
         // Toggle the visibility of the navigation element
         setIsNavVisible(!isNavVisible);
     };
@@ -72,36 +71,51 @@ function MonstersPage() {
                 <div className={`lg:relative`}>
                     
                     <div className={`sticky top-[4.5rem] -ml-0.5 h-[calc(100vh-4.5rem)] py-16 pl-0.5 flex`}>
-                        <nav className={`text-base w-36 ${isNavVisible ? 'mr-2 transition-all duration-500 -left-36' : 'hidden transition duration-150 ease-out'}`}>
-                            <ul className={`mt-2 space-y-2 border-l-2 border-slate-950 dark:border-white lg:mt-4 lg:space-y-4 w-full p-2`}>
-                                {Monstertypesinfo.map((monstertype) => (
-                                    <li className="relative w-full" key={monstertype.title}>
-                                        {selectedButton === monstertype.title ? (
-                                            <span>
-                                                <p
-                                                    className="text-blue-900 font-bold dark:text-slate-400 dark:before:bg-slate-700"
-                                                    // onClick={() => handleButtonClick(monstertype.title)}
-                                                >
-                                                    {monstertype.title}
-                                                </p>
-                                            </span>
-                                        ) : (
-                                            <Link to={monstertype.path}>
-                                                <button
-                                                    className="text-slate-950 hover:text-slate-600 font-bold dark:text-slate-400 dark:before:bg-slate-700"
-                                                    onClick={() => handleButtonClick(monstertype.title)}
-                                                >
-                                                    {monstertype.title}
-                                                </button>
-                                            </Link>
-                                        )}
-                                    </li>
-                                ))}
-                            </ul>
-                        </nav>
-                        <div className="flex items-center ml-auto"> {/* Flex container */}
-                            <FontAwesomeIcon icon={faChevronRight} onClick={handleNavButtonClick} className="bg-slate-950 hover:bg-slate-800 p-4 text-white rounded-full cursor-pointer" />
-                        </div>
+                        <Transition 
+                                appear={true} 
+                                show={isNavVisible}
+                                enter="transition duration-200 ease-in-out transform"
+                                enterFrom="-translate-x-full opacity-0"
+                                enterTo="translate-x-0 opacity-100"
+                                leave="transition duration-100 ease-in-out transform"
+                                leaveFrom="translate-x-0 opacity-100"
+                                leaveTo="-translate-x-full opacity-0"
+                            >
+                                <nav className={`text-base w-36 mr-2`}>
+                                    <ul className={`mt-2 space-y-2 border-l-2 border-slate-950 dark:border-white lg:mt-4 lg:space-y-4 w-full p-2`}>
+                                        {Monstertypesinfo.map((monstertype) => (
+                                            <li className="relative w-full" key={monstertype.title}>
+                                                {selectedButton === monstertype.title ? (
+                                                    <span>
+                                                        <p
+                                                            className="text-blue-900 font-bold dark:text-slate-200 dark:before:bg-slate-700"
+                                                            // onClick={() => handleButtonClick(monstertype.title)}
+                                                        >
+                                                            {monstertype.title}
+                                                        </p>
+                                                    </span>
+                                                ) : (
+                                                    <Link to={monstertype.path}>
+                                                        <button
+                                                            className="text-slate-950 hover:text-slate-600 font-bold dark:text-slate-400 dark:before:bg-slate-700"
+                                                            onClick={() => handleButtonClick(monstertype.title)}
+                                                        >
+                                                            {monstertype.title}
+                                                        </button>
+                                                    </Link>
+                                                )}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </nav>
+                            </Transition>
+                            <div className="flex items-center ml-auto"> {/* Flex container */}
+                                {isNavVisible ? (
+                                    <FontAwesomeIcon icon={faChevronRight} onClick={handleNavButtonClick} className="bg-slate-950 hover:bg-blue-800 p-4 text-white rounded-full cursor-pointer" />
+                                ) : (
+                                    <FontAwesomeIcon icon={faChevronLeft} onClick={handleNavButtonClick} className="bg-slate-950 hover:bg-blue-800 p-4 text-white rounded-full cursor-pointer" />
+                                )}
+                            </div>
                     </div>
 
                 </div>

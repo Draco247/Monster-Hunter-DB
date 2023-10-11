@@ -956,94 +956,6 @@ class Scraper(object):
             except Exception as e:
                 print(f"An error occurred: {str(e)}")
 
-        # async def process_armour_sets(self, session, idx, item):
-        #     if not item.text:
-        #         item_text = "Base Commander Set"
-        #     else:
-        #         item_text = item.text
-
-        #     async with session.get(fx_url + item["href"], headers=headers) as r:
-        #         # print(fx_url + item["href"])
-        #         # print(item_text)
-        #         soup = BeautifulSoup(await r.text(), "html.parser")
-        #         set_img = soup.select("#infobox > div > table > tbody > tr:nth-child(2) > td > h4 > img")
-        #         if not set_img:
-        #             set_img = soup.select(
-        #                 "#infobox > div.table-responsive > table > tbody > tr:nth-child(2) > td > img")
-        #         elif not set_img:
-        #             set_img = soup.select(
-        #                 "wiki-content-block > div.row > div > div > table > tbody > tr:nth-child(1) > td:nth-child(1) > h4 > img")
-        #         # print(set_img)
-        #         try:
-        #             set_img = fx_url + set_img[0]["src"]
-        #         except IndexError:
-        #             print("img not found")
-        #             set_img = ""
-        #         print(set_img)
-
-        #         # save armour set image to assets folder
-        #         self.download_image(set_img, item_text)
-        #         tables = soup.select("tbody")
-        #         # print(len(tables))
-
-        #         find_pieces = []
-        #         if len(tables) > 1:
-        #             table = tables[1]
-        #             rows = table.find_all("tr")
-        #             for row in rows:
-        #                 first_td = row.find("td")
-        #                 if first_td is not None:
-        #                     find_pieces.append(first_td)
-        #         else:
-        #             print("Table not found or index out of range.")
-        #         pieces = []
-        #         piece_types = {0:"Head", 1:"Chest", 2:"Arms" ,3:"Waist" ,4:"Legs"}
-        #         for index,p in enumerate(find_pieces):
-        #             piece_type = piece_types[index]
-        #             if p.find("img") is not None:
-        #                 piece_img = fx_url + p.find("img")["src"]
-        #             else:
-        #                 piece_img = ""
-        #             pieces.append({p.text.strip(): [piece_img, piece_type]})
-        #         return {'id': idx, 'item': item_text, 'img': set_img, 'pieces': pieces}
-
-        # async def get_all_items(self):
-
-        #     url = f"{fx_url}/Armor+Sets"
-
-        #     async with aiohttp.ClientSession() as session:
-        #         async with session.get(url, headers=headers) as r:
-        #             soup = BeautifulSoup(await r.text(), "html.parser")
-        #             div_elements = soup.select("div.col-xs-4") + soup.select("div.col-sm-4")
-        #             find_all_armour_sets = [element.find("a", attrs={"class": "wiki_link"}) for element in div_elements
-        #                                     if element.find("a", attrs={"class": "wiki_link"}) is not None]
-        #             tasks = []
-        #             for idx, item in enumerate(find_all_armour_sets, start=1):
-        #                 task = asyncio.create_task(self.process_armour_sets(session, idx, item))
-        #                 tasks.append(task)
-
-        #             all_armour_sets = await asyncio.gather(*tasks)
-        #             print(all_armour_sets)
-        #             mycursor = mydb.cursor(buffered=True)
-
-        #             for armour in all_armour_sets:
-        #                 set_id = armour["id"]
-        #                 set_name = armour["item"]
-        #                 set_img = armour["img"]
-        #                 armour_pieces = json.dumps(armour["pieces"])
-
-        #                 mycursor.execute("SELECT COUNT(*) FROM armour_sets WHERE set_id = %s",
-        #                                  [set_id])
-        #                 exists = mycursor.fetchall()[0][0]
-        #                 print(exists)
-        #                 if exists == 0:
-        #                     sql = "INSERT INTO armour_sets (set_id, set_name, set_img, armour_pieces) VALUES (%s, %s, %s, %s)"
-
-        #                     mycursor.execute(sql, (set_id, set_name, set_img, armour_pieces))
-        #             mydb.commit()
-        #             return all_armour_sets
-
-
         def get_all_items(self):
             consumables = self.get_consumables()
             materials = self.get_materials()
@@ -1950,11 +1862,11 @@ class Scraper(object):
             kiranico_quests = await self.get_all_quests_from_kiranico()
             # # fextralife_quests = self.get_all_quests_from_fx()
             game8_quests = await self.get_all_quests_from_game8()
-            print(len(kiranico_quests))
+            # print(len(kiranico_quests))
             # print([i.get("Quest_Name")for i in kiranico_quests])
-            print(len(game8_quests))
+            # print(len(game8_quests))
             count = 0
-            nomatches = []
+            # nomatches = []
             matches = []
             matched_quest_names = set()
 
@@ -1986,30 +1898,23 @@ class Scraper(object):
                         match_found = True
                         break  # No need to continue searching if a match is found
                         
-                if not match_found:
-                    # print(f"No Match Found for {kiranico_Quest_Name}")
-                    nomatches.append({game8_Quest_Name: game8.get("Quest_Type")})
-                    # nomatches.add({kiranico_Quest_Name: kiranico.get("Quest_Type")})
+                # if not match_found:
+                #     # print(f"No Match Found for {kiranico_Quest_Name}")
+                #     nomatches.append({game8_Quest_Name: game8.get("Quest_Type")})
+                #     # nomatches.add({kiranico_Quest_Name: kiranico.get("Quest_Type")})
 
-            print(len(matches))
-            # print(matches)
-            print("------------------")
             
             mycursor = mydb.cursor()
             for quest in matches:
-                    # print(quest.get("Quest_ID"))
-                    # print(quest.get("Quest_Name"))
-                    # print("-------------------")
                     mycursor = mydb.cursor()
-                    mycursor.execute("SELECT COUNT(*) from quests2 WHERE Quest_ID = %s", [quest.get("Quest_ID")])
+                    mycursor.execute("SELECT COUNT(*) from quests3 WHERE Quest_ID = %s", [quest.get("Quest_ID")])
                     exists = mycursor.fetchall()
                     if exists[0][0] == 0:
-                        sql = "INSERT INTO quests2 (quest_id, quest_name, objective, HRP, MRP, failure_conditions, mini_crown, king_crown, rewards, quest_lvl, quest_type, quest_type_id, quest_location) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+                        sql = "INSERT INTO quests3 (quest_id, quest_name, objective, HRP, MRP, failure_conditions, mini_crown, king_crown, rewards, quest_lvl, quest_type, quest_type_id, quest_location, Follower, weapons) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
                         val = ([quest.get("Quest_ID"), quest.get("Quest_Name"), quest.get("Objective"), quest.get("HRP"), quest.get("MRP"),
                                 quest.get("failure_conditions"), quest.get("mini_crowns"), quest.get("king_crowns"), quest.get("rewards"),
-                                quest.get("Quest_Level"), quest.get("Quest_Type"), quest.get("Quest_Type_ID"),quest.get("Quest_Location")])
-                        # print(val)
-                        # mycursor = mydb.cursor(buffered=True)
+                                quest.get("Quest_Level"), quest.get("Quest_Type"), quest.get("Quest_Type_ID"),quest.get("Quest_Location"), quest.get("Follower"), quest.get("Weapons")])
+            
                         mycursor.execute(sql, val)
                         if json.loads(quest.get("Monsters")) != []:
                             for monster in json.loads(quest.get("Monsters")):
@@ -2023,14 +1928,7 @@ class Scraper(object):
                                         val = ([quest.get("Quest_ID"), monsters.get(monster)])
                                         # mycursor = mydb.cursor()
                                         mycursor.execute(sql, val)
-                        # print("------------------------")
             mydb.commit()
-            print(len(nomatches))
-            print(nomatches)
-            with open("mydata.json", "w") as final:
-                json.dump(matches, final)
-            # print("*------------------*")
-            # print([i.get("Quest_Name") for i in game8_quests])
 
 
         async def get_all_quests_from_kiranico(self):
@@ -2152,46 +2050,6 @@ class Scraper(object):
                 # print(quest_details)
                 return quest_details
 
-        
-
-        # def get_all_quests_from_game8(self):
-        #     url = game8_url + "/games/Monster-Hunter-Rise/archives/318295"
-        #     session = requests.Session()
-        #     r = session.get(url, headers=headers)
-        #     soup = BeautifulSoup(r.content, "html.parser")
-        #     all_quests = soup.find_all("table", attrs={"class": "a-table"})[0].find_all("td")
-        #     print(len(all_quests))
-        #     quests = []
-        #     for index,questtype in enumerate(all_quests):
-        
-        #         if index in (1,4,5,7,8):
-        #             continue
-        #         # if index in (0,1,2,3,4,5,6,7,8,10):
-        #         #     continue
-        #         try:
-        #             Quest_Type = questtype.find("b").text
-        #         except AttributeError:
-        #             Quest_Type = questtype.find("a").text
-        #         print(Quest_Type)
-                
-        #         if Quest_Type != "Event Quests":
-        #             for link in questtype.find_all("a"):
-        #                 url = game8_url + link["href"]
-        #                 print(url)
-        #                 session = requests.Session()
-        #                 r = session.get(url, headers=headers)
-        #                 soup = BeautifulSoup(r.content, "html.parser")
-        #                 quests.append(self.get_quest_info_game8(soup, Quest_Type))
-        #         else:
-        #             url = game8_url + questtype.find("a")["href"]
-        #             print(url)
-        #             session = requests.Session()
-        #             r = session.get(url, headers=headers)
-        #             soup = BeautifulSoup(r.content, "html.parser")
-        #             quests.append(self.get_quest_info_game8(soup, Quest_Type))
-                
-        #     quests = [j for i in quests for j in i] #flatten list of quest lists into a single list
-        #     return quests
                 
         async def get_all_quests_from_game8(self):
             url = game8_url + "/games/Monster-Hunter-Rise/archives/318295"
@@ -2202,7 +2060,7 @@ class Scraper(object):
                     soup = BeautifulSoup(content, "html.parser")
                     all_quests = soup.find_all("table", attrs={"class": "a-table"})[0].find_all("td")
                     
-                    print(len(all_quests))
+                    # print(len(all_quests))
                     quests = []
                     tasks = []
                     
@@ -2229,42 +2087,6 @@ class Scraper(object):
                     quests_lists = await asyncio.gather(*tasks)
                     quests = [j for i in quests_lists for j in i]  # Flatten list of quest lists into a single list
                     return quests
-        # def get_quest_info_game8(self, soup, Quest_Type):
-
-        #     quests = []
-
-        #     if Quest_Type == "Gathering Hub Quests":
-        #         gathering_hub_quests = self.extract_gathering_hub_quests_info(soup, Quest_Type)
-        #         quests.append(gathering_hub_quests)
-                      
-        #     elif Quest_Type == "Arena Quests":
-        #         arena_quests = self.extract_arena_quests_info(soup, Quest_Type)
-        #         quests.append(arena_quests)
-            
-        #     elif Quest_Type == "Event Quests":
-        #         event_quests = self.extract_event_quests_info(soup, Quest_Type)
-        #         quests.append(event_quests)
-
-        #     elif Quest_Type == "Challenge Quests":
-        #         challenge_quests = self.extract_challenge_quests_info(soup, Quest_Type)
-        #         quests.append(challenge_quests)
-            
-        #     elif Quest_Type == "Follower Quests":
-        #         follower_quests = self.extract_follower_quests_info(soup, Quest_Type)
-        #         quests.append(follower_quests)
-            
-        #     elif Quest_Type == "Support Surveys":
-        #         support_survey_quests = self.extract_support_survey_quests_info(soup, Quest_Type)
-        #         quests.append(support_survey_quests)
-
-        #     elif Quest_Type == "Anomaly Quests":
-        #         anomaly_quests = self.extract_anomaly_quests_info(soup, Quest_Type)
-        #         quests.append(anomaly_quests)
-
-        #     else:
-        #         quests.append(self.extract_quests_info(soup, Quest_Type))
-        #     return quests
-        
 
         async def get_quest_info_game8(self, session, url, Quest_Type):
             quests = []
@@ -2535,251 +2357,65 @@ class Scraper(object):
 
             return quests
 
-        # def extract_gathering_hub_quests_info(self, soup, Quest_Type):
-        #     # needed to change quest tables for hub quests
-        #     quests = []
-        #     quest_tables = soup.find_all("table", attrs={"class": "a-table"})[1:-1]
-        #     # print(len(quest_tables))
-        #     for table in quest_tables:
-        #         quest_rows = table.find_all("tr")[1:][::2]
-        #         for row in quest_rows:
-        #             # print(row)
-        #             Quest_Name = row.find_all("td")[0].find("a").text
-        #             print("------------")
-        #             print(Quest_Name)
-        #             monsters = [i.text.strip() for i in row.find_all("td")[1].find_all("a")]
-        #             monsters = json.dumps(monsters)
-        #             print(monsters)
-        #             quest_link = row.find_all("td")[0].find("a")["href"]
-        #             print(quest_link)
-        #             session = requests.Session()
-        #             r = session.get(quest_link, headers=headers)
-        #             soup = BeautifulSoup(r.content, "html.parser")
-        #             quest_table_rows = soup.find("table", attrs={"class": "a-table a-table a-table"}).find_all("tr")
-        #             # print(quest_table_rows)
-        #             quest_lvl = quest_table_rows[0].find_all("td")[0].text
-        #             print(quest_lvl)
-        #             quest_locale = quest_table_rows[0].find_all("td")[1].text.strip()
-        #             print(quest_locale)
-        #             quests.append({"Quest_Name": Quest_Name, "Quest_Level": quest_lvl,"Quest_Type": Quest_Type, 
-        #                             "Monsters": monsters, "Quest_Location": quest_locale})
-        #             print("------------")
-        #     return quests
-        
-        # def extract_arena_quests_info(self, soup, Quest_Type):
-        #     # needed to change quest tables for hub quests
-        #     quests = []
-        #     arena_Quest_Names = [i.text for i in soup.find_all("h3", attrs={"class": "a-header--3"})[:12]]
-        #     print(arena_Quest_Names)
-        #     arena_quest_tables = soup.find_all("table", attrs={"class": "a-table a-table a-table"})
-        #     print(len(arena_quest_tables[:12]))
-        #     for index,table in enumerate(arena_quest_tables[:12]):
-        #         Quest_Name = arena_Quest_Names[index]
-        #         quest_rows = table.find_all("tr")
-        #         quest_locale = quest_rows[0].find_all("td")[0].text.strip()
-        #         monsters = [i.text for i in quest_rows[0].find_all("td")[1].find_all("a")]
-        #         monsters = json.dumps(monsters)
-        #         weapons = [i["alt"] for i in quest_rows[1].find_all("td")[0].find_all("img")]
-        #         weapons = json.dumps(weapons)
-        #         print(quest_locale)
-        #         print(monsters)
-        #         print(weapons)
-        #         quests.append({"Quest_Name": Quest_Name,"Quest_Type": Quest_Type, 
-        #                             "Monsters": monsters, "Quest_Location": quest_locale, "Weapons": weapons})
-        #     return quests
-        
-        # def extract_event_quests_info(self, soup, Quest_Type):
-        #     # needed to change quest tables for hub quests
-        #     quests = []
-        #     event_quest_tables = soup.find_all("table", attrs={"class": "a-table a-table a-table"})[:-1]
-        #     print(len(event_quest_tables))
-        #     for table in event_quest_tables:
-        #         event_quest_rows = table.find_all("tr")
-        #         print(len(event_quest_rows))
-        #         for row in event_quest_rows:
-        #             # print(len(row))
-        #             row_quests = row.find_all("td")
-        #             for quest in row_quests:
-        #                 Quest_Name = quest.find("a").text
-        #                 print("------------")
-        #                 print(Quest_Name)
-        #                 special_reward = quest.contents[-1].strip()
-        #                 print(special_reward)
-        #                 quest_link = quest.find("a")["href"]
-        #                 session = requests.Session()
-        #                 r = session.get(quest_link, headers=headers)
-        #                 soup = BeautifulSoup(r.content, "html.parser")
-        #                 monsters_table_rows = soup.find("table", attrs={"class": "a-table a-table"}).find_all("tr")
-        #                 # print(monsters_table_rows[0].find("th"))
-        #                 monsters = [i.find("a").text for i in monsters_table_rows[1:] if monsters_table_rows[0].find("th").text == "Monster"]
-        #                 monsters = json.dumps(monsters)
-        #                 print(monsters)
-        #                 quest_table_rows = soup.find("table", attrs={"class": "a-table a-table a-table"}).find_all("tr")
-        #                 # print(quest_table_rows)
-        #                 quest_lvl = quest_table_rows[0].find_all("td")[0].text
-        #                 print(quest_lvl)
-        #                 quest_locale = quest_table_rows[0].find_all("td")[1].text.strip()
-        #                 print(quest_locale)
-        #                 quests.append({"Quest_Name": Quest_Name, "Quest_Level": quest_lvl,"Quest_Type": Quest_Type, 
-        #                             "Monsters": monsters, "Quest_Location": quest_locale})
-        
-        #             print("------------")
-        #     return quests
-        
-        # def extract_challenge_quests_info(self, soup, Quest_Type):
-        #     # needed to change quest tables for hub quests
-        #     quests = []
-        #     challenge_Quest_Names = [i.text for i in soup.find_all("h3", attrs={"class": "a-header--3"})[:12]]
-        #     print(challenge_Quest_Names)
-        #     challenge_quest_tables = soup.find_all("table", attrs={"class": "a-table a-table a-table"})
-        #     print(len(challenge_quest_tables[:12]))
-        #     for index,table in enumerate(challenge_quest_tables[:7]):
-        #         Quest_Name = challenge_Quest_Names[index]
-        #         quest_rows = table.find_all("tr")
-        #         quest_locale = quest_rows[0].find_all("td")[0].text.strip()
-        #         monsters = [i.text for i in quest_rows[0].find_all("td")[1].find_all("a")]
-        #         monsters = json.dumps(monsters)
-        #         weapons = [i["alt"] for i in quest_rows[1].find_all("td")[0].find_all("img")]
-        #         weapons = json.dumps(weapons)
-        #         print(quest_locale)
-        #         print(monsters)
-        #         print(weapons)
-        #         quests.append({"Quest_Name": Quest_Name,"Quest_Type": Quest_Type, 
-        #                             "Monsters": monsters, "Quest_Location": quest_locale, "Weapons": weapons})
-        #     return quests
-        
-        # def extract_follower_quests_info(self, soup, Quest_Type):
-        #     # needed to change quest tables for hub quests
-        #     quests = []
-        #     follower_quest_tables = soup.find_all("table", attrs={"class": "a-table a-table"})
-        #     print(len(follower_quest_tables))
-        #     followers = [i.text.split("'")[0] for i in soup.find_all("h3", attrs={"class": "a-header--3"})[1:11]]
-        #     # print(followers)
-        #     for index,table in enumerate(follower_quest_tables):
-        #         quest_rows = table.find_all("tr")[1:]
-        #         follower = followers[index]
-        #         print(follower)
-        #         for row in quest_rows:
-        #             Quest_Name = row.find_all("td")[1].find("a").text
-        #             print(Quest_Name)
-        #             quest_link = row.find_all("td")[1].find("a")["href"]
-        #             session = requests.Session()
-        #             r = session.get(game8_url + quest_link, headers=headers)
-        #             soup = BeautifulSoup(r.content, "html.parser")
-        #             monsters_table_rows = soup.find("table", attrs={"class": "a-table a-table"}).find_all("tr")
-        #             # print(len(monsters_table_rows))
-        #             monsters = [i.find("a").text for i in monsters_table_rows[1:]]
-        #             monsters = json.dumps(monsters)
-        #             print(monsters)
-        #             quest_table_rows = soup.find("table", attrs={"class": "a-table a-table a-table"}).find_all("tr")
-        #             quest_lvl = quest_table_rows[0].find_all("td")[0].text
-        #             print(quest_lvl)
-        #             quest_locale = quest_table_rows[0].find_all("td")[1].text
-        #             print(quest_locale.strip())
-        #             quests.append({"Quest_Name": Quest_Name, "Quest_Level": quest_lvl,"Quest_Type": Quest_Type, 
-        #                             "Monsters": monsters, "Quest_Location": quest_locale, "Follower": follower})
-        #     return quests
-        
-        # def extract_support_survey_quests_info(self, soup, Quest_Type):
-        #     quests = []
-        #     quest_tables = soup.find_all("table", attrs={"class": "a-table"})[2:7]
-        #     # print(len(quest_tables))
-        #     for table in quest_tables:
-        #         quest_rows = table.find_all("tr")[1:][::2]
-        #         print("****************")
-        #         # print(len(quest_rows))
-        #         for row in quest_rows:
-        #             # print(row)
-        #             Quest_Name = row.find_all("td")[0].find("a").text
-        #             print("------------")
-        #             print(Quest_Name)
-        #             monsters = [i.text.strip() for i in row.find_all("td")[1].find_all("a")]
-        #             monsters = json.dumps(monsters)
-        #             print(monsters)
-        #             quest_link = row.find_all("td")[0].find("a")["href"]
-        #             print(quest_link)
-        #             session = requests.Session()
-        #             r = session.get(quest_link, headers=headers)
-        #             soup = BeautifulSoup(r.content, "html.parser")
-        #             quest_table_rows = soup.find("table", attrs={"class": "a-table a-table a-table"}).find_all("tr")
-        #             quest_lvl = quest_table_rows[0].find_all("td")[0].text
-        #             print(quest_lvl)
-        #             quest_locale = quest_table_rows[0].find_all("td")[1].text.strip()
-        #             print(quest_locale)
-        #             quests.append({"Quest_Name": Quest_Name, "Quest_Level": quest_lvl,"Quest_Type": Quest_Type, 
-        #                             "Monsters": monsters, "Quest_Location": quest_locale})
-        #             print("------------")
-        #     return quests
-        
-        # def extract_anomaly_quests_info(self, soup, Quest_Type):
-        #     quests = []
-        #     quest_tables = soup.find_all("table", attrs={"class": "a-table a-table a-table"})
-        #     # print(len(quest_tables))
-        #     for table in quest_tables:
-        #         quest_rows = table.find_all("tr")[1:][::2]
-        #         for row in quest_rows:
-        #             try:
-        #                 Quest_Name = row.find_all("td")[0].find("a").text
-        #             except AttributeError:
-        #                 Quest_Name = row.find_all("td")[0].find("b").text
-        #             print("------------")
-        #             print(Quest_Name)
-        #             monsters = [i.text.strip() for i in row.find_all("td")[1].find_all("a")]
-        #             monsters = json.dumps(monsters)
-        #             print(monsters)
-        #             try:
-        #                 quest_link = row.find_all("td")[0].find("a")["href"]
-        #                 print(quest_link)
-        #                 session = requests.Session()
-        #                 r = session.get(quest_link, headers=headers)
-        #                 soup = BeautifulSoup(r.content, "html.parser")
-        #                 quest_table_rows = soup.find("table", attrs={"class": "a-table a-table a-table"}).find_all("tr")
-        #                 quest_lvl = quest_table_rows[0].find_all("td")[0].text
-        #                 print(quest_lvl)
-        #                 quest_locale = quest_table_rows[0].find_all("td")[1].text.strip()
-        #                 print(quest_locale)
-        #             except TypeError:
-        #                 quest_link = ""
-        #                 quest_lvl = ""
-        #                 quest_locale = ""
-        #             quests.append({"Quest_Name": Quest_Name, "Quest_Level": quest_lvl,"Quest_Type": Quest_Type, 
-        #                             "Monsters": monsters, "Quest_Location": quest_locale})
-        #             print("------------")
-        #     return quests
-        
-        # def extract_quests_info(self, soup, Quest_Type):
-        #     quests = []
-        #     quest_tables = soup.find_all("table", attrs={"class": "a-table"})[:-1]
-        #     # print(len(quest_tables))
-        #     for table in quest_tables:
-        #         quest_rows = table.find_all("tr")[1:][::2]
-        #         # print(len(quest_rows))
-        #         for row in quest_rows:
-        #             # print(row)
-        #             Quest_Name = row.find_all("td")[0].find("a").text
-        #             print("------------")
-        #             print(Quest_Name)
-        #             monsters = [i.text.strip() for i in row.find_all("td")[1].find_all("a")]
-        #             monsters = json.dumps(monsters)
-        #             print(monsters)
-        #             quest_link = row.find_all("td")[0].find("a")["href"]
-        #             print(quest_link)
-        #             session = requests.Session()
-        #             r = session.get(quest_link, headers=headers)
-        #             soup = BeautifulSoup(r.content, "html.parser")
-        #             quest_table_rows = soup.find("table", attrs={"class": "a-table a-table a-table"}).find_all("tr")
-        #             quest_lvl = quest_table_rows[0].find_all("td")[0].text
-        #             print(quest_lvl)
-        #             quest_locale = quest_table_rows[0].find_all("td")[1].text.strip()
-        #             print(quest_locale)
-        #             quests.append({"Quest_Name": Quest_Name, "Quest_Level": quest_lvl,"Quest_Type": Quest_Type, 
-        #                             "Monsters": monsters, "Quest_Location": quest_locale})
-        #             print("------------")
-        #     return quests
+    class Followers:
+
+        def download_image(self,image_url, name):
+            save_path = f"monster-hunter-db\\src\\assets\\follower art\\{name}.png"
+            try:
+                # Check if the file already exists
+                if os.path.exists(save_path):
+                    print(f"Image already exists at {save_path}")
+                    return
+                
+                # Send an HTTP GET request to the URL
+                response = requests.get(fx_url+image_url)
+                
+                # Check if the request was successful (status code 200)
+                if response.status_code == 200:
+                    # Open the file for binary write
+                    with open(save_path, 'wb') as file:
+                        # Write the content of the response to the file
+                        file.write(response.content)
+                    print(f"Image downloaded and saved as {save_path}")
+                else:
+                    print(f"Failed to download image. Status code: {response.status_code}")
+            except Exception as e:
+                print(f"An error occurred: {str(e)}")
+
+        def get_all_followers(self):
+            url = f"{fx_url}/Follower+Collab+Quests#Followers"
+            session = requests.Session()
+            r = session.get(url, headers=headers)
+            soup = BeautifulSoup(r.content, "html.parser")
+            followers = soup.find_all("div", attrs={"class": "col-sm-4"})[1:]
+            # print(followers)
+            follower_details = []
+
+            for follower in followers:
+                follower_name = follower.find("a").text
+                follower_img = follower.find_all("img")[0]["src"]
+                self.download_image(follower_img, follower_name)
+                follower_title = follower.find("span").text
+                follower_description = follower.find_all("p")[1].text
+                follower_health = follower.find_all("p")[2].contents[1::2][0].strip()
+                follower_stamina = follower.find_all("p")[2].contents[1::2][1].strip()
+                hunting_style = ",".join(follower.find_all("p")[4].contents[0::2])
+                weapons = [weapon["title"] for row in follower.find_all("p")[5:] for weapon in row.find_all("img") if "title" in weapon.attrs]
+                weapons = json.dumps(weapons)
+                # follower_details.append({"follower_name": follower_name, "follower_title": follower_title, "follower_description": follower_description, "hunting_style": hunting_style,
+                #                          "follower_health": follower_health, "follower_stamina": follower_stamina, "weapons": weapons})
+                follower_details.append((follower_name, follower_title, follower_description, follower_health, follower_stamina, hunting_style, weapons))
+
+            # print(follower_details)
+            mycursor = mydb.cursor()
+            sql = "INSERT INTO followers (follower_name, follower_title, follower_description, follower_health, follower_stamina, hunting_style, weapons) VALUES " \
+                      "(%s, %s, %s, %s, %s, %s, %s)"
+            mycursor.executemany(sql, follower_details)
+            mydb.commit()
 
 
 
-
+                
 
 
 
@@ -2788,13 +2424,14 @@ class Scraper(object):
 
 webscrape = Scraper(headers, base_url, mydb)
 # webscrape.Quests().get_all_quests()
-# loop = asyncio.get_event_loop()
-# quests = loop.run_until_complete(webscrape.Quests().get_all_quests())
-webscrape.Monsters().get_monsters()
+loop = asyncio.get_event_loop()
+quests = loop.run_until_complete(webscrape.Quests().get_all_quests())
+# webscrape.Monsters().get_monsters()
 # webscrape.Items().get_all_items()
 # webscrape.Weapons().get_all_weapons()
 # webscrape.Skills().get_skills()
 # webscrape.Armour().get_all_armour()
+# webscrape.Followers().get_all_followers()
 
 # webscrape = Scraper(headers, base_url)
 

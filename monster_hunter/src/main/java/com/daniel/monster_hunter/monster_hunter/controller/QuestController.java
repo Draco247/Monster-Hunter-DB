@@ -46,6 +46,13 @@ public class QuestController {
 //        return questService.getQuests();
 //    }
 
+    @GetMapping("/arena-quests")
+    public ResponseEntity<List<Quests>> getAllArenaQuests(){
+        List<Quests> quests = questRepository.findAllQuestsByQuestTypeId((long) 7);
+        return new ResponseEntity<List<Quests>>(quests, HttpStatus.OK);
+        
+    }
+
     @GetMapping("/{questId}")
     // public ResponseEntity<QuestDTO> getQuestWithMonsters(@PathVariable Long questId) {
     //     QuestDTO questDTO = questService.getQuest(questId);

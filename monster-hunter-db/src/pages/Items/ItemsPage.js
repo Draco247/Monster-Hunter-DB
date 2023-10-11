@@ -42,7 +42,10 @@ function ItemsPage() {
                 </Box>
             </Box>
             {/* <Box m={10}> */}
+            <div className="p-10">
                 <Items searchQuery={searchValue} item_type={item_type}/>
+            </div>
+                
             {/* </Box> */}
         </div>
     )

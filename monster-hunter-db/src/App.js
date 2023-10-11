@@ -100,7 +100,7 @@ function App() {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline/>
-            <div className="bg-gray-400 dark:bg-slate-800 dark:text-white h-auto">
+            <div className="bg-gray-400 dark:bg-slate-800 dark:text-white h-full">
                 <Router>
                     <NavBar mode={mode} toggleColorMode={toggleColorMode} darkMode={darkMode} setDarkMode={setDarkMode}/>
                     <Routes>

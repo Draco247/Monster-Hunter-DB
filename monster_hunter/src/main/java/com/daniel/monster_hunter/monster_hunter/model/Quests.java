@@ -49,7 +49,11 @@ public class Quests {
     private Long questtypeid;
 
     private String quest_location;
+    
+    private String Follower;
 
+     @Column(name = "weapons" ,columnDefinition = "json")
+    private String weapons;
     
 
     @ManyToMany(fetch = FetchType.LAZY,
